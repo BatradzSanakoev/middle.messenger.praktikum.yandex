@@ -9,4 +9,8 @@ export default defineConfig({
     open: true,
     port: Number(process.env.PORT) || 3000,
   },
+  preview: {
+    open: true,
+    port: Number(process.env.PORT) || 3000,
+  },
 });
