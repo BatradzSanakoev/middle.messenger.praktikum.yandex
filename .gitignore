@@ -25,3 +25,6 @@ dist-ssr
 
 AGENTS.md
 CHANGES.md
+
+# Vite CSS modules
+*.module.css.json
