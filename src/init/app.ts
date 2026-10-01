@@ -1,16 +1,36 @@
-import { Button } from "@/shared";
+import styles from "./app.module.css";
+import {
+  ChatPage,
+  Error404Page,
+  Error500Page,
+  LoginPage,
+  ProfilePage,
+  RegisterPage,
+} from "../pages";
 
 export class App {
   init() {
-    const container = document.createElement("div");
-    container.style.display = "flex";
-    container.style.flexDirection = "column";
-    container.style.gap = "1rem";
-    container.style.alignItems = "center";
+    const appContainer = document.createElement("main");
+    appContainer.className = styles.app;
 
-    document.body.appendChild(container);
+    // const loginPage = new LoginPage();
+    // loginPage.render(appContainer);
 
-    new Button(container, { text: "Войти", variant: "primary" });
-    new Button(container, { text: "Нет аккаунта?", variant: "secondary" });
+    // const registerPage = new RegisterPage();
+    // registerPage.render(appContainer);
+
+    // const chatsPage = new ChatPage();
+    // chatsPage.render(appContainer);
+
+    const profilePage = new ProfilePage();
+    profilePage.render(appContainer);
+
+    // const error404Page = new Error404Page();
+    // error404Page.render(appContainer);
+
+    // const error500Page = new Error500Page();
+    // error500Page.render(appContainer);
+
+    document.body.appendChild(appContainer);
   }
 }

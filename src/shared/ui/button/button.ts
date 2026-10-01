@@ -1,13 +1,9 @@
-import templateRaw from './button.hbs?raw';
-import Handlebars from 'handlebars';
-import styles from './button.module.css';
-
-const template = Handlebars.compile(templateRaw);
+import { buttonStyles } from ".";
+import { buttonTemplate } from "./button.template";
 
 export class Button {
-  constructor(container: HTMLElement, options: { text: string; variant?: string }) {
-    const variantClass = options.variant ? styles[options.variant] : '';
-    const html = template({ ...options, styles, variantClass });
+  constructor(container: HTMLElement, options: { text: string }) {
+    const html = buttonTemplate({ text: options.text, styles: buttonStyles });
 
     const fragment = document.createRange().createContextualFragment(html);
     container.appendChild(fragment);

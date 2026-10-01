@@ -1,0 +1,59 @@
+.page {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  border-right: 1px solid #000000;
+}
+
+.sidebarTitle {
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: 1.5rem;
+  padding: 1rem;
+  border-bottom: 1px solid #000000;
+}
+
+.chatList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.emptyText {
+  font-family: 'Caveat', cursive;
+  font-weight: 400;
+  font-size: 1.25rem;
+  color: #808080;
+}
+
+.inputWrapper {
+  padding: 1rem;
+  border-top: 1px solid #000000;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  width: 100%;
+}

@@ -21,11 +21,17 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Paths */
-    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "@/*": ["./src/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@features/*": ["./src/features/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@init/*": ["./src/init/*"]
+    },
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src"]
 }

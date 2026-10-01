@@ -1,0 +1,93 @@
+<div class="{{ styles.profilePage }}">
+  
+  <!-- Блок 1: Аватар -->
+  <div class="{{ styles.profileHeader }}">
+    {{#profileAvatar avatarUrl="https://placehold.co/128/grey/grey/png" dataRole="avatar-wrapper"}}{{/profileAvatar}}
+    <h1 class="{{ styles.profileName }}">Иван Иванов</h1>
+  </div>
+
+  <!-- Блок 2: Обычные данные -->
+  <div class="{{ styles.profileData }}" data-role="profile-data-normal">
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Почта:</span>
+      <span class="{{ styles.dataValue }}">user@example.com</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Логин:</span>
+      <span class="{{ styles.dataValue }}">username123</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Имя:</span>
+      <span class="{{ styles.dataValue }}">Иван</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Фамилия:</span>
+      <span class="{{ styles.dataValue }}">Иванов</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Имя в чате:</span>
+      <span class="{{ styles.dataValue }}">ivan_cool</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Телефон:</span>
+      <span class="{{ styles.dataValue }}">+7 (999) 123-45-67</span>
+    </div>
+  </div>
+
+  <!-- Блок 2: Режим изменения данных (скрыт) -->
+  <div class="{{ styles.profileData }} {{ styles.hidden }}" data-role="profile-data-edit">
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Почта:</span>
+      <span class="{{ styles.dataValue }}">user@example.com</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Логин:</span>
+      <span class="{{ styles.dataValue }}">username123</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Имя:</span>
+      <span class="{{ styles.dataValue }}">Иван</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Фамилия:</span>
+      <span class="{{ styles.dataValue }}">Иванов</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Имя в чате:</span>
+      <span class="{{ styles.dataValue }}">ivan_cool</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Телефон:</span>
+      <span class="{{ styles.dataValue }}">+7 (999) 123-45-67</span>
+    </div>
+  </div>
+
+  <!-- Блок 2: Режим изменения пароля (скрыт) -->
+  <div class="{{ styles.profileData }} {{ styles.hidden }}" data-role="profile-data-password">
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Старый пароль:</span>
+      <span class="{{ styles.dataValue }}">••••••</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Новый пароль:</span>
+      <span class="{{ styles.dataValue }}">••••••</span>
+    </div>
+    <div class="{{ styles.dataRow }}">
+      <span class="{{ styles.dataLabel }}">Повторите новый пароль:</span>
+      <span class="{{ styles.dataValue }}">••••••</span>
+    </div>
+  </div>
+
+  <!-- Блок 3: Обычные кнопки -->
+  <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
+    {{#button text="Изменить данные" dataRole="btn-edit-data"}}{{/button}}
+    {{#button text="Изменить пароль" dataRole="btn-edit-password"}}{{/button}}
+    {{#button text="Выйти" dataRole="btn-logout"}}{{/button}}
+  </div>
+
+  <!-- Блок 3: Кнопка сохранить (скрыта) -->
+  <div class="{{ styles.profileActions }} {{ styles.hidden }}" data-role="profile-actions-save">
+    {{#button text="Сохранить" dataRole="btn-save"}}{{/button}}
+  </div>
+
+</div>

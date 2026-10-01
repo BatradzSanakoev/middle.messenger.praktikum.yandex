@@ -1,0 +1,12 @@
+<div class="{{ styles.inputWrapper }}">
+  <input
+    type="{{type}}"
+    name="{{name}}"
+    placeholder="{{placeholder}}"
+    value="{{value}}"
+    class="{{ styles.input }}{{#if error}} {{ styles.inputError }}{{/if}}"
+  />
+  {{#if error}}
+    <span class="{{ styles.error }}">{{error}}</span>
+  {{/if}}
+</div>
