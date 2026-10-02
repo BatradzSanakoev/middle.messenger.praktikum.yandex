@@ -27,12 +27,9 @@ export class ProfilePage {
       });
     }
 
-    // Блоки данных
-    const dataNormal = container.querySelector(
-      '[data-role="profile-data-normal"]',
-    );
-    const dataEdit = container.querySelector('[data-role="profile-data-edit"]');
-    const dataPassword = container.querySelector(
+    // Блок данных
+    const dataBlock = container.querySelector('[data-role="profile-data"]');
+    const passwordBlock = container.querySelector(
       '[data-role="profile-data-password"]',
     );
 
@@ -50,13 +47,16 @@ export class ProfilePage {
       const btnRole = target.getAttribute("data-role");
 
       if (btnRole === "btn-edit-data") {
-        dataNormal!.classList.add(styles.hidden);
-        dataEdit!.classList.remove(styles.hidden);
+        // Разблокируем инпуты
+        dataBlock?.querySelectorAll<HTMLInputElement>('input').forEach(input => {
+          input.disabled = false;
+        });
         actionsNormal!.classList.add(styles.hidden);
         actionsSave!.classList.remove(styles.hidden);
       } else if (btnRole === "btn-edit-password") {
-        dataNormal!.classList.add(styles.hidden);
-        dataPassword!.classList.remove(styles.hidden);
+        // Скрываем блок данных, показываем блок паролей
+        dataBlock!.classList.add(styles.hidden);
+        passwordBlock!.classList.remove(styles.hidden);
         actionsNormal!.classList.add(styles.hidden);
         actionsSave!.classList.remove(styles.hidden);
       }
@@ -68,9 +68,13 @@ export class ProfilePage {
       const btnRole = target.getAttribute("data-role");
 
       if (btnRole === "btn-save") {
-        dataNormal!.classList.remove(styles.hidden);
-        dataEdit!.classList.add(styles.hidden);
-        dataPassword!.classList.add(styles.hidden);
+        // Блокируем инпуты обратно
+        dataBlock?.querySelectorAll<HTMLInputElement>('input').forEach(input => {
+          input.disabled = true;
+        });
+        // Скрываем блок паролей, показываем блок данных
+        passwordBlock!.classList.add(styles.hidden);
+        dataBlock!.classList.remove(styles.hidden);
         actionsNormal!.classList.remove(styles.hidden);
         actionsSave!.classList.add(styles.hidden);
       }

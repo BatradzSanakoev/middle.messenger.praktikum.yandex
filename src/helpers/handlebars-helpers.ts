@@ -43,6 +43,7 @@ Handlebars.registerHelper("input", function (options) {
     placeholder: options.hash.placeholder,
     value: options.hash.value || "",
     error: options.hash.error || "",
+    disabled: options.hash.disabled || false,
     styles: inputStyles,
   });
   return new Handlebars.SafeString(html);
