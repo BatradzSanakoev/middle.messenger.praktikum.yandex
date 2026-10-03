@@ -10,12 +10,12 @@
   font-family: 'Caveat', cursive;
   font-weight: 500;
   font-size: 4rem;
-  color: #000000;
+  color: var(--color-black);
 }
 
 .subtitle {
   font-family: 'Caveat', cursive;
   font-weight: 400;
   font-size: 1.5rem;
-  color: #808080;
+  color: var(--color-gray);
 }

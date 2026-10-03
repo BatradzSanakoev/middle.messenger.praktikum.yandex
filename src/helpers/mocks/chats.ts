@@ -13,6 +13,7 @@ export interface Chat {
   id: number;
   title: string;
   avatarUrl: string;
+  alt: string;
   unreadCount: number;
   lastMessage: LastMessage;
   member: Member;
@@ -23,6 +24,7 @@ export const chats: Chat[] = [
     id: 1,
     title: "Приветственный чат",
     avatarUrl: "https://placehold.co/64/lightgrey/lightgrey/png",
+    alt: "Аватар приветственного чата",
     unreadCount: 2,
     lastMessage: {
       author: "Бот",
@@ -38,6 +40,7 @@ export const chats: Chat[] = [
     id: 2,
     title: "Frontend Crew",
     avatarUrl: "https://placehold.co/64/lightgrey/lightgrey/png",
+    alt: "Аватар чата Frontend Crew",
     unreadCount: 0,
     lastMessage: {
       author: "Катя",
@@ -53,6 +56,7 @@ export const chats: Chat[] = [
     id: 3,
     title: "Frontend Crew",
     avatarUrl: "https://placehold.co/64/lightgrey/lightgrey/png",
+    alt: "Аватар чата Frontend Crew",
     unreadCount: 1,
     lastMessage: {
       author: "Витя",
@@ -68,6 +72,7 @@ export const chats: Chat[] = [
     id: 4,
     title: "Frontend Crew",
     avatarUrl: "https://placehold.co/64/lightgrey/lightgrey/png",
+    alt: "Аватар чата Frontend Crew",
     unreadCount: 3,
     lastMessage: {
       author: "Аня",
@@ -83,6 +88,7 @@ export const chats: Chat[] = [
     id: 5,
     title: "Frontend Crew",
     avatarUrl: "https://placehold.co/64/lightgrey/lightgrey/png",
+    alt: "Аватар чата Frontend Crew",
     unreadCount: 0,
     lastMessage: {
       author: "Лёша",

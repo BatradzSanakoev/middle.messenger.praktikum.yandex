@@ -61,6 +61,7 @@ Handlebars.registerHelper("link", function (options) {
 Handlebars.registerHelper("chatItem", function (chat) {
   const html = chatItemTemplate({
     ...chat,
+    alt: chat.alt || chat.title,
     styles: chatItemStyles,
   });
   return new Handlebars.SafeString(html);
