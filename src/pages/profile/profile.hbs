@@ -10,43 +10,43 @@
   <div class="{{ styles.profileData }}" data-role="profile-data">
     <div class="{{ styles.dataRow }}">
       <label for="email" class="{{ styles.dataLabel }}">Почта:</label>
-      {{#input type="email" name="email" id="email" value="user@example.com" disabled=true}}{{/input}}
+      {{#input type="email" name="email" value="user@example.com" disabled=true}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label for="login" class="{{ styles.dataLabel }}">Логин:</label>
-      {{#input type="text" name="login" id="login" value="username123" disabled=true}}{{/input}}
+      {{#input type="text" name="login" value="username123" disabled=true}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
-      <label for="firstName" class="{{ styles.dataLabel }}">Имя:</label>
-      {{#input type="text" name="firstName" id="firstName" value="Иван" disabled=true}}{{/input}}
+      <label for="first_name" class="{{ styles.dataLabel }}">Имя:</label>
+      {{#input type="text" name="first_name" value="Иван" disabled=true}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
-      <label for="lastName" class="{{ styles.dataLabel }}">Фамилия:</label>
-      {{#input type="text" name="lastName" id="lastName" value="Иванов" disabled=true}}{{/input}}
+      <label for="second_name" class="{{ styles.dataLabel }}">Фамилия:</label>
+      {{#input type="text" name="second_name" value="Иванов" disabled=true}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
-      <label for="displayName" class="{{ styles.dataLabel }}">Имя в чате:</label>
-      {{#input type="text" name="display_name" id="displayName" value="ivan_cool" disabled=true}}{{/input}}
+      <label for="display_name" class="{{ styles.dataLabel }}">Имя в чате:</label>
+      {{#input type="text" name="display_name" value="ivan_cool" disabled=true}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label for="phone" class="{{ styles.dataLabel }}">Телефон:</label>
-      {{#input type="tel" name="phone" id="phone" value="+7 (999) 123-45-67" disabled=true}}{{/input}}
+      {{#input type="tel" name="phone" value="+7 (999) 123-45-67" disabled=true}}{{/input}}
     </div>
   </div>
 
   <!-- Блок 3: Режим изменения пароля (скрыт) -->
   <div class="{{ styles.profileData }} {{ styles.hidden }}" data-role="profile-data-password">
     <div class="{{ styles.dataRow }}">
-      <label for="oldPassword" class="{{ styles.dataLabel }}">Старый пароль:</label>
-      {{#input type="password" name="oldPassword" id="oldPassword" value="••••••"}}{{/input}}
+      <label for="old_password" class="{{ styles.dataLabel }}">Старый пароль:</label>
+      {{#input type="password" name="old_password" value="••••••"}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
-      <label for="newPassword" class="{{ styles.dataLabel }}">Новый пароль:</label>
-      {{#input type="password" name="newPassword" id="newPassword" value="••••••"}}{{/input}}
+      <label for="new_password" class="{{ styles.dataLabel }}">Новый пароль:</label>
+      {{#input type="password" name="new_password" value="••••••"}}{{/input}}
     </div>
     <div class="{{ styles.dataRow }}">
-      <label for="confirmPassword" class="{{ styles.dataLabel }}">Повторите новый пароль:</label>
-      {{#input type="password" name="confirmPassword" id="confirmPassword" value="••••••"}}{{/input}}
+      <label for="confirm_password" class="{{ styles.dataLabel }}">Повторите новый пароль:</label>
+      {{#input type="password" name="confirm_password" value="••••••"}}{{/input}}
     </div>
   </div>
 
