@@ -7,6 +7,7 @@ export class Input {
     options: {
       type?: string;
       name: string;
+      id?: string;
       placeholder: string;
       value?: string;
       error?: string;

@@ -40,6 +40,7 @@ Handlebars.registerHelper("input", function (options) {
   const html = inputTemplate({
     type: options.hash.type || "text",
     name: options.hash.name,
+    id: options.hash.id,
     placeholder: options.hash.placeholder,
     value: options.hash.value || "",
     error: options.hash.error || "",
