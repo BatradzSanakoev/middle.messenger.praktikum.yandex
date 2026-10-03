@@ -1,0 +1,11 @@
+<form class="{{ styles.container }}" action="#" onsubmit="event.preventDefault()">
+  <h1 class="{{ styles.title }}">Вход</h1>
+  <div class="{{ styles.fields }}">
+    {{#input name="login" placeholder="Логин"}}{{/input}}
+    {{#input name="password" placeholder="Пароль" type="password"}}{{/input}}
+  </div>
+  <div class="{{ styles.actions }}">
+    {{#button text="Войти"}}{{/button}}
+    {{#link href="#" text="Зарегистрироваться"}}{{/link}}
+  </div>
+</form>

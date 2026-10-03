@@ -1,0 +1,29 @@
+.fileInputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.fileInput {
+  position: absolute;
+  width: 0.1rem;
+  height: 0.1rem;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.fileInputLabel {
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: 1.125rem;
+  color: var(--color-black);
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--color-black);
+  transition: opacity 0.2s ease;
+}
+
+.fileInputLabel:hover {
+  opacity: 0.8;
+}
