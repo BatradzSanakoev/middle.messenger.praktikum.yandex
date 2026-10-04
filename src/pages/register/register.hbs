@@ -1,0 +1,15 @@
+<form class="{{ styles.container }}" action="#" onsubmit="event.preventDefault()">
+  <h1 class="{{ styles.title }}">Регистрация</h1>
+  <div class="{{ styles.fields }}">
+    {{#input name="first_name" placeholder="Имя"}}{{/input}}
+    {{#input name="second_name" placeholder="Фамилия"}}{{/input}}
+    {{#input name="login" placeholder="Логин"}}{{/input}}
+    {{#input name="email" placeholder="Email"}}{{/input}}
+    {{#input name="password" placeholder="Пароль" type="password"}}{{/input}}
+    {{#input name="phone" placeholder="Телефон"}}{{/input}}
+  </div>
+  <div class="{{ styles.actions }}">
+    {{#button text="Зарегистрироваться"}}{{/button}}
+    {{#link href="#" text="Войти"}}{{/link}}
+  </div>
+</form>

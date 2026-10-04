@@ -1,15 +1,20 @@
 {
   "name": "middle.messenger.praktikum.yandex",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "npm run build && vite",
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "start": "npm run build && npm run preview"
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "@poliklot/prettier-plugin-handlebars": "^0.4.1",
+    "@types/handlebars": "^4.0.40",
     "@types/node": "^26.6.2",
     "autoprefixer": "^10.6.1",
     "postcss": "^8.5.28",
@@ -17,8 +22,10 @@
     "postcss-modules": "^9.0.1",
     "postcss-nested": "^8.0.1",
     "postcss-preset-env": "^11.5.4",
+    "prettier": "^3.9.9",
     "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vite-plugin-handlebars": "^2.0.3"
   },
   "dependencies": {
     "dotenv": "^18.0.3",

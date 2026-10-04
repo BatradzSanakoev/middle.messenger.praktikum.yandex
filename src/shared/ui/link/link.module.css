@@ -1,0 +1,17 @@
+.linkWrapper {
+  display: inline-block;
+}
+
+.link {
+  display: inline-block;
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: var(--color-black);
+  transition: opacity 0.2s ease;
+}
+
+.link:hover {
+  opacity: 0.8;
+}

@@ -1,0 +1,22 @@
+<div class="{{ styles.page }}">
+  <aside class="{{ styles.sidebar }}">
+    <div class="{{ styles.sidebarTitle }}">Чаты</div>
+    <ul class="{{ styles.chatList }}">
+      {{#each chats}}
+        {{#chatItem this}}
+        {{/chatItem}}
+      {{/each}}
+    </ul>
+  </aside>
+  <div class="{{ styles.main }}">
+    <div class="{{ styles.emptyState }}">
+      <p class="{{ styles.emptyText }}">Выберите чат, чтобы отправить сообщение</p>
+    </div>
+    <div class="{{ styles.inputWrapper }}">
+      <div class="{{ styles.inputContainer }}">
+        {{#input name="message" placeholder="Сообщение"}}{{/input}}
+        {{#button text="Отправить"}}{{/button}}
+      </div>
+    </div>
+  </div>
+</div>
