@@ -1,19 +1,19 @@
-import Handlebars from "handlebars";
-import {
-  buttonTemplate,
-  buttonStyles,
-  inputTemplate,
-  inputStyles,
-  linkTemplate,
-  linkStyles,
-  chatItemTemplate,
-  chatItemStyles,
-  profileAvatarTemplate,
-  profileAvatarStyles,
-  modalTemplate,
-  modalStyles,
-} from "@shared/ui";
 import type { Chat } from "@helpers/mocks/chats";
+import {
+  buttonStyles,
+  buttonTemplate,
+  chatItemStyles,
+  chatItemTemplate,
+  inputStyles,
+  inputTemplate,
+  linkStyles,
+  linkTemplate,
+  modalStyles,
+  modalTemplate,
+  profileAvatarStyles,
+  profileAvatarTemplate,
+} from "@shared/ui";
+import Handlebars from "handlebars";
 
 Handlebars.registerHelper("lessThan", (a: number, b: number) => Number(a) < Number(b));
 Handlebars.registerHelper("moreThan", (a: number, b: number) => Number(a) > Number(b));

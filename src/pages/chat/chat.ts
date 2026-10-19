@@ -1,7 +1,7 @@
-import templateRaw from "./chat.hbs?raw";
 import Handlebars from "handlebars";
-import styles from "./chat.module.css";
 import { chats } from "../../helpers/mocks/chats";
+import templateRaw from "./chat.hbs?raw";
+import styles from "./chat.module.css";
 
 const template = Handlebars.compile(templateRaw);
 

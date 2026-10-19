@@ -26,6 +26,7 @@ dist-ssr
 AGENTS.md
 CHANGES_1.md
 CHANGES_2.md
+PLAN.md
 
 # Vite CSS modules
 *.module.css.json

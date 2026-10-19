@@ -1,5 +1,5 @@
-import templateRaw from "./404.hbs?raw";
 import Handlebars from "handlebars";
+import templateRaw from "./404.hbs?raw";
 import styles from "./404.module.css";
 
 const template = Handlebars.compile(templateRaw);

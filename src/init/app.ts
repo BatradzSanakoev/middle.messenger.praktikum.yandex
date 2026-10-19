@@ -1,12 +1,12 @@
-import styles from "./app.module.css";
 import {
-  LoginPage,
-  RegisterPage,
   ChatPage,
-  ProfilePage,
   Error404Page,
   Error500Page,
+  LoginPage,
+  ProfilePage,
+  RegisterPage,
 } from "../pages";
+import styles from "./app.module.css";
 
 type PageComponent = new () => { render: (container: HTMLElement) => void };
 

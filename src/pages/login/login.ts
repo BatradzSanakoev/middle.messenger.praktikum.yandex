@@ -1,5 +1,5 @@
-import templateRaw from "./login.hbs?raw";
 import Handlebars from "handlebars";
+import templateRaw from "./login.hbs?raw";
 import styles from "./login.module.css";
 
 const template = Handlebars.compile(templateRaw);

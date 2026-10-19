@@ -1,7 +1,7 @@
-import templateRaw from "./profile-modal.hbs?raw";
-import Handlebars from "handlebars";
-import styles from "./profile-modal.module.css";
 import { Modal } from "@shared/ui/modal";
+import Handlebars from "handlebars";
+import templateRaw from "./profile-modal.hbs?raw";
+import styles from "./profile-modal.module.css";
 
 const template = Handlebars.compile(templateRaw);
 

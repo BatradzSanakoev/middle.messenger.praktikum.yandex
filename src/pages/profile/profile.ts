@@ -1,5 +1,5 @@
-import templateRaw from "./profile.hbs?raw";
 import Handlebars from "handlebars";
+import templateRaw from "./profile.hbs?raw";
 import styles from "./profile.module.css";
 import { ProfileModal } from "./profile-modal";
 

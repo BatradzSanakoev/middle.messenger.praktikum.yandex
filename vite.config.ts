@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
 import dotenv from "dotenv";
 import path from "path";
+import { defineConfig } from "vite";
 
 dotenv.config();
 

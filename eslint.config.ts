@@ -1,10 +1,10 @@
+import css from "@eslint/css";
 import js from "@eslint/js";
+import json from "@eslint/json";
+import { defineConfig } from "eslint/config";
+import eslintConfigPrettier from "eslint-config-prettier";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import json from "@eslint/json";
-import css from "@eslint/css";
-import eslintConfigPrettier from "eslint-config-prettier";
-import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
