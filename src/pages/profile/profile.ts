@@ -48,9 +48,11 @@ export class ProfilePage {
 
       if (btnRole === "btn-edit-data") {
         // Разблокируем инпуты
-        dataBlock?.querySelectorAll<HTMLInputElement>('input').forEach(input => {
-          input.disabled = false;
-        });
+        dataBlock
+          ?.querySelectorAll<HTMLInputElement>("input")
+          .forEach((input) => {
+            input.disabled = false;
+          });
         actionsNormal!.classList.add(styles.hidden);
         actionsSave!.classList.remove(styles.hidden);
       } else if (btnRole === "btn-edit-password") {
@@ -69,9 +71,11 @@ export class ProfilePage {
 
       if (btnRole === "btn-save") {
         // Блокируем инпуты обратно
-        dataBlock?.querySelectorAll<HTMLInputElement>('input').forEach(input => {
-          input.disabled = true;
-        });
+        dataBlock
+          ?.querySelectorAll<HTMLInputElement>("input")
+          .forEach((input) => {
+            input.disabled = true;
+          });
         // Скрываем блок паролей, показываем блок данных
         passwordBlock!.classList.add(styles.hidden);
         dataBlock!.classList.remove(styles.hidden);

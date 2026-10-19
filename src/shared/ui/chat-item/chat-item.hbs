@@ -9,7 +9,9 @@
       <span class="{{ styles.author }}">{{ lastMessage.author }}:</span>
       <span class="{{ styles.lastText }}">{{ lastMessage.text }}</span>
       {{#if unreadCount}}
-        <span class="{{ styles.badge }}">{{ unreadCount }}</span>
+        <span class="{{ styles.badge }}">
+          {{ unreadCount }}
+        </span>
       {{/if}}
     </div>
   </div>

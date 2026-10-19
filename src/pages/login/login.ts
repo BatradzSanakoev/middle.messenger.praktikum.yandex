@@ -1,6 +1,6 @@
-import templateRaw from './login.hbs?raw';
-import Handlebars from 'handlebars';
-import styles from './login.module.css';
+import templateRaw from "./login.hbs?raw";
+import Handlebars from "handlebars";
+import styles from "./login.module.css";
 
 const template = Handlebars.compile(templateRaw);
 

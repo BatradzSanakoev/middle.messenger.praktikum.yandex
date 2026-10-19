@@ -1,7 +1,6 @@
 {
-  "plugins": [
-    "@poliklot/prettier-plugin-handlebars"
-  ],
+  "semi": true,
+  "plugins": ["@poliklot/prettier-plugin-handlebars"],
   "overrides": [
     {
       "files": "*.hbs",
