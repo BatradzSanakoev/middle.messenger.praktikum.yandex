@@ -24,7 +24,8 @@ dist-ssr
 *.sw?
 
 AGENTS.md
-CHANGES.md
+CHANGES_1.md
+CHANGES_2.md
 
 # Vite CSS modules
 *.module.css.json

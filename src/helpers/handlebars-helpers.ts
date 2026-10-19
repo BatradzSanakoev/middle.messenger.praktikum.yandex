@@ -13,19 +13,11 @@ import {
   modalTemplate,
   modalStyles,
 } from "@shared/ui";
+import type { Chat } from "@helpers/mocks/chats";
 
-Handlebars.registerHelper(
-  "lessThan",
-  (a: number, b: number) => Number(a) < Number(b),
-);
-Handlebars.registerHelper(
-  "moreThan",
-  (a: number, b: number) => Number(a) > Number(b),
-);
-Handlebars.registerHelper(
-  "subtract",
-  (a: number, b: number) => Number(a) - Number(b),
-);
+Handlebars.registerHelper("lessThan", (a: number, b: number) => Number(a) < Number(b));
+Handlebars.registerHelper("moreThan", (a: number, b: number) => Number(a) > Number(b));
+Handlebars.registerHelper("subtract", (a: number, b: number) => Number(a) - Number(b));
 
 Handlebars.registerHelper("button", function (options) {
   const html = buttonTemplate({
@@ -71,7 +63,7 @@ Handlebars.registerHelper("chatItem", function (chat) {
 Handlebars.registerHelper("chatList", function (options) {
   const chats = options.hash.chats || [];
   let html = "";
-  chats.forEach((chat: any) => {
+  chats.forEach((chat: Chat) => {
     html += chatItemTemplate({
       ...chat,
       styles: chatItemStyles,

@@ -11,7 +11,7 @@ export class Input {
       placeholder: string;
       value?: string;
       error?: string;
-    },
+    }
   ) {
     const html = inputTemplate({
       ...options,

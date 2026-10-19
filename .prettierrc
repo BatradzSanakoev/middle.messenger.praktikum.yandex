@@ -1,7 +1,10 @@
 {
-  "plugins": [
-    "@poliklot/prettier-plugin-handlebars"
-  ],
+  "semi": true,
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "printWidth": 100,
+  "singleQuote": false,
+  "plugins": ["@poliklot/prettier-plugin-handlebars"],
   "overrides": [
     {
       "files": "*.hbs",

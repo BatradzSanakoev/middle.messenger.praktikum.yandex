@@ -15,9 +15,7 @@ export class ProfilePage {
     container.appendChild(fragment);
 
     // Аватар
-    const avatarWrapper = container.querySelector(
-      '[data-role="avatar-wrapper"]',
-    );
+    const avatarWrapper = container.querySelector('[data-role="avatar-wrapper"]');
     if (avatarWrapper) {
       avatarWrapper.addEventListener("click", () => {
         if (!this.modal) {
@@ -29,17 +27,11 @@ export class ProfilePage {
 
     // Блок данных
     const dataBlock = container.querySelector('[data-role="profile-data"]');
-    const passwordBlock = container.querySelector(
-      '[data-role="profile-data-password"]',
-    );
+    const passwordBlock = container.querySelector('[data-role="profile-data-password"]');
 
     // Блоки кнопок
-    const actionsNormal = container.querySelector(
-      '[data-role="profile-actions-normal"]',
-    );
-    const actionsSave = container.querySelector(
-      '[data-role="profile-actions-save"]',
-    );
+    const actionsNormal = container.querySelector('[data-role="profile-actions-normal"]');
+    const actionsSave = container.querySelector('[data-role="profile-actions-save"]');
 
     // Обработчик для обычных кнопок
     actionsNormal?.addEventListener("click", (e) => {
@@ -48,7 +40,7 @@ export class ProfilePage {
 
       if (btnRole === "btn-edit-data") {
         // Разблокируем инпуты
-        dataBlock?.querySelectorAll<HTMLInputElement>('input').forEach(input => {
+        dataBlock?.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
           input.disabled = false;
         });
         actionsNormal!.classList.add(styles.hidden);
@@ -69,7 +61,7 @@ export class ProfilePage {
 
       if (btnRole === "btn-save") {
         // Блокируем инпуты обратно
-        dataBlock?.querySelectorAll<HTMLInputElement>('input').forEach(input => {
+        dataBlock?.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
           input.disabled = true;
         });
         // Скрываем блок паролей, показываем блок данных

@@ -7,7 +7,7 @@ export class Link {
     options: {
       href: string;
       text: string;
-    },
+    }
   ) {
     const html = linkTemplate({
       ...options,
