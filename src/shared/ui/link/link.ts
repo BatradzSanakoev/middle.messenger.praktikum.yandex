@@ -1,20 +1,22 @@
-import { linkStyles } from ".";
-import { linkTemplate } from "./link.template";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
+import linkStyles from "./link.module.css";
 
-export class Link {
-  constructor(
-    container: HTMLElement,
-    options: {
-      href: string;
-      text: string;
-    }
-  ) {
-    const html = linkTemplate({
-      ...options,
-      styles: linkStyles,
-    });
+interface LinkProps extends BlockOwnProps {
+  href: string;
+  text: string;
+  styles: typeof linkStyles;
+}
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+export class Link extends Block<LinkProps> {
+  static componentName = "Link";
+
+  protected template = `
+    <div class="{{ styles.linkWrapper }}">
+      <a class="{{ styles.link }}" href="{{ href }}">{{ text }}</a>
+    </div>
+  `;
+
+  constructor(props: LinkProps) {
+    super({ ...props, styles: linkStyles });
   }
 }

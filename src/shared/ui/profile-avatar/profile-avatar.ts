@@ -1,18 +1,24 @@
-import { profileAvatarStyles } from ".";
-import { profileAvatarTemplate } from "./profile-avatar.template";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
+import profileAvatarStyles from "./profile-avatar.module.css";
 
-export interface ProfileAvatarData {
+export interface ProfileAvatarData extends BlockOwnProps {
   avatarUrl: string;
+  styles: typeof profileAvatarStyles;
 }
 
-export class ProfileAvatar {
-  constructor(container: HTMLElement, data: ProfileAvatarData) {
-    const html = profileAvatarTemplate({
-      ...data,
-      styles: profileAvatarStyles,
-    });
+export class ProfileAvatar extends Block<ProfileAvatarData> {
+  static componentName = "ProfileAvatar";
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+  protected template = `
+    <div class="{{ styles.avatarWrapper }}" data-role="avatar-wrapper">
+      <img class="{{ styles.avatar }}" src="{{ avatarUrl }}" alt="Аватар" />
+      <div class="{{ styles.avatarOverlay }}">
+        <span class="{{ styles.overlayText }}">Поменять аватар</span>
+      </div>
+    </div>
+  `;
+
+  constructor(props: ProfileAvatarData) {
+    super({ ...props, styles: profileAvatarStyles });
   }
 }

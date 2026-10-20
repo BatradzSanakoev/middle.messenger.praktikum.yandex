@@ -6,8 +6,7 @@
 
   <!-- Блок 1: Аватар -->
   <div class="{{ styles.profileHeader }}">
-    {{#profileAvatar avatarUrl="https://placehold.co/128/grey/grey/png" dataRole="avatar-wrapper"}}
-    {{/profileAvatar}}
+    {{{ProfileAvatar avatarUrl="https://placehold.co/128/grey/grey/png"}}}
     <h1 class="{{ styles.profileName }}">Иван Иванов</h1>
   </div>
 
@@ -15,33 +14,27 @@
   <div class="{{ styles.profileData }}" data-role="profile-data">
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="email">Почта:</label>
-      {{#input type="email" name="email" id="email" value="user@example.com" disabled=true}}
-      {{/input}}
+      {{{Input type="email" name="email" id="email" value="user@example.com" disabled=true}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="login">Логин:</label>
-      {{#input type="text" name="login" id="login" value="username123" disabled=true}}
-      {{/input}}
+      {{{Input type="text" name="login" id="login" value="username123" disabled=true}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="first_name">Имя:</label>
-      {{#input type="text" name="first_name" id="first_name" value="Иван" disabled=true}}
-      {{/input}}
+      {{{Input type="text" name="first_name" id="first_name" value="Иван" disabled=true}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="second_name">Фамилия:</label>
-      {{#input type="text" name="second_name" id="second_name" value="Иванов" disabled=true}}
-      {{/input}}
+      {{{Input type="text" name="second_name" id="second_name" value="Иванов" disabled=true}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="display_name">Имя в чате:</label>
-      {{#input type="text" name="display_name" id="display_name" value="ivan_cool" disabled=true}}
-      {{/input}}
+      {{{Input type="text" name="display_name" id="display_name" value="ivan_cool" disabled=true}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="phone">Телефон:</label>
-      {{#input type="tel" name="phone" id="phone" value="+7 (999) 123-45-67" disabled=true}}
-      {{/input}}
+      {{{Input type="tel" name="phone" id="phone" value="+7 (999) 123-45-67" disabled=true}}}
     </div>
   </div>
 
@@ -49,35 +42,28 @@
   <div class="{{ styles.profileData }} {{ styles.hidden }}" data-role="profile-data-password">
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="old_password">Старый пароль:</label>
-      {{#input type="password" name="old_password" id="old_password" value="••••••"}}
-      {{/input}}
+      {{{Input type="password" name="old_password" id="old_password" value="••••••"}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="new_password">Новый пароль:</label>
-      {{#input type="password" name="new_password" id="new_password" value="••••••"}}
-      {{/input}}
+      {{{Input type="password" name="new_password" id="new_password" value="••••••"}}}
     </div>
     <div class="{{ styles.dataRow }}">
       <label class="{{ styles.dataLabel }}" for="confirm_password">Повторите новый пароль:</label>
-      {{#input type="password" name="confirm_password" id="confirm_password" value="••••••"}}
-      {{/input}}
+      {{{Input type="password" name="confirm_password" id="confirm_password" value="••••••"}}}
     </div>
   </div>
 
   <!-- Блок 4: Обычные кнопки -->
   <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
-    {{#button text="Изменить данные" dataRole="btn-edit-data"}}
-    {{/button}}
-    {{#button text="Изменить пароль" dataRole="btn-edit-password"}}
-    {{/button}}
-    {{#button text="Выйти" dataRole="btn-logout"}}
-    {{/button}}
+    {{{Button text="Изменить данные" dataRole="btn-edit-data"}}}
+    {{{Button text="Изменить пароль" dataRole="btn-edit-password"}}}
+    {{{Button text="Выйти" dataRole="btn-logout"}}}
   </div>
 
   <!-- Блок 5: Кнопка сохранения (скрыта) -->
   <div class="{{ styles.profileActions }} {{ styles.hidden }}" data-role="profile-actions-save">
-    {{#button text="Сохранить" dataRole="btn-save"}}
-    {{/button}}
+    {{{Button text="Сохранить" dataRole="btn-save"}}}
   </div>
 
 </form>

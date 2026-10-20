@@ -1,11 +1,22 @@
-import { buttonStyles } from ".";
-import { buttonTemplate } from "./button.template";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
+import buttonStyles from "./button.module.css";
 
-export class Button {
-  constructor(container: HTMLElement, options: { text: string }) {
-    const html = buttonTemplate({ text: options.text, styles: buttonStyles });
+interface ButtonProps extends BlockOwnProps {
+  text: string;
+  dataRole?: string;
+  styles: typeof buttonStyles;
+}
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+export class Button extends Block<ButtonProps> {
+  static componentName = "Button";
+
+  protected template = `
+    <button class="{{ styles.button }}" {{#if dataRole}}data-role="{{ dataRole }}"{{/if}}>
+      {{ text }}
+    </button>
+  `;
+
+  constructor(props: ButtonProps) {
+    super({ ...props, styles: buttonStyles });
   }
 }

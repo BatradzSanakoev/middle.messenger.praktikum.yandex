@@ -1,45 +1,52 @@
-import { modalStyles } from ".";
-import { modalTemplate } from "./modal.template";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
+import modalStyles from "./modal.module.css";
 
-export interface ModalOptions {
+export interface ModalOptions extends BlockOwnProps {
   title: string;
   body: string;
   buttonText: string;
   onClose?: () => void;
+  styles: typeof modalStyles;
 }
 
-export class Modal {
-  private overlay: HTMLElement | null = null;
-  private options: ModalOptions;
+export class Modal extends Block<ModalOptions> {
+  static componentName = "Modal";
 
-  constructor(options: ModalOptions) {
-    this.options = options;
+  protected template = `
+    <div class="{{ styles.modalOverlay }}">
+      <div class="{{ styles.modalContent }}">
+        <h2 class="{{ styles.modalTitle }}">{{ title }}</h2>
+        <div class="{{ styles.modalBody }}">{{{ body }}}</div>
+        {{{ Button text=buttonText }}}
+      </div>
+    </div>
+  `;
+
+  private overlay: HTMLElement | null = null;
+
+  constructor(props: ModalOptions) {
+    super({ ...props, styles: modalStyles });
   }
 
   show() {
-    const html = modalTemplate({
-      title: this.options.title,
-      buttonText: this.options.buttonText,
-      body: this.options.body,
-      styles: modalStyles,
-    });
+    const element = this.element();
+    if (element) {
+      this.overlay = element as HTMLElement;
+      document.body.appendChild(this.overlay);
 
-    const fragment = document.createRange().createContextualFragment(html);
-    this.overlay = fragment.firstElementChild as HTMLElement;
-    document.body.appendChild(this.overlay);
-
-    this.overlay.addEventListener("click", (e) => {
-      if (e.target === this.overlay) {
-        this.close();
-      }
-    });
+      this.overlay.addEventListener("click", (e) => {
+        if (e.target === this.overlay) {
+          this.close();
+        }
+      });
+    }
   }
 
   close() {
     if (this.overlay) {
       document.body.removeChild(this.overlay);
       this.overlay = null;
-      this.options.onClose?.();
+      (this.props as ModalOptions).onClose?.();
     }
   }
 }

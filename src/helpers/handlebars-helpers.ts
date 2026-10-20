@@ -1,91 +1,30 @@
 import type { Chat } from "@helpers/mocks/chats";
-import {
-  buttonStyles,
-  buttonTemplate,
-  chatItemStyles,
-  chatItemTemplate,
-  inputStyles,
-  inputTemplate,
-  linkStyles,
-  linkTemplate,
-  modalStyles,
-  modalTemplate,
-  profileAvatarStyles,
-  profileAvatarTemplate,
-} from "@shared/ui";
+import { Input } from "@shared/ui/input";
+import { Button } from "@shared/ui/button";
+import { Link } from "@shared/ui/link";
+import { ChatItem } from "@shared/ui/chat-item";
+import { ProfileAvatar } from "@shared/ui/profile-avatar";
+import { Modal } from "@shared/ui/modal";
+import { registerComponent } from "@shared/ui/block";
 import Handlebars from "handlebars";
 
 Handlebars.registerHelper("lessThan", (a: number, b: number) => Number(a) < Number(b));
 Handlebars.registerHelper("moreThan", (a: number, b: number) => Number(a) > Number(b));
 Handlebars.registerHelper("subtract", (a: number, b: number) => Number(a) - Number(b));
 
-Handlebars.registerHelper("button", function (options) {
-  const html = buttonTemplate({
-    text: options.hash.text,
-    dataRole: options.hash.dataRole,
-    styles: buttonStyles,
-  });
-  return new Handlebars.SafeString(html);
-});
-
-Handlebars.registerHelper("input", function (options) {
-  const html = inputTemplate({
-    type: options.hash.type || "text",
-    name: options.hash.name,
-    id: options.hash.id,
-    placeholder: options.hash.placeholder,
-    value: options.hash.value || "",
-    error: options.hash.error || "",
-    disabled: options.hash.disabled || false,
-    styles: inputStyles,
-  });
-  return new Handlebars.SafeString(html);
-});
-
-Handlebars.registerHelper("link", function (options) {
-  const html = linkTemplate({
-    href: options.hash.href,
-    text: options.hash.text,
-    styles: linkStyles,
-  });
-  return new Handlebars.SafeString(html);
-});
-
-Handlebars.registerHelper("chatItem", function (chat) {
-  const html = chatItemTemplate({
-    ...chat,
-    alt: chat.alt || chat.title,
-    styles: chatItemStyles,
-  });
-  return new Handlebars.SafeString(html);
-});
+// Регистрация компонентов через registerComponent
+registerComponent("Input", Input);
+registerComponent("Button", Button);
+registerComponent("Link", Link);
+registerComponent("ChatItem", ChatItem);
+registerComponent("ProfileAvatar", ProfileAvatar);
+registerComponent("Modal", Modal);
 
 Handlebars.registerHelper("chatList", function (options) {
   const chats = options.hash.chats || [];
   let html = "";
-  chats.forEach((chat: Chat) => {
-    html += chatItemTemplate({
-      ...chat,
-      styles: chatItemStyles,
-    });
-  });
-  return new Handlebars.SafeString(html);
-});
-
-Handlebars.registerHelper("profileAvatar", function (options) {
-  const html = profileAvatarTemplate({
-    avatarUrl: options.hash.avatarUrl,
-    styles: profileAvatarStyles,
-  });
-  return new Handlebars.SafeString(html);
-});
-
-Handlebars.registerHelper("modal", function (options) {
-  const html = modalTemplate({
-    title: options.hash.title,
-    buttonText: options.hash.buttonText,
-    body: options.hash.body || "",
-    styles: modalStyles,
+  chats.forEach((_chat: Chat, index: number) => {
+    html += `<div data-component-hbs-id="chatList-placeholder-${index}"></div>`;
   });
   return new Handlebars.SafeString(html);
 });

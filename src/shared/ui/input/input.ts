@@ -1,25 +1,49 @@
-import { inputStyles } from ".";
-import { inputTemplate } from "./input.template";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
+import inputStyles from "./input.module.css";
 
-export class Input {
-  constructor(
-    container: HTMLElement,
-    options: {
-      type?: string;
-      name: string;
-      id?: string;
-      placeholder: string;
-      value?: string;
-      error?: string;
-    }
-  ) {
-    const html = inputTemplate({
-      ...options,
-      styles: inputStyles,
-      type: options.type || "text",
-    });
+interface InputProps extends BlockOwnProps {
+  type?: string;
+  name: string;
+  id?: string;
+  placeholder: string;
+  value?: string;
+  disabled?: boolean;
+  error?: string;
+  styles: typeof inputStyles;
+}
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+export class Input extends Block<InputProps> {
+  static componentName = "Input";
+
+  protected template = `
+    <div class="{{ styles.inputWrapper }}">
+      <input
+        type="{{ type }}"
+        name="{{ name }}"
+        {{#if id}}
+          id="{{ id }}"
+        {{/if}}
+        placeholder="{{ placeholder }}"
+        value="{{ value }}"
+        {{#if disabled}}
+          disabled
+        {{/if}}
+        class="
+          {{ styles.input }}
+          {{#if error}}
+            {{ styles.inputError }}
+          {{/if}}
+        "
+      />
+      {{#if error}}
+        <span class="{{ styles.error }}">
+          {{ error }}
+        </span>
+      {{/if}}
+    </div>
+  `;
+
+  constructor(props: InputProps) {
+    super({ ...props, styles: inputStyles });
   }
 }

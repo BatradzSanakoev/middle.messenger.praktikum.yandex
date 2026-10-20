@@ -1,12 +1,12 @@
 export { Button } from "./button";
-export { buttonStyles, buttonTemplate } from "./button";
+export { buttonStyles } from "./button";
 export { ChatItem } from "./chat-item";
-export { chatItemStyles, chatItemTemplate } from "./chat-item";
+export { chatItemStyles } from "./chat-item";
 export { Input } from "./input";
-export { inputStyles, inputTemplate } from "./input";
+export { inputStyles } from "./input";
 export { Link } from "./link";
-export { linkStyles, linkTemplate } from "./link";
+export { linkStyles } from "./link";
 export { Modal } from "./modal";
-export { modalStyles, modalTemplate } from "./modal";
+export { modalStyles } from "./modal";
 export { ProfileAvatar } from "./profile-avatar";
-export { profileAvatarStyles, profileAvatarTemplate } from "./profile-avatar";
+export { profileAvatarStyles } from "./profile-avatar";

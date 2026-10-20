@@ -15,6 +15,7 @@ export class ProfileModal {
       title: "Загрузите файл",
       body: bodyHtml,
       buttonText: "Поменять",
+      styles,
     });
 
     this.modal.show();
