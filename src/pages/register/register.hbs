@@ -1,12 +1,12 @@
 <form class="{{ styles.container }}" action="#" onsubmit="event.preventDefault()">
   <h1 class="{{ styles.title }}">Регистрация</h1>
   <div class="{{ styles.fields }}">
-    {{{Input name="first_name" placeholder="Имя"}}}
-    {{{Input name="second_name" placeholder="Фамилия"}}}
-    {{{Input name="login" placeholder="Логин"}}}
-    {{{Input name="email" placeholder="Email"}}}
-    {{{Input name="password" placeholder="Пароль" type="password"}}}
-    {{{Input name="phone" placeholder="Телефон"}}}
+    {{{Input name="first_name" placeholder="Имя" validationKey="first_name"}}}
+    {{{Input name="second_name" placeholder="Фамилия" validationKey="second_name"}}}
+    {{{Input name="login" placeholder="Логин" validationKey="login"}}}
+    {{{Input name="email" placeholder="Email" validationKey="email"}}}
+    {{{Input name="password" placeholder="Пароль" type="password" validationKey="password"}}}
+    {{{Input name="phone" placeholder="Телефон" validationKey="phone"}}}
   </div>
   <div class="{{ styles.actions }}">
     {{{Button text="Зарегистрироваться"}}}

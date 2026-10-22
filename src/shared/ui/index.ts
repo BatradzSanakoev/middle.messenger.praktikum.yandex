@@ -1,7 +1,7 @@
 export { Button } from "./button";
 export { buttonStyles } from "./button";
-export { ChatItem } from "./chat-item";
-export { chatItemStyles } from "./chat-item";
+export { ChatList } from "./chat-list";
+export { chatListStyles } from "./chat-list";
 export { Input } from "./input";
 export { inputStyles } from "./input";
 export { Link } from "./link";

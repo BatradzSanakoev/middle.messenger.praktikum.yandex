@@ -1,21 +1,35 @@
-import Handlebars from "handlebars";
-import templateRaw from "./profile.hbs?raw";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
 import styles from "./profile.module.css";
+import template from "./profile.hbs?raw";
 import { ProfileModal } from "./profile-modal";
 
-const template = Handlebars.compile(templateRaw);
+interface ProfileProps extends BlockOwnProps {
+  styles: typeof styles;
+}
 
-export class ProfilePage {
+export class ProfilePage extends Block<ProfileProps> {
+  static componentName = "ProfilePage";
+
+  protected template = template;
+
   private modal: ProfileModal | null = null;
 
-  render(container: HTMLElement) {
-    const html = template({ styles });
+  constructor() {
+    super({ styles });
+    this.events = {
+      click: (e: Event) => {
+        const target = e.target as HTMLElement;
+        const role = target.getAttribute("data-role");
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+        if (role === "btn-edit-data") this.enableEditData();
+        if (role === "btn-edit-password") this.showPasswordForm();
+        if (role === "btn-save") this.saveData();
+      },
+    };
+  }
 
-    // Аватар
-    const avatarWrapper = container.querySelector('[data-role="avatar-wrapper"]');
+  protected componentDidMount(): void {
+    const avatarWrapper = this.element()?.querySelector('[data-role="avatar-wrapper"]');
     if (avatarWrapper) {
       avatarWrapper.addEventListener("click", () => {
         if (!this.modal) {
@@ -24,52 +38,48 @@ export class ProfilePage {
         this.modal.show();
       });
     }
+  }
 
-    // Блок данных
-    const dataBlock = container.querySelector('[data-role="profile-data"]');
-    const passwordBlock = container.querySelector('[data-role="profile-data-password"]');
+  private enableEditData(): void {
+    const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
+    const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
+    const actionsSave = this.element()?.querySelector('[data-role="profile-actions-save"]');
 
-    // Блоки кнопок
-    const actionsNormal = container.querySelector('[data-role="profile-actions-normal"]');
-    const actionsSave = container.querySelector('[data-role="profile-actions-save"]');
+    if (dataBlock) {
+      dataBlock.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
+        input.disabled = false;
+      });
+    }
+    if (actionsNormal) actionsNormal.classList.add(styles.hidden);
+    if (actionsSave) actionsSave.classList.remove(styles.hidden);
+  }
 
-    // Обработчик для обычных кнопок
-    actionsNormal?.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
-      const btnRole = target.getAttribute("data-role");
+  private showPasswordForm(): void {
+    const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
+    const passwordBlock = this.element()?.querySelector('[data-role="profile-data-password"]');
+    const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
+    const actionsSave = this.element()?.querySelector('[data-role="profile-actions-save"]');
 
-      if (btnRole === "btn-edit-data") {
-        // Разблокируем инпуты
-        dataBlock?.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
-          input.disabled = false;
-        });
-        actionsNormal!.classList.add(styles.hidden);
-        actionsSave!.classList.remove(styles.hidden);
-      } else if (btnRole === "btn-edit-password") {
-        // Скрываем блок данных, показываем блок паролей
-        dataBlock!.classList.add(styles.hidden);
-        passwordBlock!.classList.remove(styles.hidden);
-        actionsNormal!.classList.add(styles.hidden);
-        actionsSave!.classList.remove(styles.hidden);
-      }
-    });
+    if (dataBlock) dataBlock.classList.add(styles.hidden);
+    if (passwordBlock) passwordBlock.classList.remove(styles.hidden);
+    if (actionsNormal) actionsNormal.classList.add(styles.hidden);
+    if (actionsSave) actionsSave.classList.remove(styles.hidden);
+  }
 
-    // Обработчик для кнопки сохранить
-    actionsSave?.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
-      const btnRole = target.getAttribute("data-role");
+  private saveData(): void {
+    const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
+    const passwordBlock = this.element()?.querySelector('[data-role="profile-data-password"]');
+    const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
+    const actionsSave = this.element()?.querySelector('[data-role="profile-actions-save"]');
 
-      if (btnRole === "btn-save") {
-        // Блокируем инпуты обратно
-        dataBlock?.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
-          input.disabled = true;
-        });
-        // Скрываем блок паролей, показываем блок данных
-        passwordBlock!.classList.add(styles.hidden);
-        dataBlock!.classList.remove(styles.hidden);
-        actionsNormal!.classList.remove(styles.hidden);
-        actionsSave!.classList.add(styles.hidden);
-      }
-    });
+    if (dataBlock) {
+      dataBlock.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
+        input.disabled = true;
+      });
+    }
+    if (passwordBlock) passwordBlock.classList.add(styles.hidden);
+    if (dataBlock) dataBlock.classList.remove(styles.hidden);
+    if (actionsNormal) actionsNormal.classList.remove(styles.hidden);
+    if (actionsSave) actionsSave.classList.add(styles.hidden);
   }
 }

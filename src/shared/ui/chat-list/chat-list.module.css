@@ -1,11 +1,20 @@
+.chatList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+  gap: 0.5rem;
+}
+
 .chatItem {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
   width: 100%;
+  list-style: none;
+  padding: 1rem;
 }
 
 .chatItem:hover {

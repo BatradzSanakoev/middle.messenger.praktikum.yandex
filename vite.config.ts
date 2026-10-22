@@ -16,6 +16,7 @@ export default defineConfig({
       "@init": path.resolve(import.meta.dirname, "./src/init"),
     },
   },
+  assetsInclude: ["**/*.hbs"],
   server: {
     open: true,
     port: Number(process.env.PORT) || 3000,

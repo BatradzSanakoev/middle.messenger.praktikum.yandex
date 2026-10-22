@@ -23,10 +23,10 @@ export function registerComponent<T extends BlockOwnProps>(
   Component: new (props: T) => Block<T>
 ) {
   Handlebars.registerHelper(componentName, function (this: unknown, { hash, data }: HelperOptions) {
+    const component = new Component(hash as T);
+
     // Уникальный data-атрибут для поиска заглушки при embed
     const dataAttribute = `data-component-hbs-id="${++uniqueId}"`;
-    // Создаём экземпляр компонента с переданными свойствами
-    const component = new Component(hash as T);
 
     // Если передан ref — сохраняем ссылку на DOM-элемент в __refs родителя
     if ("ref" in hash) {

@@ -1,5 +1,6 @@
 import { Block, type BlockOwnProps } from "@shared/ui/block";
 import buttonStyles from "./button.module.css";
+import template from "./button.hbs?raw";
 
 interface ButtonProps extends BlockOwnProps {
   text: string;
@@ -10,11 +11,7 @@ interface ButtonProps extends BlockOwnProps {
 export class Button extends Block<ButtonProps> {
   static componentName = "Button";
 
-  protected template = `
-    <button class="{{ styles.button }}" {{#if dataRole}}data-role="{{ dataRole }}"{{/if}}>
-      {{ text }}
-    </button>
-  `;
+  protected template = template;
 
   constructor(props: ButtonProps) {
     super({ ...props, styles: buttonStyles });

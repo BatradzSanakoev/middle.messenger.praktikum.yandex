@@ -28,7 +28,7 @@
 }
 
 .inputError {
-  border-bottom-color: var(--color-gray);
+  border-bottom-color: var(--color-error);
 }
 
 .error {
@@ -37,5 +37,5 @@
   font-family: "Caveat", cursive;
   font-weight: 400;
   font-size: 1rem;
-  color: var(--color-gray);
+  color: var(--color-error);
 }

@@ -92,6 +92,15 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     }
   }
 
+  /**
+   * Публичный метод для полного удаления компонента из DOM.
+   * Вызывает unmountComponent, который рекурсивно удаляет детей,
+   * вызывает componentWillUnmount и отключает обработчики событий.
+   */
+  public destroy(): void {
+    this.unmountComponent();
+  }
+
   /** Подписывает все события из this.events на корневой DOM-элемент. */
   private attachListeners(): void {
     for (const eventName in this.events) {

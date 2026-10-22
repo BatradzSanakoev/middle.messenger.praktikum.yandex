@@ -1,15 +1,19 @@
-import Handlebars from "handlebars";
-import { chats } from "../../helpers/mocks/chats";
-import templateRaw from "./chat.hbs?raw";
+import { Block, type BlockOwnProps } from "@shared/ui/block";
 import styles from "./chat.module.css";
+import template from "./chat.hbs?raw";
+import { chats } from "@helpers/mocks/chats";
 
-const template = Handlebars.compile(templateRaw);
+interface ChatPageProps extends BlockOwnProps {
+  chats: typeof chats;
+  styles: typeof styles;
+}
 
-export class ChatPage {
-  render(container: HTMLElement) {
-    const html = template({ styles, chats });
+export class ChatPage extends Block<ChatPageProps> {
+  static componentName = "ChatPage";
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+  protected template = template;
+
+  constructor() {
+    super({ chats, styles });
   }
 }

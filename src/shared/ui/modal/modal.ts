@@ -1,5 +1,6 @@
 import { Block, type BlockOwnProps } from "@shared/ui/block";
 import modalStyles from "./modal.module.css";
+import template from "./modal.hbs?raw";
 
 export interface ModalOptions extends BlockOwnProps {
   title: string;
@@ -12,15 +13,7 @@ export interface ModalOptions extends BlockOwnProps {
 export class Modal extends Block<ModalOptions> {
   static componentName = "Modal";
 
-  protected template = `
-    <div class="{{ styles.modalOverlay }}">
-      <div class="{{ styles.modalContent }}">
-        <h2 class="{{ styles.modalTitle }}">{{ title }}</h2>
-        <div class="{{ styles.modalBody }}">{{{ body }}}</div>
-        {{{ Button text=buttonText }}}
-      </div>
-    </div>
-  `;
+  protected template = template;
 
   private overlay: HTMLElement | null = null;
 

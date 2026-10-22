@@ -1,3 +1,4 @@
+import { Block } from "@shared/ui/block";
 import {
   ChatPage,
   Error404Page,
@@ -6,9 +7,24 @@ import {
   ProfilePage,
   RegisterPage,
 } from "../pages";
+import { Input } from "@shared/ui/input";
+import { Button } from "@shared/ui/button";
+import { Link } from "@shared/ui/link";
+import { ChatList } from "@shared/ui/chat-list";
+import { ProfileAvatar } from "@shared/ui/profile-avatar";
+import { Modal } from "@shared/ui/modal";
+import { registerComponent } from "@shared/ui/block";
 import styles from "./app.module.css";
 
-type PageComponent = new () => { render: (container: HTMLElement) => void };
+// Регистрация компонентов в Handlebars
+registerComponent("Input", Input);
+registerComponent("Button", Button);
+registerComponent("Link", Link);
+registerComponent("ChatList", ChatList);
+registerComponent("ProfileAvatar", ProfileAvatar);
+registerComponent("Modal", Modal);
+
+type PageComponent = new () => Block<any>;
 
 const pageComponents: Record<string, PageComponent> = {
   login: LoginPage,
@@ -30,15 +46,21 @@ const navItems = [
 
 export class App {
   private pageContainer: HTMLElement | null = null;
+  private currentPage: Block<any> | null = null;
 
   private renderPage(hash: string) {
+    // Размонтируем предыдущую страницу
+    if (this.currentPage) {
+      this.currentPage.destroy();
+    }
+
     const Component = pageComponents[hash];
     if (Component && this.pageContainer) {
-      const page = document.createElement("main");
-      page.className = styles.pageContainer;
-      new Component().render(page);
-      this.pageContainer.replaceWith(page);
-      this.pageContainer = page;
+      this.currentPage = new Component();
+      const element = this.currentPage.element();
+      if (element) {
+        this.pageContainer.replaceChildren(element);
+      }
     }
   }
 
