@@ -28,8 +28,10 @@
     "paths": {
       "@/*": ["./src/*"],
       "@shared/*": ["./src/shared/*"],
+      "@shared": ["./src/shared"],
       "@pages/*": ["./src/pages/*"],
       "@features/*": ["./src/features/*"],
+      "@features": ["./src/features"],
       "@helpers/*": ["./src/helpers/*"],
       "@styles/*": ["./src/styles/*"],
       "@init/*": ["./src/init/*"]

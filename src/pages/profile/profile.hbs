@@ -1,69 +1,92 @@
-<form
-  class="{{ styles.profilePage }} {{ styles.profileForm }}"
-  action="#"
-  onsubmit="event.preventDefault()"
->
+<div class="{{ styles.profilePage }}">
 
   <!-- Блок 1: Аватар -->
   <div class="{{ styles.profileHeader }}">
-    {{{ProfileAvatar avatarUrl="https://placehold.co/128/grey/grey/png"}}}
+    {{{ProfileAvatar ref="avatar" avatarUrl="https://placehold.co/128/grey/grey/png"}}}
     <h1 class="{{ styles.profileName }}">Иван Иванов</h1>
   </div>
 
-  <!-- Блок 2: Данные пользователя -->
-  <div class="{{ styles.profileData }}" data-role="profile-data">
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="email">Почта:</label>
-      {{{Input type="email" name="email" id="email" value="user@example.com" disabled=true}}}
+  <!-- Форма 1: Данные пользователя -->
+  <form class="{{ styles.profileForm }}" data-role="profile-form-data">
+    <div class="{{ styles.profileData }}" data-role="profile-data">
+      <div class="{{ styles.dataRow }}" data-role="profile-data">
+        <label class="{{ styles.dataLabel }}" for="email">Почта:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="emailInput" type="email" name="email" id="email" value="user@example.com" disabled=true validationKey="email"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data">
+        <label class="{{ styles.dataLabel }}" for="login">Логин:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="loginInput" type="text" name="login" id="login" value="username123" disabled=true validationKey="login"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data">
+        <label class="{{ styles.dataLabel }}" for="first_name">Имя:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="firstNameInput" type="text" name="first_name" id="first_name" value="Иван" disabled=true validationKey="first_name"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data">
+        <label class="{{ styles.dataLabel }}" for="second_name">Фамилия:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="secondNameInput" type="text" name="second_name" id="second_name" value="Иванов" disabled=true validationKey="second_name"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data">
+        <label class="{{ styles.dataLabel }}" for="display_name">Имя в чате:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="displayNameInput" type="text" name="display_name" id="display_name" value="ivan_cool" disabled=true validationKey="display_name"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data">
+        <label class="{{ styles.dataLabel }}" for="phone">Телефон:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="phoneInput" type="tel" name="phone" id="phone" value="+7 (999) 123-45-67" disabled=true validationKey="phone"}}}
+        </div>
+      </div>
     </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="login">Логин:</label>
-      {{{Input type="text" name="login" id="login" value="username123" disabled=true}}}
-    </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="first_name">Имя:</label>
-      {{{Input type="text" name="first_name" id="first_name" value="Иван" disabled=true}}}
-    </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="second_name">Фамилия:</label>
-      {{{Input type="text" name="second_name" id="second_name" value="Иванов" disabled=true}}}
-    </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="display_name">Имя в чате:</label>
-      {{{Input type="text" name="display_name" id="display_name" value="ivan_cool" disabled=true}}}
-    </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="phone">Телефон:</label>
-      {{{Input type="tel" name="phone" id="phone" value="+7 (999) 123-45-67" disabled=true}}}
-    </div>
-  </div>
 
-  <!-- Блок 3: Режим изменения пароля (скрыт) -->
-  <div class="{{ styles.profileData }} {{ styles.hidden }}" data-role="profile-data-password">
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="old_password">Старый пароль:</label>
-      {{{Input type="password" name="old_password" id="old_password" value="••••••"}}}
+    <!-- Кнопки управления -->
+    <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
+      {{{Button ref="editDataBtn" text="Изменить данные" dataRole="btn-edit-data"}}}
+      {{{Button ref="editPasswordBtn" text="Изменить пароль" dataRole="btn-edit-password"}}}
+      {{{Button ref="logoutBtn" text="Выйти" dataRole="btn-logout"}}}
     </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="new_password">Новый пароль:</label>
-      {{{Input type="password" name="new_password" id="new_password" value="••••••"}}}
+
+    <!-- Кнопка сохранения данных (скрыта) -->
+    <div class="{{ styles.profileActions }} {{ styles.hidden }}" data-role="profile-actions-save-data">
+      {{{Button ref="saveDataBtn" text="Сохранить" dataRole="save-data"}}}
     </div>
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="confirm_password">Повторите новый пароль:</label>
-      {{{Input type="password" name="confirm_password" id="confirm_password" value="••••••"}}}
+  </form>
+
+  <!-- Форма 2: Пароли (скрыта) -->
+  <form class="{{ styles.profileForm }} {{ styles.hidden }}" data-role="profile-form-password">
+    <div class="{{ styles.profileData }}" data-role="profile-data-password">
+      <div class="{{ styles.dataRow }}" data-role="profile-data-password">
+        <label class="{{ styles.dataLabel }}" for="old_password">Старый пароль:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="oldPasswordInput" type="password" name="old_password" id="old_password" value="••••••" validationKey="old_password"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data-password">
+        <label class="{{ styles.dataLabel }}" for="new_password">Новый пароль:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="newPasswordInput" type="password" name="new_password" id="new_password" value="••••••" validationKey="new_password"}}}
+        </div>
+      </div>
+      <div class="{{ styles.dataRow }}" data-role="profile-data-password">
+        <label class="{{ styles.dataLabel }}" for="confirm_password">Повторите новый пароль:</label>
+        <div class="{{ styles.inputWrapper }}">
+          {{{Input ref="confirmPasswordInput" type="password" name="confirm_password" id="confirm_password" value="••••••" validationKey="confirm_password"}}}
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Блок 4: Обычные кнопки -->
-  <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
-    {{{Button text="Изменить данные" dataRole="btn-edit-data"}}}
-    {{{Button text="Изменить пароль" dataRole="btn-edit-password"}}}
-    {{{Button text="Выйти" dataRole="btn-logout"}}}
-  </div>
+    <!-- Кнопка сохранения паролей (скрыта) -->
+    <div class="{{ styles.profileActions }} {{ styles.hidden }}" data-role="profile-actions-save-password">
+      {{{Button ref="savePasswordBtn" text="Сохранить" dataRole="save-password"}}}
+    </div>
+  </form>
 
-  <!-- Блок 5: Кнопка сохранения (скрыта) -->
-  <div class="{{ styles.profileActions }} {{ styles.hidden }}" data-role="profile-actions-save">
-    {{{Button text="Сохранить" dataRole="btn-save"}}}
-  </div>
-
-</form>
+</div>

@@ -4,55 +4,47 @@ import { Block } from "./block";
 import type { HelperOptions } from "handlebars";
 import type { BlockOwnProps } from "./block";
 
-/**
- * Инкрементальный ID для уникального data-атрибута заглушки.
- * Каждый зарегистрированный компонент получает свой уникальный идентификатор.
- */
+// Уникальный ID для генерации data-component-hbs-id (инкрементируется при каждой регистрации)
 let uniqueId = 0;
 
-/**
- * Регистрирует компонент в Handlebars как хелпер.
- * Позволяет использовать компонент в шаблонах через синтаксис:
- * {{{ ComponentName prop="value" ref="key" }}}
- *
- * @param componentName — имя хелпера (используется в шаблоне Handlebars)
- * @param Component — класс-наследник Block для создания экземпляра
- */
+// Регистрирует UI-компонент как Handlebars-хелпер для использования в HBS-шаблонах
+// После регистрации компонент можно использовать в шаблоне: {{{ComponentName prop1=value1 prop2=value2}}}
 export function registerComponent<T extends BlockOwnProps>(
   componentName: string,
   Component: new (props: T) => Block<T>
 ) {
   Handlebars.registerHelper(componentName, function (this: unknown, { hash, data }: HelperOptions) {
+    // Создаём экземпляр компонента с переданными атрибутами как пропсами
     const component = new Component(hash as T);
 
-    // Уникальный data-атрибут для поиска заглушки при embed
+    // Уникальный атрибут для поиска placeholder'а при вставке компонента в DOM
     const dataAttribute = `data-component-hbs-id="${++uniqueId}"`;
 
-    // Если передан ref — сохраняем ссылку на DOM-элемент в __refs родителя
+    // Заполняем __refs: если в шаблоне указан ref, сохраняем ссылку на DOM-элемент
     if ("ref" in hash) {
       (data.root.__refs = data.root.__refs || {})[hash.ref] = component.element() ?? undefined;
     }
 
-    // Добавляем компонент в массив дочерних с функцией embed для замены заглушки
+    // Добавляем компонент в список дочерних с функцией embed для вставки в DOM
     (data.root.__children = data.root.__children || []).push({
       component,
-      /**
-       * Заменяет заглушку (div с data-атрибутом) на реальный DOM-элемент компонента.
-       * Вызывается в методе compile() родительского компонента.
-       */
+      // Заменяет placeholder на реальный DOM-элемент компонента
       embed(node: DocumentFragment) {
+        // Ищем placeholder по уникальному data-component-hbs-id
         const placeholder = node.querySelector(`[${dataAttribute}]`);
         if (!placeholder) {
           throw new Error(`Can't find data-id for component ${componentName}`);
         }
+        // Рендерим компонент и получаем его DOM-элемент
         const element = component.element();
         if (element) {
+          // Заменяем placeholder на реальный DOM
           placeholder.replaceWith(element);
         }
       },
     });
 
-    // Возвращаем заглушку — реальный компонент будет вставлен позже через embed
+    // Возвращаем placeholder — он будет заменён на реальный DOM при compile()
     return `<div ${dataAttribute}></div>`;
   });
 }

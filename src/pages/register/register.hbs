@@ -1,15 +1,15 @@
-<form class="{{ styles.container }}" action="#" onsubmit="event.preventDefault()">
+<form class="{{ styles.form }}">
   <h1 class="{{ styles.title }}">Регистрация</h1>
   <div class="{{ styles.fields }}">
-    {{{Input name="first_name" placeholder="Имя" validationKey="first_name"}}}
-    {{{Input name="second_name" placeholder="Фамилия" validationKey="second_name"}}}
-    {{{Input name="login" placeholder="Логин" validationKey="login"}}}
-    {{{Input name="email" placeholder="Email" validationKey="email"}}}
-    {{{Input name="password" placeholder="Пароль" type="password" validationKey="password"}}}
-    {{{Input name="phone" placeholder="Телефон" validationKey="phone"}}}
+    {{{Input ref="firstNameInput" name="first_name" placeholder="Имя" validationKey="first_name"}}}
+    {{{Input ref="secondNameInput" name="second_name" placeholder="Фамилия" validationKey="second_name"}}}
+    {{{Input ref="loginInput" name="login" placeholder="Логин" validationKey="login"}}}
+    {{{Input ref="emailInput" name="email" placeholder="Email" validationKey="email"}}}
+    {{{Input ref="passwordInput" name="password" placeholder="Пароль" type="password" validationKey="password"}}}
+    {{{Input ref="phoneInput" name="phone" placeholder="Телефон" validationKey="phone"}}}
   </div>
   <div class="{{ styles.actions }}">
-    {{{Button text="Зарегистрироваться"}}}
-    {{{Link href="#" text="Войти"}}}
+    {{{Button ref="submitBtn" text="Зарегистрироваться" type="submit"}}}
+    {{{Link ref="loginLink" href="#" text="Войти"}}}
   </div>
 </form>

@@ -1,10 +1,6 @@
 import Handlebars from "handlebars";
 
-/**
- * Скрытые свойства, которые добавляются в props при компиляции.
- * __children — массив дочерних компонентов для вложенности.
- * __refs — ссылки на DOM-элементы вложенных компонентов.
- */
+// Свойства, которые передаются всем компонентам через registerComponent
 export interface BlockOwnProps {
   __children?: Array<{
     component: Block<object>;
@@ -13,44 +9,31 @@ export interface BlockOwnProps {
   __refs?: Record<string, Element>;
 }
 
-/** Тип для хранения обработчиков DOM-событий. */
+// Тип для хранения обработчиков событий (название события -> функция)
 type EventListType = Partial<Record<keyof HTMLElementEventMap, (e: Event) => void>>;
 
-/**
- * Базовый абстрактный класс для всех компонентов.
- * Реализует жизненный цикл, реактивность, вложенные компоненты и обработку событий.
- */
+// Базовый абстрактный класс для всех UI-компонентов
+// Реализует компонентную архитектуру: рендер, обновление пропсов, жизненный цикл
 export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
-  /** Шаблон Handlebars для рендера — обязателен для реализации в наследнике. */
+  // Шаблон компонента в формате Handlebars (переопределяется в наследниках)
   protected abstract template: string;
-
-  /** Свойства компонента (props), передаются из родителя. */
+  // Свойства компонента (пропсы)
   protected props = {} as Props;
-
-  /** DOM-элемент, созданный из шаблона. null до первого рендера. */
+  // DOM-элемент, созданный на основе шаблона
   private domElement: Element | null = null;
-
-  /** Массив дочерних компонентов, найденных при компиляции. */
+  // Вложенные компоненты (созданные через registerComponent)
   protected children: Block<object>[] = [];
-
-  /** Словарь ссылок на DOM-элементы, помеченные атрибутом ref. */
+  // Ссылки на DOM-элементы с атрибутом ref
   protected refs: Record<string, Element> = {};
-
-  /** Объект с обработчиками событий: { eventName: callback }. */
+  // Обработчики событий, вешаемые на domElement
   protected events: EventListType = {};
 
-  /**
-   * Конструктор. Сохраняет переданные props.
-   * @param props — свойства компонента
-   */
+  // Конструктор: сохраняет пропсы в this.props
   constructor(props: Props = {} as Props) {
     this.props = props;
   }
 
-  /**
-   * Ленивый рендер: если domElement ещё не создан — вызывает render().
-   * @returns DOM-элемент компонента
-   */
+  // Ленивый рендер: создаёт DOM-элемент при первом вызове
   public element(): Element | null {
     if (!this.domElement) {
       this.render();
@@ -58,32 +41,25 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     return this.domElement;
   }
 
-  /**
-   * Обновление свойств с автоматическим ре-рендером.
-   * Очищает скрытые свойства __children и __refs.
-   * @param props — частичное обновление props
-   */
+  // Обновление пропсов с ре-рендером компонента
   public setProps(props: Partial<Props>) {
     this.props = { ...this.props, ...props, __children: [], __refs: {} } as Props;
     this.render();
   }
 
-  /** Хук: вызывается один раз после добавления компонента в DOM. Переопределяется в наследнике. */
+  // Хук: вызывается после монтирования компонента в DOM (переопределяется в наследниках)
   protected componentDidMount(): void {}
 
-  /** Внутренний метод монтирования: подписка на события + вызов componentDidMount. */
+  // Привязка обработчиков событий и вызов componentDidMount
   private mountComponent(): void {
     this.attachListeners();
     this.componentDidMount();
   }
 
-  /** Хук: вызывается один раз перед удалением компонента из DOM. Переопределяется в наследнике. */
+  // Хук: вызывается перед удалением компонента из DOM (переопределяется в наследниках)
   protected componentWillUnmount(): void {}
 
-  /**
-   * Внутренний метод размонтирования:
-   * рекурсивно размонтирует дочерние компоненты, вызывает componentWillUnmount, отключает события.
-   */
+  // Очистка: удаляет вложенные компоненты, убирает слушатели
   private unmountComponent(): void {
     if (this.domElement) {
       this.children.reverse().forEach((child) => child.unmountComponent());
@@ -92,16 +68,12 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     }
   }
 
-  /**
-   * Публичный метод для полного удаления компонента из DOM.
-   * Вызывает unmountComponent, который рекурсивно удаляет детей,
-   * вызывает componentWillUnmount и отключает обработчики событий.
-   */
+  // Полное уничтожение компонента
   public destroy(): void {
     this.unmountComponent();
   }
 
-  /** Подписывает все события из this.events на корневой DOM-элемент. */
+  // Вешает обработчики событий из this.events на domElement
   private attachListeners(): void {
     for (const eventName in this.events) {
       const eventCallback = this.events[eventName as keyof HTMLElementEventMap];
@@ -111,7 +83,7 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     }
   }
 
-  /** Отписывает все события из this.events от корневого DOM-элемента. */
+  // Снимает обработчики событий из this.events с domElement
   private removeListeners(): void {
     for (const eventName in this.events) {
       const eventCallback = this.events[eventName as keyof HTMLElementEventMap];
@@ -121,13 +93,7 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     }
   }
 
-  /**
-   * Основной метод рендера:
-   * 1. Размонтирует текущий компонент.
-   * 2. Компилирует шаблон в DocumentFragment.
-   * 3. Заменяет старый DOM-элемент новым.
-   * 4. Монтирует компонент (события + componentDidMount).
-   */
+  // Полный цикл рендера: удаление старого DOM, компиляция, монтирование
   protected render(): void {
     this.unmountComponent();
     const fragment = this.compile();
@@ -138,21 +104,15 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     this.mountComponent();
   }
 
-  /**
-   * Компилирует шаблон Handlebars в DOM-элемент:
-   * 1. Генерирует HTML из шаблона и props.
-   * 2. Вставляет в <template>, получает DocumentFragment.
-   * 3. Обрабатывает вложенные компоненты (embed заглушек).
-   * 4. Собирает refs из атрибутов ref.
-   * @returns первый дочерний элемент fragment или null
-   */
+  // Компилирует Handlebars-шаблон, вставляет вложенные компоненты, извлекает refs
   private compile(): Element | null {
+    // Компилируем шаблон с текущими пропсами
     const html = Handlebars.compile(this.template)(this.props);
     const templateElement = document.createElement("template");
     templateElement.innerHTML = html;
     const fragment = templateElement.content;
 
-    // Обработка вложенных компонентов: замена заглушек на реальные DOM-элементы
+    // Вставляем вложенные компоненты (заменяем placeholder'ы на реальный DOM)
     if (this.props.__children) {
       this.children = this.props.__children.map((child) => child.component);
       this.props.__children.forEach((child) => {
@@ -160,7 +120,7 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
       });
     }
 
-    // Сбор ссылок на элементы с атрибутом ref
+    // Извлекаем ссылки на DOM-элементы с атрибутом ref
     const defaultRefs = this.props?.__refs ?? {};
     this.refs = Array.from(fragment.querySelectorAll("[ref]")).reduce((list, element) => {
       const key = element.getAttribute("ref") as string;

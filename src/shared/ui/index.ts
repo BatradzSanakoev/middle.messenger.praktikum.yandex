@@ -1,12 +1,6 @@
-export { Button } from "./button";
-export { buttonStyles } from "./button";
-export { ChatList } from "./chat-list";
-export { chatListStyles } from "./chat-list";
-export { Input } from "./input";
-export { inputStyles } from "./input";
-export { Link } from "./link";
-export { linkStyles } from "./link";
-export { Modal } from "./modal";
-export { modalStyles } from "./modal";
-export { ProfileAvatar } from "./profile-avatar";
-export { profileAvatarStyles } from "./profile-avatar";
+export * from "./button";
+export * from "./chat-list";
+export * from "./input";
+export * from "./link";
+export * from "./modal";
+export * from "./profile-avatar";

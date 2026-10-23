@@ -1,17 +1,17 @@
 <div class="{{ styles.page }}">
   <aside class="{{ styles.sidebar }}">
     <div class="{{ styles.sidebarTitle }}">Чаты</div>
-    {{{ChatList chats=chats}}}
+    {{{ChatList ref="chatList" chats=chats}}}
   </aside>
   <div class="{{ styles.main }}">
     <div class="{{ styles.emptyState }}">
       <p class="{{ styles.emptyText }}">Выберите чат, чтобы отправить сообщение</p>
     </div>
     <div class="{{ styles.inputWrapper }}">
-      <div class="{{ styles.inputContainer }}">
-        {{{Input name="message" placeholder="Сообщение" validationKey="message"}}}
-        {{{Button text="Отправить"}}}
-      </div>
+      <form class="{{ styles.inputContainer }}">
+        {{{Input ref="messageInput" name="message" placeholder="Сообщение" validationKey="message"}}}
+        {{{Button ref="sendBtn" text="Отправить" type="submit"}}}
+      </form>
     </div>
   </div>
 </div>

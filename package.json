@@ -13,8 +13,9 @@
     "preview": "vite preview",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint --fix . && prettier --write ."
+    "lint": "eslint . && prettier --check . && npm run typecheck",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@eslint/css": "^2.0.1",

@@ -87,3 +87,7 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+.inputWrapper {
+  flex: 1;
+}
