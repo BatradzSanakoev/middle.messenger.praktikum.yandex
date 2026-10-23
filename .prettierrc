@@ -4,7 +4,9 @@
   "tabWidth": 2,
   "printWidth": 100,
   "singleQuote": false,
-  "plugins": ["@poliklot/prettier-plugin-handlebars"],
+  "plugins": [
+    "@poliklot/prettier-plugin-handlebars"
+  ],
   "overrides": [
     {
       "files": "*.hbs",

@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import { Block } from "@shared/ui/block";
 import { validateForm } from "@features";
+=======
+import templateRaw from "./register.hbs?raw";
+import Handlebars from "handlebars";
+import styles from "./register.module.css";
+>>>>>>> 4bd676ab9adaaf0fbf1b64aa8639fb8d60224d33
 
 import styles from "./register.module.css";
 import template from "./register.hbs?raw";
