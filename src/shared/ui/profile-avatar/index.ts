@@ -1,3 +1,2 @@
-export { ProfileAvatar } from "./profile-avatar";
-export { profileAvatarTemplate } from "./profile-avatar.template";
+export { ProfileAvatar, type ProfileAvatarData } from "./profile-avatar";
 export { default as profileAvatarStyles } from "./profile-avatar.module.css";

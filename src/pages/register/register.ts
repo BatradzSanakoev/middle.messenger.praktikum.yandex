@@ -1,14 +1,33 @@
-import templateRaw from "./register.hbs?raw";
-import Handlebars from "handlebars";
+import { Block } from "@shared/ui/block";
+import { validateForm } from "@features";
+
 import styles from "./register.module.css";
+import template from "./register.hbs?raw";
 
-const template = Handlebars.compile(templateRaw);
+import type { BlockOwnProps } from "@shared/ui/block";
 
-export class RegisterPage {
-  render(container: HTMLElement) {
-    const html = template({ styles });
+// Пропсы страницы регистрации
+interface RegisterProps extends BlockOwnProps {
+  styles: typeof styles;
+}
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+// Страница регистрации с формой создания аккаунта
+export class RegisterPage extends Block<RegisterProps> {
+  static componentName = "RegisterPage";
+
+  // Handlebars-шаблон страницы
+  protected template = template;
+
+  // Конструктор: инициализирует обработчик сабмита формы
+  constructor() {
+    super({ styles });
+    this.events = {
+      // Обработчик отправки формы — валидация и сбор данных
+      submit: (e: Event) => {
+        e.preventDefault();
+        const form = this.element() as HTMLFormElement;
+        validateForm(form);
+      },
+    };
   }
 }

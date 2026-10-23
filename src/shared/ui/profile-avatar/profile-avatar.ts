@@ -1,18 +1,25 @@
-import { profileAvatarStyles } from ".";
-import { profileAvatarTemplate } from "./profile-avatar.template";
+import { Block } from "@shared/ui/block";
 
-export interface ProfileAvatarData {
+import profileAvatarStyles from "./profile-avatar.module.css";
+import template from "./profile-avatar.hbs?raw";
+
+import type { BlockOwnProps } from "@shared/ui/block";
+
+// Пропсы компонента ProfileAvatar
+export interface ProfileAvatarData extends BlockOwnProps {
   avatarUrl: string;
+  styles: typeof profileAvatarStyles;
 }
 
-export class ProfileAvatar {
-  constructor(container: HTMLElement, data: ProfileAvatarData) {
-    const html = profileAvatarTemplate({
-      ...data,
-      styles: profileAvatarStyles,
-    });
+// Компонент аватара пользователя
+export class ProfileAvatar extends Block<ProfileAvatarData> {
+  static componentName = "ProfileAvatar";
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+  // Handlebars-шаблон компонента
+  protected template = template;
+
+  // Конструктор: создаёт аватар с переданным URL
+  constructor(props: ProfileAvatarData) {
+    super({ ...props, styles: profileAvatarStyles });
   }
 }

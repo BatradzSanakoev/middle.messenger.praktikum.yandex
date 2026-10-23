@@ -1,19 +1,11 @@
-<form
-  class="{{ styles.container }}"
-  action="#"
-  onsubmit="event.preventDefault()"
->
+<form class="{{ styles.form }}">
   <h1 class="{{ styles.title }}">Вход</h1>
   <div class="{{ styles.fields }}">
-    {{#input name="login" placeholder="Логин"}}
-    {{/input}}
-    {{#input name="password" placeholder="Пароль" type="password"}}
-    {{/input}}
+    {{{Input ref="loginInput" name="login" placeholder="Логин" validationKey="login" required=true}}}
+    {{{Input ref="passwordInput" name="password" placeholder="Пароль" type="password" validationKey="password" required=true}}}
   </div>
   <div class="{{ styles.actions }}">
-    {{#button text="Войти"}}
-    {{/button}}
-    {{#link href="#" text="Зарегистрироваться"}}
-    {{/link}}
+    {{{Button ref="submitBtn" text="Войти" type="submit"}}}
+    {{{Link ref="registerLink" href="#" text="Зарегистрироваться"}}}
   </div>
 </form>

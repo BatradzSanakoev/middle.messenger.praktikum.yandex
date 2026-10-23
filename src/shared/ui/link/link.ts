@@ -1,20 +1,26 @@
-import { linkStyles } from ".";
-import { linkTemplate } from "./link.template";
+import { Block } from "@shared/ui/block";
 
-export class Link {
-  constructor(
-    container: HTMLElement,
-    options: {
-      href: string;
-      text: string;
-    },
-  ) {
-    const html = linkTemplate({
-      ...options,
-      styles: linkStyles,
-    });
+import linkStyles from "./link.module.css";
+import template from "./link.hbs?raw";
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+import type { BlockOwnProps } from "@shared/ui/block";
+
+// Пропсы компонента Link
+interface LinkProps extends BlockOwnProps {
+  href: string;
+  text: string;
+  styles: typeof linkStyles;
+}
+
+// Компонент ссылки
+export class Link extends Block<LinkProps> {
+  static componentName = "Link";
+
+  // Handlebars-шаблон компонента
+  protected template = template;
+
+  // Конструктор: создаёт ссылку с переданными пропсами
+  constructor(props: LinkProps) {
+    super({ ...props, styles: linkStyles });
   }
 }

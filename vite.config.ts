@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
 import dotenv from "dotenv";
 import path from "path";
+import { defineConfig } from "vite";
 
 dotenv.config();
 
@@ -16,6 +16,7 @@ export default defineConfig({
       "@init": path.resolve(import.meta.dirname, "./src/init"),
     },
   },
+  assetsInclude: ["**/*.hbs"],
   server: {
     open: true,
     port: Number(process.env.PORT) || 3000,
