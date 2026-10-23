@@ -17,15 +17,15 @@
   align-items: center;
   gap: 1.5rem;
   padding: 2rem;
-  background-color: #ffffff;
-  border: 1px solid #000000;
+  background-color: #fff;
+  border: 1px solid #000;
 }
 
 .modalTitle {
-  font-family: "Caveat", cursive;
+  font-family: Caveat, cursive;
   font-weight: 500;
   font-size: 1.5rem;
-  color: #000000;
+  color: #000;
 }
 
 .modalBody {

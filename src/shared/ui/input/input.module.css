@@ -6,7 +6,7 @@
 .input {
   width: 100%;
   padding: 0.5rem;
-  font-family: "Caveat", cursive;
+  font-family: Caveat, cursive;
   font-weight: 400;
   font-size: 1.25rem;
   color: var(--color-black);
@@ -17,7 +17,7 @@
 }
 
 .input::placeholder {
-  font-family: "Caveat", cursive;
+  font-family: Caveat, cursive;
   font-weight: 400;
   font-size: 1.25rem;
   color: var(--color-gray);
@@ -34,7 +34,7 @@
 .error {
   display: block;
   padding-top: 0.25rem;
-  font-family: "Caveat", cursive;
+  font-family: Caveat, cursive;
   font-weight: 400;
   font-size: 1rem;
   color: var(--color-error);

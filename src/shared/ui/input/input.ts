@@ -17,6 +17,7 @@ interface InputProps extends BlockOwnProps {
   disabled?: boolean;
   error?: string;
   validationKey?: ValidationKey;
+  required?: boolean;
   styles: typeof inputStyles;
 }
 

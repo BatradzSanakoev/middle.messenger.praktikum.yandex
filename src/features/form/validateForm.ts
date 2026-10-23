@@ -35,7 +35,8 @@ export function validateForm(form: HTMLFormElement): boolean {
     if (!validationKey) return;
 
     // Вызываем валидацию для текущего поля
-    const error = validate(input.value, validationKey as ValidationKey);
+    const isRequired = input.hasAttribute("required");
+    const error = validate(input.value, validationKey as ValidationKey, !isRequired);
     // Ищем wrapper вокруг инпута для отображения ошибки
     const wrapper = input.closest("[class*='inputWrapper']");
     if (wrapper) {

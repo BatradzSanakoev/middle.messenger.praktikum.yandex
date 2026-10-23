@@ -1,12 +1,12 @@
 <form class="{{ styles.form }}">
   <h1 class="{{ styles.title }}">Регистрация</h1>
   <div class="{{ styles.fields }}">
-    {{{Input ref="firstNameInput" name="first_name" placeholder="Имя" validationKey="first_name"}}}
-    {{{Input ref="secondNameInput" name="second_name" placeholder="Фамилия" validationKey="second_name"}}}
-    {{{Input ref="loginInput" name="login" placeholder="Логин" validationKey="login"}}}
-    {{{Input ref="emailInput" name="email" placeholder="Email" validationKey="email"}}}
-    {{{Input ref="passwordInput" name="password" placeholder="Пароль" type="password" validationKey="password"}}}
-    {{{Input ref="phoneInput" name="phone" placeholder="Телефон" validationKey="phone"}}}
+    {{{Input ref="firstNameInput" name="first_name" placeholder="Имя" validationKey="first_name" required=true}}}
+    {{{Input ref="secondNameInput" name="second_name" placeholder="Фамилия" validationKey="second_name" required=true}}}
+    {{{Input ref="loginInput" name="login" placeholder="Логин" validationKey="login" required=true}}}
+    {{{Input ref="emailInput" name="email" placeholder="Email" validationKey="email" required=true}}}
+    {{{Input ref="passwordInput" name="password" placeholder="Пароль" type="password" validationKey="password" required=true}}}
+    {{{Input ref="phoneInput" name="phone" placeholder="Телефон" validationKey="phone" required=true}}}
   </div>
   <div class="{{ styles.actions }}">
     {{{Button ref="submitBtn" text="Зарегистрироваться" type="submit"}}}

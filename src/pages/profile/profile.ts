@@ -1,6 +1,7 @@
 import { Block } from "@shared/ui/block";
 import { ProfileModal } from "./profile-modal";
 import { validateForm } from "@features";
+import { inputStyles } from "@shared/ui";
 
 import styles from "./profile.module.css";
 import template from "./profile.hbs?raw";
@@ -43,12 +44,30 @@ export class ProfilePage extends Block<ProfileProps> {
           if (form && !validateForm(form)) return;
           this.saveData();
         }
-        // Кнопка "Сохранить пароль" — валидирует и переключает обратно
+        // Кнопка "Сохранить пароль" — валидирует, проверяет совпадение, переключает обратно
         if (role === "save-password") {
           const form = this.element()?.querySelector(
             '[data-role="profile-form-password"]'
           ) as HTMLFormElement;
           if (form && !validateForm(form)) return;
+
+          // Проверка совпадения паролей
+          const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
+          const newPassword = passwordForm?.querySelector<HTMLInputElement>('input[name="new_password"]');
+          const confirmPassword = passwordForm?.querySelector<HTMLInputElement>('input[name="confirm_password"]');
+
+          if (newPassword?.value !== confirmPassword?.value) {
+            // Показать ошибку под полем confirm_password
+            const wrapper = confirmPassword?.closest("[class*='inputWrapper']");
+            if (wrapper) {
+              const span = document.createElement("span");
+              span.className = inputStyles.error;
+              span.textContent = "Пароли не совпадают";
+              wrapper.appendChild(span);
+            }
+            return;
+          }
+
           this.savePassword();
         }
       },

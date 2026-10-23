@@ -42,16 +42,16 @@
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="phone">Телефон:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="phoneInput" type="tel" name="phone" id="phone" value="+7 (999) 123-45-67" disabled=true validationKey="phone"}}}
+          {{{Input ref="phoneInput" type="tel" name="phone" id="phone" value="+79991234567" disabled=true validationKey="phone"}}}
         </div>
       </div>
     </div>
 
     <!-- Кнопки управления -->
     <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
-      {{{Button ref="editDataBtn" text="Изменить данные" dataRole="btn-edit-data"}}}
-      {{{Button ref="editPasswordBtn" text="Изменить пароль" dataRole="btn-edit-password"}}}
-      {{{Button ref="logoutBtn" text="Выйти" dataRole="btn-logout"}}}
+      {{{Button ref="editDataBtn" type="button" text="Изменить данные" dataRole="btn-edit-data"}}}
+      {{{Button ref="editPasswordBtn" type="button" text="Изменить пароль" dataRole="btn-edit-password"}}}
+      {{{Button ref="logoutBtn" type="button" text="Выйти" dataRole="btn-logout"}}}
     </div>
 
     <!-- Кнопка сохранения данных (скрыта) -->
@@ -59,7 +59,7 @@
       class="{{ styles.profileActions }} {{ styles.hidden }}"
       data-role="profile-actions-save-data"
     >
-      {{{Button ref="saveDataBtn" text="Сохранить" dataRole="save-data"}}}
+      {{{Button ref="saveDataBtn" type="submit" text="Сохранить" dataRole="save-data"}}}
     </div>
   </form>
 
@@ -91,7 +91,7 @@
       class="{{ styles.profileActions }} {{ styles.hidden }}"
       data-role="profile-actions-save-password"
     >
-      {{{Button ref="savePasswordBtn" text="Сохранить" dataRole="save-password"}}}
+      {{{Button ref="savePasswordBtn" type="submit" text="Сохранить" dataRole="save-password"}}}
     </div>
   </form>
 

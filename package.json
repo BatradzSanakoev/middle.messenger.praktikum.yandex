@@ -14,7 +14,7 @@
     "preview": "vite preview",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint": "eslint . && prettier --check . && npm run typecheck",
+    "lint": "stylelint \"src/**/*.css\" && eslint . && prettier --check . && npm run typecheck",
     "lint:fix": "eslint --fix . && prettier --write .",
     "typecheck": "tsc --noEmit"
   },
