@@ -6,15 +6,11 @@
     "types": ["vite/client", "node"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
-
-    /* Linting */
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -22,8 +18,6 @@
     "sourceMap": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-
-    /* Paths */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -40,3 +34,4 @@
   },
   "include": ["src"]
 }
+

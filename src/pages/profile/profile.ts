@@ -37,13 +37,17 @@ export class ProfilePage extends Block<ProfileProps> {
         if (role === "btn-edit-password") this.showPasswordForm();
         // Кнопка "Сохранить данные" — валидирует и блокирует поля
         if (role === "save-data") {
-          const form = this.element()?.querySelector('[data-role="profile-form-data"]') as HTMLFormElement;
+          const form = this.element()?.querySelector(
+            '[data-role="profile-form-data"]'
+          ) as HTMLFormElement;
           if (form && !validateForm(form)) return;
           this.saveData();
         }
         // Кнопка "Сохранить пароль" — валидирует и переключает обратно
         if (role === "save-password") {
-          const form = this.element()?.querySelector('[data-role="profile-form-password"]') as HTMLFormElement;
+          const form = this.element()?.querySelector(
+            '[data-role="profile-form-password"]'
+          ) as HTMLFormElement;
           if (form && !validateForm(form)) return;
           this.savePassword();
         }
@@ -57,7 +61,7 @@ export class ProfilePage extends Block<ProfileProps> {
         // Валидация формы данных
         if (role === "profile-form-data") {
           validateForm(target);
-        // Валидация формы паролей
+          // Валидация формы паролей
         } else if (role === "profile-form-password") {
           validateForm(target);
         }
@@ -84,7 +88,9 @@ export class ProfilePage extends Block<ProfileProps> {
     // Находим блоки по data-role
     const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
     const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
-    const actionsSaveData = this.element()?.querySelector('[data-role="profile-actions-save-data"]');
+    const actionsSaveData = this.element()?.querySelector(
+      '[data-role="profile-actions-save-data"]'
+    );
 
     // Разблокируем все инпуты в блоке данных
     if (dataBlock) {
@@ -102,10 +108,13 @@ export class ProfilePage extends Block<ProfileProps> {
   private showPasswordForm(): void {
     const dataForm = this.element()?.querySelector('[data-role="profile-form-data"]');
     const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
-    const actionsSaveData = this.element()?.querySelector('[data-role="profile-actions-save-data"]');
-    const actionsSavePassword = this.element()?.querySelector('[data-role="profile-actions-save-password"]');
+    const actionsSaveData = this.element()?.querySelector(
+      '[data-role="profile-actions-save-data"]'
+    );
+    const actionsSavePassword = this.element()?.querySelector(
+      '[data-role="profile-actions-save-password"]'
+    );
 
-<<<<<<< HEAD
     // Скрываем форму данных, показываем форму паролей
     if (dataForm) dataForm.classList.add(styles.hidden);
     if (passwordForm) passwordForm.classList.remove(styles.hidden);
@@ -113,33 +122,15 @@ export class ProfilePage extends Block<ProfileProps> {
     if (actionsSaveData) actionsSaveData.classList.add(styles.hidden);
     if (actionsSavePassword) actionsSavePassword.classList.remove(styles.hidden);
   }
-=======
-      if (btnRole === "btn-edit-data") {
-        // Разблокируем инпуты
-        dataBlock
-          ?.querySelectorAll<HTMLInputElement>("input")
-          .forEach((input) => {
-            input.disabled = false;
-          });
-        actionsNormal!.classList.add(styles.hidden);
-        actionsSave!.classList.remove(styles.hidden);
-      } else if (btnRole === "btn-edit-password") {
-        // Скрываем блок данных, показываем блок паролей
-        dataBlock!.classList.add(styles.hidden);
-        passwordBlock!.classList.remove(styles.hidden);
-        actionsNormal!.classList.add(styles.hidden);
-        actionsSave!.classList.remove(styles.hidden);
-      }
-    });
->>>>>>> 4bd676ab9adaaf0fbf1b64aa8639fb8d60224d33
 
   // Блокирует поля данных и возвращает кнопки управления
   private saveData(): void {
     const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
     const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
-    const actionsSaveData = this.element()?.querySelector('[data-role="profile-actions-save-data"]');
+    const actionsSaveData = this.element()?.querySelector(
+      '[data-role="profile-actions-save-data"]'
+    );
 
-<<<<<<< HEAD
     // Блокируем все инпуты в блоке данных
     if (dataBlock) {
       dataBlock.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
@@ -155,7 +146,9 @@ export class ProfilePage extends Block<ProfileProps> {
   private savePassword(): void {
     const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
     const dataForm = this.element()?.querySelector('[data-role="profile-form-data"]');
-    const actionsSavePassword = this.element()?.querySelector('[data-role="profile-actions-save-password"]');
+    const actionsSavePassword = this.element()?.querySelector(
+      '[data-role="profile-actions-save-password"]'
+    );
     const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
 
     // Скрываем форму паролей, показываем форму данных
@@ -164,21 +157,5 @@ export class ProfilePage extends Block<ProfileProps> {
     // Скрываем кнопку сохранения паролей, показываем обычные кнопки
     if (actionsSavePassword) actionsSavePassword.classList.add(styles.hidden);
     if (actionsNormal) actionsNormal.classList.remove(styles.hidden);
-=======
-      if (btnRole === "btn-save") {
-        // Блокируем инпуты обратно
-        dataBlock
-          ?.querySelectorAll<HTMLInputElement>("input")
-          .forEach((input) => {
-            input.disabled = true;
-          });
-        // Скрываем блок паролей, показываем блок данных
-        passwordBlock!.classList.add(styles.hidden);
-        dataBlock!.classList.remove(styles.hidden);
-        actionsNormal!.classList.remove(styles.hidden);
-        actionsSave!.classList.add(styles.hidden);
-      }
-    });
->>>>>>> 4bd676ab9adaaf0fbf1b64aa8639fb8d60224d33
   }
 }

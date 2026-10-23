@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <form class="{{ styles.form }}">
   <h1 class="{{ styles.title }}">Регистрация</h1>
   <div class="{{ styles.fields }}">
@@ -12,32 +11,5 @@
   <div class="{{ styles.actions }}">
     {{{Button ref="submitBtn" text="Зарегистрироваться" type="submit"}}}
     {{{Link ref="loginLink" href="#" text="Войти"}}}
-=======
-<form
-  class="{{ styles.container }}"
-  action="#"
-  onsubmit="event.preventDefault()"
->
-  <h1 class="{{ styles.title }}">Регистрация</h1>
-  <div class="{{ styles.fields }}">
-    {{#input name="first_name" placeholder="Имя"}}
-    {{/input}}
-    {{#input name="second_name" placeholder="Фамилия"}}
-    {{/input}}
-    {{#input name="login" placeholder="Логин"}}
-    {{/input}}
-    {{#input name="email" placeholder="Email"}}
-    {{/input}}
-    {{#input name="password" placeholder="Пароль" type="password"}}
-    {{/input}}
-    {{#input name="phone" placeholder="Телефон"}}
-    {{/input}}
-  </div>
-  <div class="{{ styles.actions }}">
-    {{#button text="Зарегистрироваться"}}
-    {{/button}}
-    {{#link href="#" text="Войти"}}
-    {{/link}}
->>>>>>> 4bd676ab9adaaf0fbf1b64aa8639fb8d60224d33
   </div>
 </form>
