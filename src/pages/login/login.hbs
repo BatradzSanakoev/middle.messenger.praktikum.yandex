@@ -1,3 +1,28 @@
+<<<<<<< Updated upstream
+<form class="{{ styles.form }}">
+=======
+<<<<<<< HEAD
+<form
+  class="{{ styles.container }}"
+  action="#"
+  onsubmit="event.preventDefault()"
+>
+>>>>>>> Stashed changes
+  <h1 class="{{ styles.title }}">Вход</h1>
+  <div class="{{ styles.fields }}">
+    {{{Input ref="loginInput" name="login" placeholder="Логин" validationKey="login" required=true}}}
+    {{{Input ref="passwordInput" name="password" placeholder="Пароль" type="password" validationKey="password" required=true}}}
+  </div>
+  <div class="{{ styles.actions }}">
+<<<<<<< Updated upstream
+    {{{Button ref="submitBtn" text="Войти" type="submit"}}}
+    {{{Link ref="registerLink" href="#" text="Зарегистрироваться"}}}
+=======
+    {{#button text="Войти"}}
+    {{/button}}
+    {{#link href="#" text="Зарегистрироваться"}}
+    {{/link}}
+=======
 <form class="{{ styles.form }}">
   <h1 class="{{ styles.title }}">Вход</h1>
   <div class="{{ styles.fields }}">
@@ -7,5 +32,7 @@
   <div class="{{ styles.actions }}">
     {{{Button ref="submitBtn" text="Войти" type="submit"}}}
     {{{Link ref="registerLink" href="#" text="Зарегистрироваться"}}}
+>>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87
+>>>>>>> Stashed changes
   </div>
 </form>
