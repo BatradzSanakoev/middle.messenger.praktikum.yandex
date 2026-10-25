@@ -1,14 +1,24 @@
-import templateRaw from "./404.hbs?raw";
-import Handlebars from "handlebars";
+import { Block } from "@shared/ui/block";
+
 import styles from "./404.module.css";
+import template from "./404.hbs?raw";
 
-const template = Handlebars.compile(templateRaw);
+import type { BlockOwnProps } from "@shared/ui/block";
 
-export class Error404Page {
-  render(container: HTMLElement) {
-    const html = template({ styles });
+// Пропсы страницы 404
+interface Error404Props extends BlockOwnProps {
+  styles: typeof styles;
+}
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+// Страница ошибки 404 — страница не найдена
+export class Error404Page extends Block<Error404Props> {
+  static componentName = "Error404Page";
+
+  // Handlebars-шаблон страницы
+  protected template = template;
+
+  // Конструктор: инициализирует страницу с стилями
+  constructor() {
+    super({ styles });
   }
 }

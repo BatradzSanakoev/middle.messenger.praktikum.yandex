@@ -1,14 +1,24 @@
-import templateRaw from "./500.hbs?raw";
-import Handlebars from "handlebars";
+import { Block } from "@shared/ui/block";
+
 import styles from "./500.module.css";
+import template from "./500.hbs?raw";
 
-const template = Handlebars.compile(templateRaw);
+import type { BlockOwnProps } from "@shared/ui/block";
 
-export class Error500Page {
-  render(container: HTMLElement) {
-    const html = template({ styles });
+// Пропсы страницы 500
+interface Error500Props extends BlockOwnProps {
+  styles: typeof styles;
+}
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+// Страница ошибки 500 — ошибка сервера
+export class Error500Page extends Block<Error500Props> {
+  static componentName = "Error500Page";
+
+  // Handlebars-шаблон страницы
+  protected template = template;
+
+  // Конструктор: инициализирует страницу с стилями
+  constructor() {
+    super({ styles });
   }
 }

@@ -5,10 +5,16 @@
     {{#if id}}
       id="{{ id }}"
     {{/if}}
+    {{#if validationKey}}
+      data-validation-key="{{ validationKey }}"
+    {{/if}}
     placeholder="{{ placeholder }}"
     value="{{ value }}"
     {{#if disabled}}
       disabled
+    {{/if}}
+    {{#if required}}
+      required
     {{/if}}
     class="
       {{ styles.input }}

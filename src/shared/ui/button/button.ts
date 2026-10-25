@@ -1,11 +1,27 @@
-import { buttonStyles } from ".";
-import { buttonTemplate } from "./button.template";
+import { Block } from "@shared/ui/block";
 
-export class Button {
-  constructor(container: HTMLElement, options: { text: string }) {
-    const html = buttonTemplate({ text: options.text, styles: buttonStyles });
+import buttonStyles from "./button.module.css";
+import template from "./button.hbs?raw";
 
-    const fragment = document.createRange().createContextualFragment(html);
-    container.appendChild(fragment);
+import type { BlockOwnProps } from "@shared/ui/block";
+
+// Пропсы компонента Button
+interface ButtonProps extends BlockOwnProps {
+  text: string;
+  type?: "button" | "submit" | "reset";
+  dataRole?: string;
+  styles: typeof buttonStyles;
+}
+
+// Компонент кнопки
+export class Button extends Block<ButtonProps> {
+  static componentName = "Button";
+
+  // Handlebars-шаблон компонента
+  protected template = template;
+
+  // Конструктор: создаёт кнопку с переданными пропсами
+  constructor(props: ButtonProps) {
+    super({ ...props, styles: buttonStyles });
   }
 }

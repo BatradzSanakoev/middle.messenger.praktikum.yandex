@@ -1,6 +1,4 @@
-<div class="{{ styles.fileInputWrapper }}">
-  <input id="avatar-file" class="{{ styles.fileInput }}" type="file" />
-  <label class="{{ styles.fileInputLabel }}" for="avatar-file">
-    Выбрать файл на компьютере
-  </label>
-</div>
+<form class="{{ styles.fileInputWrapper }}" data-role="avatar-form">
+  <input id="avatar-file" class="{{ styles.fileInput }}" type="file" name="avatar" />
+  <label class="{{ styles.fileInputLabel }}" for="avatar-file">Выбрать файл на компьютере</label>
+</form>

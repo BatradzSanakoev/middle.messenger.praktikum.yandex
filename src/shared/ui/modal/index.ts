@@ -1,3 +1,2 @@
-export { Modal } from "./modal";
-export { modalTemplate } from "./modal.template";
+export { Modal, type ModalOptions } from "./modal";
 export { default as modalStyles } from "./modal.module.css";

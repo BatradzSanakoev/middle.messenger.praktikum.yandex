@@ -22,10 +22,10 @@
 }
 
 .navList a {
-  font-family: "Caveat", cursive;
+  font-family: Caveat, cursive;
   font-weight: 500;
   font-size: 1.125rem;
-  color: #000000;
+  color: #000;
   text-decoration: none;
   transition: opacity 0.2s ease;
 }

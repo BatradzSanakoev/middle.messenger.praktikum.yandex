@@ -1,4 +1,4 @@
-.container {
+.form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,10 +10,10 @@
 }
 
 .title {
-  font-family: "Caveat", cursive;
+  font-family: Caveat, cursive;
   font-weight: 500;
   font-size: 2rem;
-  color: #000000;
+  color: #000;
 }
 
 .fields {
