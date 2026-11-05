@@ -1,86 +1,3 @@
-<<<<<<< Updated upstream
-<div class="{{ styles.profilePage }}">
-=======
-<<<<<<< HEAD
-<form
-  class="{{ styles.profilePage }} {{ styles.profileForm }}"
-  action="#"
-  onsubmit="event.preventDefault()"
->
->>>>>>> Stashed changes
-
-  <!-- Блок 1: Аватар -->
-  <div class="{{ styles.profileHeader }}">
-    {{{ProfileAvatar ref="avatar" avatarUrl="https://placehold.co/128/grey/grey/png"}}}
-    <h1 class="{{ styles.profileName }}">Иван Иванов</h1>
-  </div>
-
-  <!-- Форма 1: Данные пользователя -->
-  <form class="{{ styles.profileForm }}" data-role="profile-form-data">
-    <div class="{{ styles.profileData }}" data-role="profile-data">
-      <div class="{{ styles.dataRow }}" data-role="profile-data">
-        <label class="{{ styles.dataLabel }}" for="email">Почта:</label>
-        <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="emailInput" type="email" name="email" id="email" value="user@example.com" disabled=true validationKey="email"}}}
-        </div>
-      </div>
-      <div class="{{ styles.dataRow }}" data-role="profile-data">
-        <label class="{{ styles.dataLabel }}" for="login">Логин:</label>
-        <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="loginInput" type="text" name="login" id="login" value="username123" disabled=true validationKey="login"}}}
-        </div>
-      </div>
-      <div class="{{ styles.dataRow }}" data-role="profile-data">
-        <label class="{{ styles.dataLabel }}" for="first_name">Имя:</label>
-        <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="firstNameInput" type="text" name="first_name" id="first_name" value="Иван" disabled=true validationKey="first_name"}}}
-        </div>
-      </div>
-      <div class="{{ styles.dataRow }}" data-role="profile-data">
-        <label class="{{ styles.dataLabel }}" for="second_name">Фамилия:</label>
-        <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="secondNameInput" type="text" name="second_name" id="second_name" value="Иванов" disabled=true validationKey="second_name"}}}
-        </div>
-      </div>
-      <div class="{{ styles.dataRow }}" data-role="profile-data">
-        <label class="{{ styles.dataLabel }}" for="display_name">Имя в чате:</label>
-        <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="displayNameInput" type="text" name="display_name" id="display_name" value="ivan_cool" disabled=true validationKey="display_name"}}}
-        </div>
-      </div>
-      <div class="{{ styles.dataRow }}" data-role="profile-data">
-        <label class="{{ styles.dataLabel }}" for="phone">Телефон:</label>
-        <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="phoneInput" type="tel" name="phone" id="phone" value="+79991234567" disabled=true validationKey="phone"}}}
-        </div>
-      </div>
-    </div>
-
-    <!-- Кнопки управления -->
-    <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
-      {{{Button ref="editDataBtn" type="button" text="Изменить данные" dataRole="btn-edit-data"}}}
-      {{{Button ref="editPasswordBtn" type="button" text="Изменить пароль" dataRole="btn-edit-password"}}}
-      {{{Button ref="logoutBtn" type="button" text="Выйти" dataRole="btn-logout"}}}
-    </div>
-<<<<<<< Updated upstream
-
-    <!-- Кнопка сохранения данных (скрыта) -->
-    <div
-      class="{{ styles.profileActions }} {{ styles.hidden }}"
-      data-role="profile-actions-save-data"
-    >
-      {{{Button ref="saveDataBtn" type="submit" text="Сохранить" dataRole="save-data"}}}
-    </div>
-  </form>
-
-=======
-    <div class="{{ styles.dataRow }}">
-      <label class="{{ styles.dataLabel }}" for="confirm_password">
-        Повторите новый пароль:
-      </label>
-      {{#input type="password" name="confirm_password" id="confirm_password" value="••••••"}}
-      {{/input}}
-=======
 <div class="{{ styles.profilePage }}">
 
   <!-- Блок 1: Аватар -->
@@ -146,7 +63,6 @@
     </div>
   </form>
 
->>>>>>> Stashed changes
   <!-- Форма 2: Пароли (скрыта) -->
   <form class="{{ styles.profileForm }} {{ styles.hidden }}" data-role="profile-form-password">
     <div class="{{ styles.profileData }}" data-role="profile-data-password">
@@ -168,23 +84,7 @@
           {{{Input ref="confirmPasswordInput" type="password" name="confirm_password" id="confirm_password" value="••••••" validationKey="confirm_password"}}}
         </div>
       </div>
-<<<<<<< Updated upstream
     </div>
-=======
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87
-    </div>
-
-<<<<<<< HEAD
-  <!-- Блок 4: Обычные кнопки -->
-  <div class="{{ styles.profileActions }}" data-role="profile-actions-normal">
-    {{#button text="Изменить данные" dataRole="btn-edit-data"}}
-    {{/button}}
-    {{#button text="Изменить пароль" dataRole="btn-edit-password"}}
-    {{/button}}
-    {{#button text="Выйти" dataRole="btn-logout"}}
-    {{/button}}
-  </div>
->>>>>>> Stashed changes
 
     <!-- Кнопка сохранения паролей (скрыта) -->
     <div
@@ -195,20 +95,4 @@
     </div>
   </form>
 
-<<<<<<< Updated upstream
 </div>
-=======
-</form>
-=======
-    <!-- Кнопка сохранения паролей (скрыта) -->
-    <div
-      class="{{ styles.profileActions }} {{ styles.hidden }}"
-      data-role="profile-actions-save-password"
-    >
-      {{{Button ref="savePasswordBtn" type="submit" text="Сохранить" dataRole="save-password"}}}
-    </div>
-  </form>
-
-</div>
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87
->>>>>>> Stashed changes

@@ -42,30 +42,14 @@
 }
 
 .title {
-<<<<<<< Updated upstream:src/shared/ui/chat-list/chat-list.module.css
   font-family: Caveat, cursive;
-=======
-<<<<<<< HEAD:src/shared/ui/chat-item/chat-item.module.css
-  font-family: "Caveat", cursive;
-=======
-  font-family: Caveat, cursive;
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87:src/shared/ui/chat-list/chat-list.module.css
->>>>>>> Stashed changes:src/shared/ui/chat-item/chat-item.module.css
   font-weight: 500;
   font-size: 1.375rem;
   color: #000;
 }
 
 .time {
-<<<<<<< Updated upstream:src/shared/ui/chat-list/chat-list.module.css
   font-family: Caveat, cursive;
-=======
-<<<<<<< HEAD:src/shared/ui/chat-item/chat-item.module.css
-  font-family: "Caveat", cursive;
-=======
-  font-family: Caveat, cursive;
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87:src/shared/ui/chat-list/chat-list.module.css
->>>>>>> Stashed changes:src/shared/ui/chat-item/chat-item.module.css
   font-weight: 400;
   font-size: 1rem;
   color: #808080;
@@ -79,30 +63,14 @@
 }
 
 .author {
-<<<<<<< Updated upstream:src/shared/ui/chat-list/chat-list.module.css
   font-family: Caveat, cursive;
-=======
-<<<<<<< HEAD:src/shared/ui/chat-item/chat-item.module.css
-  font-family: "Caveat", cursive;
-=======
-  font-family: Caveat, cursive;
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87:src/shared/ui/chat-list/chat-list.module.css
->>>>>>> Stashed changes:src/shared/ui/chat-item/chat-item.module.css
   font-weight: 500;
   font-size: 1rem;
   color: #000;
 }
 
 .lastText {
-<<<<<<< Updated upstream:src/shared/ui/chat-list/chat-list.module.css
   font-family: Caveat, cursive;
-=======
-<<<<<<< HEAD:src/shared/ui/chat-item/chat-item.module.css
-  font-family: "Caveat", cursive;
-=======
-  font-family: Caveat, cursive;
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87:src/shared/ui/chat-list/chat-list.module.css
->>>>>>> Stashed changes:src/shared/ui/chat-item/chat-item.module.css
   font-weight: 400;
   font-size: 1rem;
   color: #808080;
@@ -119,15 +87,7 @@
   min-width: 1.5rem;
   height: 1.5rem;
   padding: 0 0.375rem;
-<<<<<<< Updated upstream:src/shared/ui/chat-list/chat-list.module.css
   font-family: Caveat, cursive;
-=======
-<<<<<<< HEAD:src/shared/ui/chat-item/chat-item.module.css
-  font-family: "Caveat", cursive;
-=======
-  font-family: Caveat, cursive;
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87:src/shared/ui/chat-list/chat-list.module.css
->>>>>>> Stashed changes:src/shared/ui/chat-item/chat-item.module.css
   font-weight: 500;
   font-size: 0.875rem;
   color: #fff;
