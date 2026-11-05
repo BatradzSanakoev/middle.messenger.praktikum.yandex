@@ -24,8 +24,9 @@ dist-ssr
 *.sw?
 
 AGENTS.md
-CHANGES_1.md
-CHANGES_2.md
+SPRINT_1.md
+SPRINT_2.md
+SPRINT_3.md
 PLAN.md
 
 # Vite CSS modules
