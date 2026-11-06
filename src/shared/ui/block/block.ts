@@ -73,6 +73,16 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     this.unmountComponent();
   }
 
+  // Скрыть компонент (display: none)
+  public hide(): void {
+    (this.domElement as HTMLElement)?.style.setProperty("display", "none");
+  }
+
+  // Показать компонент (убираем display: none)
+  public show(): void {
+    (this.domElement as HTMLElement)?.style.removeProperty("display");
+  }
+
   // Вешает обработчики событий из this.events на domElement
   private attachListeners(): void {
     for (const eventName in this.events) {

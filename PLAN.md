@@ -20,10 +20,15 @@
 - ✅ Создать `src/features/api/endpoints/index.ts` — экспорт API-классов
 - ✅ Обновить `src/features/api/index.ts` — экспорт всех API-классов
 
-## Шаг 3: Хранилище состояния (Store) и HOC connect
-- Создать `src/utils/store/store.ts` — Singleton Store с `getState`, `setState`, `subscribe`, `emit`
-- Создать `src/utils/store/connect.ts` — HOC `connect(mapStateToProps)` с оптимизацией через `isEqual`
-- Создать `src/utils/isEqual.ts` — утилита сравнения объектов
+## Шаг 3: Хранилище состояния (Store) и HOC connect ✅ ВЫПОЛНЕНО
+- ✅ Создать `src/shared/utils/isEqual.ts` — рекурсивное сравнение объектов
+- ✅ Создать `src/shared/utils/merge.ts` — иммутабельное объединение объектов
+- ✅ Создать `src/shared/utils/set.ts` — установка значения по вложенному пути
+- ✅ Создать `src/shared/utils/types.ts` — тип `Indexed<T>`
+- ✅ Создать `src/shared/utils/store/store.ts` — Singleton Store с `getState`, `setState`, `subscribe`, `emit`
+- ✅ Создать `src/shared/utils/store/connect.ts` — HOC `connect(mapStateToProps)` с оптимизацией через `isEqual`
+- ✅ Создать `src/shared/utils/store/index.ts` — экспорт `store` и `connect`
+- ✅ Обновить `src/shared/utils/index.ts` — экспорт всех утилит
 
 ## Шаг 4: Роутер
 - Создать `src/features/router/router.ts` — класс `Router` (Singleton)
