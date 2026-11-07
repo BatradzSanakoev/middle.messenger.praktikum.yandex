@@ -39,8 +39,12 @@ export class RegisterPage extends Block<RegisterProps> {
           email: formData.get("email") as string,
           phone: formData.get("phone") as string,
           password: formData.get("password") as string,
-        }).catch(() => {
-          Router.getInstance().go("/500");
+        }).catch((err) => {
+          if (err?.reason === "User already in system") {
+            Router.getInstance().go("/messenger");
+          } else {
+            Router.getInstance().go("/500");
+          }
         });
       },
       // Обработчик клика по ссылке "Войти" — переход на страницу логина

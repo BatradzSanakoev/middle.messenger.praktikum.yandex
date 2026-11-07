@@ -13,6 +13,24 @@
   gap: 2rem;
   padding: 2rem;
   max-width: 25rem;
+  position: relative;
+}
+
+.backToChat {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: var(--color-black);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.backToChat:hover {
+  opacity: 1;
 }
 
 .profileForm {

@@ -1,6 +1,9 @@
 <div class="{{ styles.page }}">
   <aside class="{{ styles.sidebar }}">
-    <div class="{{ styles.sidebarTitle }}">Чаты</div>
+    <div class="{{ styles.sidebarTitle }}">
+      Чаты
+      <a class="{{ styles.profileLink }}" href="/settings">Профиль</a>
+    </div>
     {{{ChatList ref="chatList" chats=chats}}}
   </aside>
   <div class="{{ styles.main }}">

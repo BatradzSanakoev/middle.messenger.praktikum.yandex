@@ -33,8 +33,12 @@ export class LoginPage extends Block<LoginProps> {
         
         const formData = new FormData(form);
         AuthController.signin(formData.get("login") as string, formData.get("password") as string)
-          .catch(() => {
-            Router.getInstance().go("/500");
+          .catch((err) => {
+            if (err?.reason === "User already in system") {
+              Router.getInstance().go("/messenger");
+            } else {
+              Router.getInstance().go("/500");
+            }
           });
       },
       // Обработчик клика по ссылке "Зарегистрироваться" — переход на страницу регистрации
