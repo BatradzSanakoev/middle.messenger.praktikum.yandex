@@ -1,1 +1,1 @@
-export { ChatPage } from "./chat";
+export { ConnectedChatPage as ChatPage } from "./chat";

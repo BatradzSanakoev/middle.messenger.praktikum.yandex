@@ -20,6 +20,7 @@ export class ProfileAvatar extends Block<ProfileAvatarData> {
 
   // Конструктор: создаёт аватар с переданным URL
   constructor(props: ProfileAvatarData) {
+    console.log("ProfileAvatar constructor — avatarUrl:", props.avatarUrl);
     super({ ...props, styles: profileAvatarStyles });
   }
 }

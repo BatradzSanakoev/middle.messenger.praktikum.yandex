@@ -1,5 +1,7 @@
 import { Block } from "@shared/ui/block";
 import { validateForm } from "@features";
+import { AuthController } from "@features/controllers";
+import { Router } from "@features/router";
 
 import styles from "./login.module.css";
 import template from "./login.hbs?raw";
@@ -18,15 +20,30 @@ export class LoginPage extends Block<LoginProps> {
   // Handlebars-шаблон страницы
   protected template = template;
 
-  // Конструктор: инициализирует обработчик сабмита формы
+  // Конструктор: инициализирует обработчики событий
   constructor() {
     super({ styles });
     this.events = {
-      // Обработчик отправки формы — валидация и сбор данных
+      // Обработчик отправки формы — валидация и вызов контроллера авторизации
       submit: (e: Event) => {
         e.preventDefault();
         const form = this.element() as HTMLFormElement;
-        validateForm(form);
+        
+        if (!validateForm(form)) return;
+        
+        const formData = new FormData(form);
+        AuthController.signin(formData.get("login") as string, formData.get("password") as string)
+          .catch(() => {
+            Router.getInstance().go("/500");
+          });
+      },
+      // Обработчик клика по ссылке "Зарегистрироваться" — переход на страницу регистрации
+      click: (e: Event) => {
+        const target = e.target as HTMLElement;
+        const registerLink = target.closest('[data-ref="registerLink"]');
+        if (registerLink) {
+          Router.getInstance().go("/sign-up");
+        }
       },
     };
   }

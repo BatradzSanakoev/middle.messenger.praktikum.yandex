@@ -26,7 +26,10 @@ export class Router {
 	 * Гарантирует создание только одного экземпляра.
 	 */
 	static getInstance(): Router {
-		return new Router();
+		if (!Router.__instance) {
+			Router.__instance = new Router();
+		}
+		return Router.__instance;
 	}
 
 	/**
@@ -68,15 +71,21 @@ export class Router {
 
 	/**
 	 * Обработать переход на маршрут:
-	 * - Скрыть текущую страницу
+	 * - Скрыть все страницы
 	 * - Показать новую
+	 * - Если маршрут не найден — перейти на страницу 404
 	 */
 	private _onRoute(pathname: string): void {
 		const route = this.getRoute(pathname);
-		if (!route) return;
+		if (!route) {
+			// Маршрут не найден — перейти на страницу 404
+			this.go("/404");
+			return;
+		}
 
-		if (this.currentRoute) {
-			this.currentRoute.leave();
+		// Скрываем все маршруты
+		for (const r of this.routes) {
+			r.hide();
 		}
 
 		route.render();

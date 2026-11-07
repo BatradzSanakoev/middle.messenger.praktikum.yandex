@@ -1,20 +1,32 @@
 import { store } from "@/shared/utils";
-import { UserAPI } from "../api";
+import { UserAPI, AuthAPI } from "../api";
 
 import type { UserResponse, SearchUser, ProfileData, PasswordData } from "../api";
 
 const userAPI = new UserAPI();
+const authAPI = new AuthAPI();
 
 /**
  * Контроллер пользователя — управление профилем, паролем, аватаром, поиском.
  */
 export class UserController {
   /**
-   * Получение профиля пользователя.
+   * Получение профиля текущего пользователя.
+   * - Запрашивает данные через /auth/user (без ID)
+   * - Сохраняет в Store
+   */
+  static async getProfile(): Promise<UserResponse> {
+    const user = await authAPI.getUser();
+    store.setState("user", user);
+    return user;
+  }
+
+  /**
+   * Получение профиля пользователя по ID.
    * - Запрашивает данные по ID
    * - Сохраняет в Store
    */
-  static async getProfile(userId: number): Promise<UserResponse> {
+  static async getProfileById(userId: number): Promise<UserResponse> {
     const user = await userAPI.get(userId);
     store.setState("user", user);
     return user;
@@ -36,8 +48,8 @@ export class UserController {
    * - Отправляет старый и новый пароль
    * - Возвращает результат (без изменения Store)
    */
-  static async updatePassword(data: PasswordData): Promise<unknown> {
-    return userAPI.password(data);
+  static async updatePassword(data: { oldPassword: string; newPassword: string }): Promise<unknown> {
+    return userAPI.password(data as PasswordData);
   }
 
   /**

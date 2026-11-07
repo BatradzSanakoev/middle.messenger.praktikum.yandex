@@ -61,8 +61,8 @@ export interface ProfileData {
 }
 
 export interface PasswordData {
-  old_password: string;
-  new_password: string;
+  oldPassword: string;
+  newPassword: string;
 }
 
 export interface UserResponse {

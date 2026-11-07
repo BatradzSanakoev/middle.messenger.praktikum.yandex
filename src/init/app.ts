@@ -1,6 +1,7 @@
 import { registerComponent } from "@shared/ui/block";
 import { Button, ChatList, Input, Link, Modal, ProfileAvatar } from "@shared/ui";
 import { Router } from "@features/router";
+import { AuthController } from "@features";
 
 import {
   ChatPage,
@@ -87,5 +88,8 @@ export class App {
 
     // Запускаем роутер с контейнером main
     router.start(main);
+
+    // Проверяем авторизацию — загружаем данные пользователя при старте
+    AuthController.checkAuth();
   }
 }

@@ -50,7 +50,7 @@ export class Route {
 	 * - Если не создан → создаёт и вставляет в DOM
 	 * - Если уже создан → просто показывает
 	 */
-	render(): void {
+		render(): void {
 		if (!this.block) {
 			// Block — абстрактный класс, но blockClass — это конкретный наследник (LoginPage, ChatPage и т.д.)
 			// Поэтому используем as any для обхода проверки абстрактности
@@ -61,6 +61,17 @@ export class Route {
 			return;
 		}
 
+		// При повторном переходе на страницу — вызываем onEnter и показываем компонент
+		(this.block as any).onEnter();
 		this.block.show();
+	}
+
+	/**
+	 * Скрывает текущий компонент (вызывается при уходе со страницы).
+	 */
+	hide(): void {
+		if (this.block) {
+			this.block.hide();
+		}
 	}
 }

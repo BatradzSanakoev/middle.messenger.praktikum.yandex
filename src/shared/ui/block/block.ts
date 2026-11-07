@@ -50,6 +50,9 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   // Хук: вызывается после монтирования компонента в DOM (переопределяется в наследниках)
   protected componentDidMount(): void {}
 
+  // Хук: вызывается при каждом переходе на страницу (переопределяется в наследниках)
+  protected onEnter(): void {}
+
   // Привязка обработчиков событий и вызов componentDidMount
   private mountComponent(): void {
     this.attachListeners();

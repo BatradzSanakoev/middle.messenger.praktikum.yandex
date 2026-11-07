@@ -1,6 +1,8 @@
 import { METHODS, queryString, isPlainObject } from "./lib";
 import type { RequestOptions, ApiError, AbortError, NetworkError, TimeoutError } from "./lib";
 
+const BASE_URL = "https://ya-praktikum.tech/api/v2";
+
 /**
  * Класс для отправки HTTP-запросов через XHR.
  * Поддерживает методы GET, POST, PUT, DELETE.
@@ -47,7 +49,13 @@ export class HTTPTransport {
       const isGet = method === METHODS.GET;
 
       // Для GET с data — добавляем query string в URL
-      const finalUrl = isGet && isPlainObject(data) ? `${url}${queryString(data)}` : url;
+      let finalUrl = isGet && isPlainObject(data) ? `${BASE_URL}${url}${queryString(data)}` : `${BASE_URL}${url}`;
+
+      // Отключаем кэширование для GET-запросов — добавляем timestamp
+      if (isGet) {
+        finalUrl += `${finalUrl.includes("?") ? "&" : "?"}_t=${Date.now()}`;
+      }
+
       xhr.open(method, finalUrl);
 
       // Устанавливаем тип ответа, если указан
