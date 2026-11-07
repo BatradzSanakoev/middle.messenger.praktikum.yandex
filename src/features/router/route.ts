@@ -8,7 +8,7 @@ import { render } from "../../shared/utils/renderDOM";
 export class Route {
 	private pathname: string;           // URL-путь (например, '/messenger')
 	private blockClass: typeof Block;   // Класс компонента (например, ChatPage)
-	private block: Block | null;        // Экземпляр компонента
+	public block: Block | null;         // Экземпляр компонента
 	private rootElement: Element;       // DOM-контейнер
 
 	/**

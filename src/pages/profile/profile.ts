@@ -8,7 +8,7 @@ import styles from "./profile.module.css";
 import template from "./profile.hbs?raw";
 
 import type { BlockOwnProps } from "@shared/ui/block";
-import { store, connect } from "@/shared/utils";
+import { connect } from "@/shared/utils";
 
 // Пропсы страницы профиля
 interface ProfileProps extends BlockOwnProps {
@@ -123,8 +123,6 @@ export class ProfilePage extends Block<ProfileProps> {
 
   // Вызывается при каждом переходе на страницу — загружает профиль из контроллера
   protected onEnter(): void {
-    const user = store.getState().user as ProfileProps["user"] | undefined;
-
     UserController.getProfile().catch(() => {
       Router.getInstance().go("/500");
     });
