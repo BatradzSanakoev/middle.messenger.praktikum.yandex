@@ -10,6 +10,7 @@ export class Router {
 	private routes: Route[] = [];           // Зарегистрированные маршруты
 	private history: History = window.history; // History API
 	private currentRoute: Route | null = null; // Текущий маршрут
+	private rootElement: Element = document.body as Element; // Контейнер для рендера страниц
 
 	// Singleton — один экземпляр на всё приложение
 	private constructor() {
@@ -17,6 +18,7 @@ export class Router {
 			return Router.__instance;
 		}
 		Router.__instance = this;
+		this.rootElement = document.body;
 	}
 
 	/**
@@ -31,8 +33,11 @@ export class Router {
 	 * Зарегистрировать маршрут.
 	 * Позволяет chaining: router.use(...).use(...).
 	 */
-	use(pathname: string, blockClass: typeof Block): Router {
-		const route = new Route(pathname, blockClass, document.body);
+	use<Props extends object>(
+		pathname: string,
+		blockClass: new (props?: Props) => Block
+	): Router {
+		const route = new Route(pathname, blockClass as typeof Block, this.rootElement);
 		this.routes.push(route);
 		return this;
 	}
@@ -41,8 +46,17 @@ export class Router {
 	 * Запустить роутер:
 	 * - Подписаться на изменения URL (кнопки «Назад»/«Вперёд»)
 	 * - Показать страницу по текущему URL
+	 * - Если передан контейнер — рендерить в него, иначе в document.body
 	 */
-	start(): void {
+	start(rootElement?: Element): void {
+		// Если передан контейнер — используем его и обновляем у всех маршрутов
+		if (rootElement) {
+			this.rootElement = rootElement;
+			for (const route of this.routes) {
+				route.setRootElement(rootElement);
+			}
+		}
+
 		// При изменении URL — обрабатываем переход
 		window.onpopstate = () => {
 			this._onRoute(window.location.pathname);

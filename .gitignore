@@ -23,11 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-AGENTS.md
-SPRINT_1.md
-SPRINT_2.md
-SPRINT_3.md
-PLAN.md
 
 # Vite CSS modules
 *.module.css.json

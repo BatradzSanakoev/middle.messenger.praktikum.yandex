@@ -2,7 +2,7 @@ import type { Block } from "../ui/block";
 
 /**
  * Вставляет компонент Block в DOM-контейнер.
- * Очищает контейнер и добавляет DOM-элемент компонента.
+ * Заменяет активный дочерний элемент, сохраняя скрытые компоненты в DOM.
  */
 export function render(rootElement: Element | null, component: Block): void {
 	if (!rootElement) return;
@@ -10,6 +10,5 @@ export function render(rootElement: Element | null, component: Block): void {
 	const element = component.element();
 	if (!element) return;
 
-	rootElement.innerHTML = "";
 	rootElement.appendChild(element);
 }

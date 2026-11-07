@@ -30,12 +30,16 @@
 - ✅ Создать `src/shared/utils/store/index.ts` — экспорт `store` и `connect`
 - ✅ Обновить `src/shared/utils/index.ts` — экспорт всех утилит
 
-## Шаг 4: Роутер
-- Создать `src/features/router/router.ts` — класс `Router` (Singleton)
-- Создать `src/features/router/route.ts` — класс `Route`
-- Создать `src/utils/renderDOM.ts` — утилита для вставки компонента в DOM
-- Подключение всех страниц как маршрутов в `app.ts`
-- Обработка `pushState`, `onpopstate`, перезагрузки
+## Шаг 4: Роутер ✅ ВЫПОЛНЕНО
+- ✅ Создать `src/shared/utils/renderDOM.ts` — утилита для вставки компонента в DOM
+- ✅ Создать `src/features/router/route.ts` — класс `Route` (маршрут: URL + компонент)
+- ✅ Создать `src/features/router/router.ts` — класс `Router` (Singleton, управление маршрутами)
+- ✅ Создать `src/features/router/index.ts` — экспорт `Router`, `Route`
+- ✅ Обновить `src/features/index.ts` — экспорт роутера
+- ✅ Обновить `src/init/app.ts` — подключение роутера, замена hash-роутинга на real paths
+- ✅ Маршруты: `/` → `LoginPage`, `/sign-up` → `RegisterPage`, `/settings` → `ProfilePage`, `/messenger` → `ChatPage`, `/404` → `Error404Page`, `/500` → `Error500Page`
+- ✅ Исправление бага: замена `replaceChild` на `appendChild` в `renderDOM.ts` (страницы остаются в DOM, переключение через `display: none`)
+- ✅ Исправление TypeScript-ошибок в `route.ts` и `router.ts`
 
 ## Шаг 5: Контроллеры (MVC)
 - **AuthController** — логика входа, регистрации, выхода (валидация, вызов API, обновление Store, роутинг)
@@ -43,31 +47,23 @@
 - **ChatController** — получение списка чатов, поиск пользователей, управление чатами
 - Контроллеры НЕ вызывают API напрямую — через API-классы
 
-## Шаг 6: Маршруты
-- `/` → `LoginPage`
-- `/sign-up` → `RegisterPage`
-- `/settings` → `ProfilePage`
-- `/messenger` → `ChatPage`
-- `/404` → `Error404Page`
-- `/500` → `Error500Page`
-
-## Шаг 7: Интеграция с API на страницах
+## Шаг 6: Интеграция с API на страницах
 - **LoginPage:** вызов `AuthController.login()` при отправке формы
 - **RegisterPage:** вызов `AuthController.register()` при отправке формы
 - **ChatPage:** вызов `ChatController.getChats()` при монтировании
 - **ProfilePage:** вызов `UserController` для обновления данных/пароля/аватара
 - Кнопка выхода → `AuthController.logout()` → переход на `/`
 
-## Шаг 8: Работа с файлами
+## Шаг 7: Работа с файлами
 - Загрузка аватара пользователя — `PUT /user/profile/avatar` с `FormData`
 - Загрузка аватара чата — `PUT /chats/avatar` с `FormData`
 
-## Шаг 9: Обновление страниц
+## Шаг 8: Обновление страниц
 - Убрать мок-данные, подгружать реальные через API
 - Обработка ошибок (переход на `/404` или `/500` при ошибках)
 - Сохранение состояния авторизации при перезагрузке (`GET /auth/user`)
 - Подписка компонентов на Store через `connect`
 
-## Шаг 10: Обновление документации
+## Шаг 9: Обновление документации
 - Обновить `README.md` с информацией о роутинге, API, HTTP-классе, Store, контроллерах
 - Добавить ссылку на развёрнутую версию в Netlify
