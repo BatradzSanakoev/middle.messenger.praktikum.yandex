@@ -15,7 +15,6 @@ export class ChatController {
    */
   static async getChats(): Promise<ChatResponse[]> {
     const chats = await chatAPI.get();
-    console.log("ChatController.getChats response:", chats);
     store.setState("chats", chats);
     return chats;
   }

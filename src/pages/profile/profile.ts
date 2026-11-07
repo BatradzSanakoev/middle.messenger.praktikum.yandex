@@ -29,7 +29,6 @@ const BASE_URL = "https://ya-praktikum.tech";
 
 const mapStateToProps = (state: Record<string, unknown>) => {
   const user = state.user as ProfileProps["user"] | undefined;
-  console.log("ProfilePage mapStateToProps — user.avatar:", user?.avatar);
   return {
     user: user
       ? {
@@ -125,7 +124,6 @@ export class ProfilePage extends Block<ProfileProps> {
   // Вызывается при каждом переходе на страницу — загружает профиль из контроллера
   protected onEnter(): void {
     const user = store.getState().user as ProfileProps["user"] | undefined;
-    console.log("ProfilePage.onEnter — user from store:", user);
 
     UserController.getProfile().catch(() => {
       Router.getInstance().go("/500");

@@ -61,9 +61,9 @@ export class Route {
 			return;
 		}
 
-		// При повторном переходе на страницу — вызываем onEnter и показываем компонент
+		// При повторном переходе на страницу — вызываем onEnter и перемещаем DOM в контейнер
 		(this.block as any).onEnter();
-		this.block.show();
+		render(this.rootElement, this.block);
 	}
 
 	/**

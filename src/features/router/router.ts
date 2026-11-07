@@ -71,7 +71,7 @@ export class Router {
 
 	/**
 	 * Обработать переход на маршрут:
-	 * - Скрыть все страницы
+	 * - Удалить DOM-элемент предыдущей страницы
 	 * - Показать новую
 	 * - Если маршрут не найден — перейти на страницу 404
 	 */
@@ -83,9 +83,9 @@ export class Router {
 			return;
 		}
 
-		// Скрываем все маршруты
-		for (const r of this.routes) {
-			r.hide();
+		// Удаляем DOM-элемент предыдущей страницы из контейнера
+		if (this.currentRoute && this.currentRoute !== route) {
+			this.currentRoute.block?.element()?.remove();
 		}
 
 		route.render();
