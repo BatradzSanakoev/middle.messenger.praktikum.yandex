@@ -300,11 +300,34 @@ src/
   - `private rootElement: Element` инициализирован сразу `document.body as Element`
   - Убрано предупреждение о необязательной инициализации свойства
 
-### Шаг 5: Контроллеры (MVC)
+### Шаг 5: Контроллеры (MVC) ✅ ВЫПОЛНЕНО
 
-- **AuthController** — логика входа, регистрации, выхода (валидация, вызов API, обновление Store, роутинг)
-- **UserController** — обновление профиля, пароля, аватара
-- **ChatController** — получение списка чатов, поиск пользователей, управление чатами
+- **AuthController** — `src/features/controllers/auth-controller.ts`:
+  - `signin(login, password)` — вход, сохраняет user в Store, редирект на `/messenger`
+  - `signup(data)` — регистрация, сохраняет user в Store, редирект на `/messenger`
+  - `logout()` — выход, очищает user из Store, редирект на `/`
+  - `checkAuth()` — проверка авторизации, если не авторизован — редирект на `/`
+  - Все методы `async/await`
+
+- **UserController** — `src/features/controllers/user-controller.ts`:
+  - `getProfile(userId)` — получение профиля, сохраняет в Store
+  - `updateProfile(data)` — обновление данных профиля, обновляет Store
+  - `updatePassword(data)` — обновление пароля (без изменения Store)
+  - `updateAvatar(avatar)` — обновление аватара, обновляет Store
+  - `searchUsers(login)` — поиск пользователей
+
+- **ChatController** — `src/features/controllers/chat-controller.ts`:
+  - `getChats()` — получение списка чатов, сохраняет в Store
+  - `createChat(data)` — создание чата, обновляет список в Store
+  - `deleteChat(chatId)` — удаление чата, обновляет список в Store
+  - `getChatUsers(chatId)` — получение пользователей чата
+  - `getUnreadCount(chatId)` — получение количества непрочитанных
+  - `addUserToChat(userId, chatId)` — добавление пользователя в чат
+  - `removeUserFromChat(userId, chatId)` — удаление пользователя из чата
+
+- Экспорты: `src/features/controllers/index.ts` → `src/features/index.ts`
+- Импорт из `features/api` — относительные пути (`../api`), из `shared` — алиас `@shared/`
+- Исправление TypeScript-ошибок: приведение типов `store.getState().chats as ChatResponse[]`, `await` вместо `return` для `addUser`/`removeUser`
 
 ### Шаг 6: Интеграция с API на страницах
 

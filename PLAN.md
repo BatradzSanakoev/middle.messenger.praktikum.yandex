@@ -41,11 +41,15 @@
 - ✅ Исправление бага: замена `replaceChild` на `appendChild` в `renderDOM.ts` (страницы остаются в DOM, переключение через `display: none`)
 - ✅ Исправление TypeScript-ошибок в `route.ts` и `router.ts`
 
-## Шаг 5: Контроллеры (MVC)
-- **AuthController** — логика входа, регистрации, выхода (валидация, вызов API, обновление Store, роутинг)
-- **UserController** — обновление профиля, пароля, аватара
-- **ChatController** — получение списка чатов, поиск пользователей, управление чатами
-- Контроллеры НЕ вызывают API напрямую — через API-классы
+## Шаг 5: Контроллеры (MVC) ✅ ВЫПОЛНЕНО
+- ✅ Создать `src/features/controllers/auth-controller.ts` — `signin`, `signup`, `logout`, `checkAuth`
+- ✅ Создать `src/features/controllers/user-controller.ts` — `getProfile`, `updateProfile`, `updatePassword`, `updateAvatar`, `searchUsers`
+- ✅ Создать `src/features/controllers/chat-controller.ts` — `getChats`, `createChat`, `deleteChat`, `getChatUsers`, `getUnreadCount`, `addUserToChat`, `removeUserFromChat`
+- ✅ Создать `src/features/controllers/index.ts` — экспорт контроллеров
+- ✅ Обновить `src/features/index.ts` — экспорт контроллеров
+- ✅ Использование алиасов: `@shared/` для shared, относительные пути для `features/api`
+- ✅ Все методы `async/await`
+- ✅ Контроллеры НЕ вызывают API напрямую — через API-классы
 
 ## Шаг 6: Интеграция с API на страницах
 - **LoginPage:** вызов `AuthController.login()` при отправке формы
