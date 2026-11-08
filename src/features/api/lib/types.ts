@@ -19,7 +19,7 @@ export interface BaseError {
 export interface ApiError extends BaseError {
   status: number;
   statusText: string;
-  response: string;
+  response: unknown;
 }
 
 export interface AbortError extends BaseError {

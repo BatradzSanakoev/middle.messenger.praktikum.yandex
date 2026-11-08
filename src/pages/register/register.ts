@@ -40,7 +40,7 @@ export class RegisterPage extends Block<RegisterProps> {
           phone: formData.get("phone") as string,
           password: formData.get("password") as string,
         }).catch((err) => {
-          if (err?.reason === "User already in system") {
+          if (err?.response?.reason === "User already in system") {
             Router.getInstance().go("/messenger");
           } else {
             Router.getInstance().go("/500");

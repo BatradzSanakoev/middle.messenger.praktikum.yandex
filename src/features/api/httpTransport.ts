@@ -49,7 +49,10 @@ export class HTTPTransport {
       const isGet = method === METHODS.GET;
 
       // Для GET с data — добавляем query string в URL
-      let finalUrl = isGet && isPlainObject(data) ? `${BASE_URL}${url}${queryString(data)}` : `${BASE_URL}${url}`;
+      let finalUrl =
+        isGet && isPlainObject(data)
+          ? `${BASE_URL}${url}${queryString(data)}`
+          : `${BASE_URL}${url}`;
 
       // Отключаем кэширование для GET-запросов — добавляем timestamp
       if (isGet) {
@@ -91,10 +94,25 @@ export class HTTPTransport {
 
           resolve(response as T);
         } else {
+          // Парсим JSON из ответа сервера перед rejection
+          let responseData: unknown;
+          try {
+            const contentType = xhr.getResponseHeader("Content-Type");
+            if (contentType && contentType.includes("application/json")) {
+              // Распарсить JSON → объект, а не строка
+              responseData = JSON.parse(xhr.responseText);
+            } else {
+              responseData = xhr.responseText;
+            }
+          } catch {
+            // Если парсинг не удался — оставляем строку
+            responseData = xhr.responseText;
+          }
+
           reject({
             status: xhr.status,
             statusText: xhr.statusText,
-            response: xhr.responseText,
+            response: responseData,
             request: xhr,
           } satisfies ApiError);
         }
