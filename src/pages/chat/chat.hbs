@@ -1,12 +1,22 @@
 <div class="{{ styles.page }}">
   <aside class="{{ styles.sidebar }}">
     <div class="{{ styles.sidebarTitle }}">
-      Чаты
+      <span>Чаты</span>
+      <button class="{{ styles.createBtn }}" data-ref="createChatBtn">Создать</button>
       <a class="{{ styles.profileLink }}" href="/settings">Профиль</a>
     </div>
     {{{ChatList ref="chatList" chats=chats}}}
   </aside>
   <div class="{{ styles.main }}">
+    <div class="{{ styles.mainHeader }}" data-role="mainHeader">
+      <span class="{{ styles.usersList }}" data-role="usersList"></span>
+      {{#if selectedChatId}}
+        <div class="{{ styles.actionButtons }}">
+          <button class="{{ styles.addUserBtn }}" data-ref="addUserBtn">Добавить участника</button>
+          <button class="{{ styles.addUserBtn }}" data-ref="removeUserBtn">Удалить участника</button>
+        </div>
+      {{/if}}
+    </div>
     <div class="{{ styles.emptyState }}">
       <p class="{{ styles.emptyText }}">Выберите чат, чтобы отправить сообщение</p>
     </div>

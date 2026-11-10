@@ -100,6 +100,7 @@ export interface ChatUser {
   phone: string;
   display_name: string;
   avatar: string;
+  role?: string;
 }
 
 export interface ChatResponse {

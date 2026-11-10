@@ -31,11 +31,11 @@ export class ChatAPI {
     return this.transport.get<UnreadCountResponse>(`/chats/new/${id}`);
   }
 
-  addUser(data: { users: number[]; id: number }): Promise<unknown> {
+  addUser(data: { users: number[]; chatId: number }): Promise<unknown> {
     return this.transport.put('/chats/users', { data });
   }
 
-  removeUser(data: { users: number[]; id: number }): Promise<unknown> {
+  removeUser(data: { users: number[]; chatId: number }): Promise<unknown> {
     return this.transport.delete('/chats/users', { data });
   }
 

@@ -25,7 +25,7 @@ interface ProfileProps extends BlockOwnProps {
 }
 
 // Карта данных из Store в props компонента
-const BASE_URL = "https://ya-praktikum.tech";
+const AVATAR_BASE_URL = "https://ya-praktikum.tech/api/v2/resources";
 
 const mapStateToProps = (state: Record<string, unknown>) => {
   const user = state.user as ProfileProps["user"] | undefined;
@@ -33,7 +33,11 @@ const mapStateToProps = (state: Record<string, unknown>) => {
     user: user
       ? {
           ...user,
-          avatar: user.avatar ? `${BASE_URL}${user.avatar}` : "",
+          avatar: user.avatar
+            ? user.avatar.startsWith("http")
+              ? user.avatar
+              : `${AVATAR_BASE_URL}${user.avatar}`
+            : "",
         }
       : undefined,
     styles,
@@ -57,6 +61,17 @@ export class ProfilePage extends Block<ProfileProps> {
       // Обработчик кликов: определяет какая кнопка нажата по data-role
       click: (e: Event) => {
         const target = e.target as HTMLElement;
+
+        // Обработчик клика на аватар
+        const avatarWrapper = target.closest('[data-role="avatar-wrapper"]');
+        if (avatarWrapper) {
+          if (!this.modal) {
+            this.modal = new ProfileModal();
+          }
+          this.modal.show();
+          return;
+        }
+
         const role = target.getAttribute("data-role");
 
         // Кнопка "Изменить данные" — разблокирует поля данных
@@ -144,20 +159,6 @@ export class ProfilePage extends Block<ProfileProps> {
     if (dataForm) dataForm.classList.remove(styles.hidden);
     if (actionsSavePassword) actionsSavePassword.classList.add(styles.hidden);
     if (actionsNormal) actionsNormal.classList.remove(styles.hidden);
-  }
-
-  // Метод жизненного цикла — вешает обработчик клика на аватар
-  protected componentDidMount(): void {
-    const avatarWrapper = this.element()?.querySelector('[data-role="avatar-wrapper"]');
-    if (avatarWrapper) {
-      avatarWrapper.addEventListener("click", () => {
-        // Создаём модалку при первом клике
-        if (!this.modal) {
-          this.modal = new ProfileModal();
-        }
-        this.modal.show();
-      });
-    }
   }
 
   // Уничтожение компонента — закрываем модалку аватара

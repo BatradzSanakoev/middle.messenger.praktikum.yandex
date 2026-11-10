@@ -242,3 +242,29 @@ src/
 ### Шаг 12: Обновление документации
 
 - **README.md** — добавлены разделы: Роутинг, HTTP-класс, API-классы, Store, HOC connect, Контроллеры
+
+### Шаг 13: Исправления и доработки (финализация)
+
+- **Block.ts:** добавлен флаг `_isFirstMount` — `componentDidMount` вызывается только при первом монтировании, предотвращает дублирование запросов при ре-рендере через `connect`
+- **Block.ts:** `setProps` больше не сбрасывает `__children` и `__refs` — вложенные компоненты сохраняются при ре-рендере
+- **Block.ts:** `compile()` вызывает `embed` для вставки вложенных компонентов в placeholder'ы
+- **registerComponent.ts:** добавлена вставка DOM-элемента вложенного компонента в placeholder через `embed`
+- **ChatPage:** визуальное выделение выбранного чата — `selectedChatId` сохраняется в Store, `isSelected` вычисляется в `mapStateToProps`
+- **ChatPage:** запрос на участников чата отправляется при каждом выборе чата (убрано кэширование в `loadedChatUsers`)
+- **ChatPage:** участники сохраняются в Store под ключом `chatUsers` — обновляются при добавлении/удалении участника
+- **ChatPage:** фильтрация текущего пользователя (role === 'admin') из списка участников — показывается "В чате нет участников"
+- **ChatPage:** кнопки "Добавить/Удалить участника" скрыты, пока чат не выбран (`{{#if selectedChatId}}`)
+- **ChatPage:** сброс выбранного чата при переходе на другую страницу (`onEnter` сбрасывает `selectedChatId` и `chatUsers` в Store)
+- **ChatPage:** кнопки "Добавить/Удалить участника" с отступом `gap: 1rem` через `.actionButtons`
+- **ChatPage:** высота боковой панели и верхней панели синхронизирована (`height: 4rem`)
+- **AddUserModal:** обновление списка участников после добавления — данные запрашиваются заново и сохраняются в Store
+- **RemoveUserModal:** новый компонент для удаления участника — поиск по логину в текущем списке участников, удаление через `ChatController.removeUserFromChat`
+- **ChatAPI:** `addUser` — поле `id` заменено на `chatId`
+- **ChatAPI:** `removeUser` — поле `id` заменено на `chatId`
+- **ChatController:** `addUserToChat` — передача `chatId` вместо `id`
+- **ChatController:** `removeUserFromChat` — передача `chatId` вместо `id`
+- **ProfilePage:** обработчик клика на аватар перенесён из `componentDidMount` в `this.events.click` — слушатель восстанавливается при каждом ре-рендере
+- **ProfilePage:** URL аватара — `BASE_URL` изменён на `https://ya-praktikum.tech/api/v2/resources` (статические файлы отдают по этому пути)
+- **ProfilePage:** проверка `startsWith("http")` — предотвращает дублирование URL при ре-рендере через `connect`
+- **ProfileAvatar:** аватар отображается круглым (`border-radius: 50%`) с `object-fit: cover`
+- **ChatUser:** добавлено поле `role?: string` в интерфейс

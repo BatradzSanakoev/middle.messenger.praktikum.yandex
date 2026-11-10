@@ -112,3 +112,27 @@
 ## Шаг 12: Обновление документации ✅
 
 - ✅ Обновить `README.md` с информацией о роутинге, API, HTTP-классе, Store, контроллерах
+
+## Шаг 13: Исправления и доработки ✅
+
+- ✅ **Block.ts:** добавлен флаг `_isFirstMount` — `componentDidMount` вызывается только при первом монтировании
+- ✅ **Block.ts:** `setProps` больше не сбрасывает `__children` и `__refs`
+- ✅ **Block.ts:** `compile()` вызывает `embed` для вставки вложенных компонентов
+- ✅ **registerComponent.ts:** вставка DOM-элемента вложенного компонента в placeholder через `embed`
+- ✅ **ChatPage:** визуальное выделение выбранного чата через `selectedChatId` в Store
+- ✅ **ChatPage:** запрос на участников отправляется при каждом выборе чата
+- ✅ **ChatPage:** участники сохраняются в Store (`chatUsers`), обновляются при добавлении/удалении
+- ✅ **ChatPage:** фильтрация admin из списка участников — "В чате нет участников"
+- ✅ **ChatPage:** кнопки "Добавить/Удалить" скрыты без выбранного чата (`{{#if selectedChatId}}`)
+- ✅ **ChatPage:** сброс выбранного чата при переходе на другую страницу
+- ✅ **ChatPage:** кнопки с отступом `gap: 1rem` через `.actionButtons`
+- ✅ **ChatPage:** высота панелей синхронизирована (`height: 4rem`)
+- ✅ **AddUserModal:** обновление участников после добавления через Store
+- ✅ **RemoveUserModal:** новый компонент для удаления участника по логину
+- ✅ **ChatAPI:** `addUser` и `removeUser` — поле `id` → `chatId`
+- ✅ **ChatController:** `addUserToChat` и `removeUserFromChat` — передача `chatId`
+- ✅ **ProfilePage:** слушатель аватара перенесён в `this.events.click`
+- ✅ **ProfilePage:** URL аватара — `BASE_URL` = `https://ya-praktikum.tech/api/v2/resources`
+- ✅ **ProfilePage:** проверка `startsWith("http")` — предотвращает дублирование URL
+- ✅ **ProfileAvatar:** `object-fit: cover` и `border-radius: 50%`
+- ✅ **ChatUser:** добавлено поле `role?: string`

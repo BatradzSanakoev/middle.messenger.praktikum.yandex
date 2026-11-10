@@ -1,0 +1,25 @@
+.addUserForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.input {
+  font-family: Caveat, cursive;
+  font-weight: 400;
+  font-size: 1.125rem;
+  border: none;
+  border-bottom: 1px solid var(--color-black);
+  outline: none;
+  padding: 0.25rem 0;
+  width: 100%;
+  background: transparent;
+}
+
+.error {
+  font-family: Caveat, cursive;
+  font-weight: 400;
+  font-size: 1rem;
+  color: #e53e3e;
+}

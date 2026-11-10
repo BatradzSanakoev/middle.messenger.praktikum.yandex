@@ -36,6 +36,18 @@ export class App {
     // Добавляем app в DOM
     document.body.appendChild(app);
 
+    // Глобальный обработчик кликов по ссылкам — навигация через роутер без перезагрузки
+    document.addEventListener("click", (e) => {
+      const a = (e.target as HTMLElement).closest("a");
+      if (a) {
+        e.preventDefault();
+        const href = a.getAttribute("href");
+        if (href) {
+          Router.getInstance().go(href);
+        }
+      }
+    });
+
     // Подключаем роутер — все маршруты
     const router = Router.getInstance();
     router

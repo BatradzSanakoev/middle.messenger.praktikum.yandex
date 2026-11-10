@@ -68,7 +68,7 @@ export class ChatController {
    * - Отправляет userId и chatId на сервер
    */
   static async addUserToChat(userId: number, chatId: number): Promise<void> {
-    await chatAPI.addUser({ id: chatId, users: [userId] });
+    await chatAPI.addUser({ chatId, users: [userId] });
   }
 
   /**
@@ -76,6 +76,6 @@ export class ChatController {
    * - Отправляет userId и chatId на сервер
    */
   static async removeUserFromChat(userId: number, chatId: number): Promise<void> {
-    await chatAPI.removeUser({ id: chatId, users: [userId] });
+    await chatAPI.removeUser({ chatId, users: [userId] });
   }
 }
