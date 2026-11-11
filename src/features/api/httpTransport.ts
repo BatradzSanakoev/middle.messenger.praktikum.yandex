@@ -4,30 +4,32 @@ import type { RequestOptions, ApiError, AbortError, NetworkError, TimeoutError }
 const BASE_URL = "https://ya-praktikum.tech/api/v2";
 
 /**
+ * Тип HTTP-метода: универсальная сигнатура для get/post/put/delete.
+ * Параметр R определяет тип ответа, по умолчанию unknown.
+ */
+type HTTPMethod = <R = unknown>(url: string, options?: RequestOptions) => Promise<R>;
+
+/**
  * Класс для отправки HTTP-запросов через XHR.
  * Поддерживает методы GET, POST, PUT, DELETE.
  * Использует дженерики для типизации ответов.
  */
 export class HTTPTransport {
-  /** GET-запрос с типизированным ответом */
-  get = <T = unknown>(url: string, options: RequestOptions = {}): Promise<T> => {
-    return this.request(url, { ...options, method: METHODS.GET });
-  };
+  /** GET-запрос */
+  get: HTTPMethod = (url, options = {}) =>
+    this.request(url, { ...options, method: METHODS.GET });
 
-  /** POST-запрос с типизированным ответом */
-  post = <T = unknown>(url: string, options: RequestOptions = {}): Promise<T> => {
-    return this.request(url, { ...options, method: METHODS.POST });
-  };
+  /** POST-запрос */
+  post: HTTPMethod = (url, options = {}) =>
+    this.request(url, { ...options, method: METHODS.POST });
 
-  /** PUT-запрос с типизированным ответом */
-  put = <T = unknown>(url: string, options: RequestOptions = {}): Promise<T> => {
-    return this.request(url, { ...options, method: METHODS.PUT });
-  };
+  /** PUT-запрос */
+  put: HTTPMethod = (url, options = {}) =>
+    this.request(url, { ...options, method: METHODS.PUT });
 
-  /** DELETE-запрос с типизированным ответом */
-  delete = <T = unknown>(url: string, options: RequestOptions = {}): Promise<T> => {
-    return this.request(url, { ...options, method: METHODS.DELETE });
-  };
+  /** DELETE-запрос */
+  delete: HTTPMethod = (url, options = {}) =>
+    this.request(url, { ...options, method: METHODS.DELETE });
 
   /**
    * Основной метод отправки запроса.

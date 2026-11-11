@@ -37,6 +37,8 @@ interface ChatItem {
 }
 
 // Карта данных из Store в props компонента
+const AVATAR_BASE_URL = "https://ya-praktikum.tech/api/v2/resources";
+
 const mapStateToProps = (state: Record<string, unknown>) => {
   const rawChats = (state.chats as ChatResponse[]) || [];
   // Получаем selectedChatId из store для правильного выделения
@@ -48,7 +50,12 @@ const mapStateToProps = (state: Record<string, unknown>) => {
   const chats: ChatItem[] = rawChats.map((chat) => ({
     id: chat.id,
     title: chat.title,
-    avatarUrl: chat.avatar,
+    // Преобразуем относительный путь аватара в полный URL
+    avatarUrl: chat.avatar
+      ? chat.avatar.startsWith("http")
+        ? chat.avatar
+        : `${AVATAR_BASE_URL}${chat.avatar}`
+      : "",
     alt: chat.title,
     unreadCount: 0,
     lastMessage: {
