@@ -22,13 +22,12 @@ export class ChatController {
   /**
    * Создание нового чата.
    * - Отправляет данные на сервер
-   * - Обновляет список чатов в Store
+   * - Перезагружает список чатов с сервера
    */
-  static async createChat(data: { title: string }): Promise<ChatResponse> {
-    const chat = await chatAPI.create(data);
-    const chats = store.getState().chats as ChatResponse[] || [];
-    store.setState("chats", [...chats, chat]);
-    return chat;
+  static async createChat(data: { title: string }): Promise<void> {
+    await chatAPI.create(data);
+    // Перезагружаем список чатов с сервера, чтобы получить актуальные данные (включая title)
+    await this.getChats();
   }
 
   /**

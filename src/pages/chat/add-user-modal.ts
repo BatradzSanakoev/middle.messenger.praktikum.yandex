@@ -33,12 +33,14 @@ export class AddUserModal {
    * Блокирует кнопку, пока инпут пустой.
    */
   show() {
+    // Если модалка уже открыта — не создаём новую
+    if (this.modal) return;
+
     const bodyHtml = template({ styles });
 
     this.modal = new Modal({
       title: "Добавить участника",
       body: bodyHtml,
-      buttonText: "Добавить",
       styles,
     });
 
@@ -46,9 +48,10 @@ export class AddUserModal {
 
     const element = this.modal.element();
     const input = element?.querySelector<HTMLInputElement>('input[name="login"]');
-    const button = element?.querySelector<HTMLButtonElement>('[data-role="modal-action-btn"]');
+    const form = element?.querySelector<HTMLFormElement>('form');
+    const button = form?.querySelector<HTMLButtonElement>('[data-role="modal-action-btn"]');
 
-    if (!input || !button) return;
+    if (!input || !form || !button) return;
 
     // Блокируем кнопку, пока инпут пустой
     button.disabled = !input.value.trim();
@@ -58,8 +61,9 @@ export class AddUserModal {
       button.disabled = !input.value.trim();
     });
 
-    // Отправка при клике на кнопку
-    button.addEventListener('click', async () => {
+    // Обработчик сабмита формы
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
       const login = input.value.trim();
       if (!login) return;
 
@@ -104,5 +108,6 @@ export class AddUserModal {
   // Закрывает модалку
   close() {
     this.modal?.close();
+    this.modal = null;
   }
 }
