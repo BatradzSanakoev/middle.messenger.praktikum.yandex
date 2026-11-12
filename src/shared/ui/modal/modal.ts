@@ -9,7 +9,6 @@ import type { BlockOwnProps } from "@shared/ui/block";
 export interface ModalOptions extends BlockOwnProps {
   title: string;
   body: string;
-  buttonText: string;
   onClose?: () => void;
   styles: typeof modalStyles;
 }

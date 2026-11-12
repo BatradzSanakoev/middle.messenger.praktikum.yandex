@@ -1,6 +1,6 @@
 <ul class="{{ styles.chatList }}">
   {{#each chats}}
-    <li class="{{../styles.chatItem}}">
+    <li class="{{../styles.chatItem}} {{#if isSelected}}{{../styles.selected}}{{/if}}" data-ref="chatItem" data-chat-id="{{id}}">
       <img class="{{../styles.avatar}}" src="{{ avatarUrl }}" alt="{{ alt }}" />
       <div class="{{../styles.content}}">
         <div class="{{../styles.header}}">

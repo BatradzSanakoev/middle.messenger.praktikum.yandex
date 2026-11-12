@@ -1,17 +1,48 @@
 import { Block } from "@shared/ui/block";
 import { ProfileModal } from "./profile-modal";
-import { validateForm } from "@features";
+import { UserController, AuthController, validateForm } from "@features";
+import { Router } from "@features/router";
 import { inputStyles } from "@shared/ui";
 
 import styles from "./profile.module.css";
 import template from "./profile.hbs?raw";
 
 import type { BlockOwnProps } from "@shared/ui/block";
+import { connect } from "@/shared/utils";
 
 // Пропсы страницы профиля
 interface ProfileProps extends BlockOwnProps {
+  user?: {
+    first_name: string;
+    second_name: string;
+    display_name: string;
+    login: string;
+    email: string;
+    phone: string;
+    avatar: string;
+  };
   styles: typeof styles;
 }
+
+// Карта данных из Store в props компонента
+const AVATAR_BASE_URL = "https://ya-praktikum.tech/api/v2/resources";
+
+const mapStateToProps = (state: Record<string, unknown>) => {
+  const user = state.user as ProfileProps["user"] | undefined;
+  return {
+    user: user
+      ? {
+          ...user,
+          avatar: user.avatar
+            ? user.avatar.startsWith("http")
+              ? user.avatar
+              : `${AVATAR_BASE_URL}${user.avatar}`
+            : "",
+        }
+      : undefined,
+    styles,
+  };
+};
 
 // Страница профиля пользователя с двумя формами: данные и пароли
 export class ProfilePage extends Block<ProfileProps> {
@@ -24,37 +55,54 @@ export class ProfilePage extends Block<ProfileProps> {
   private modal: ProfileModal | null = null;
 
   // Конструктор: инициализирует обработчики событий
-  constructor() {
-    super({ styles });
+  constructor(props?: ProfileProps) {
+    super(props || { styles });
     this.events = {
       // Обработчик кликов: определяет какая кнопка нажата по data-role
       click: (e: Event) => {
         const target = e.target as HTMLElement;
+
+        // Обработчик клика на аватар
+        const avatarWrapper = target.closest('[data-role="avatar-wrapper"]');
+        if (avatarWrapper) {
+          if (!this.modal) {
+            this.modal = new ProfileModal();
+          }
+          this.modal.show();
+          return;
+        }
+
         const role = target.getAttribute("data-role");
 
         // Кнопка "Изменить данные" — разблокирует поля данных
         if (role === "btn-edit-data") this.enableEditData();
         // Кнопка "Изменить пароль" — переключает на форму паролей
         if (role === "btn-edit-password") this.showPasswordForm();
-        // Кнопка "Сохранить данные" — валидирует и блокирует поля
+        // Кнопка "Выйти" — выход из системы
+        if (role === "btn-logout") this.logout();
+        // Кнопка "Сохранить данные" — валидирует и отправляет на сервер
         if (role === "save-data") {
           const form = this.element()?.querySelector(
-            '[data-role="profile-form-data"]'
+            '[data-role="profile-form-data"]',
           ) as HTMLFormElement;
           if (form && !validateForm(form)) return;
           this.saveData();
         }
-        // Кнопка "Сохранить пароль" — валидирует, проверяет совпадение, переключает обратно
+        // Кнопка "Сохранить пароль" — валидирует, проверяет совпадение, отправляет на сервер
         if (role === "save-password") {
           const form = this.element()?.querySelector(
-            '[data-role="profile-form-password"]'
+            '[data-role="profile-form-password"]',
           ) as HTMLFormElement;
           if (form && !validateForm(form)) return;
 
           // Проверка совпадения паролей
           const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
-          const newPassword = passwordForm?.querySelector<HTMLInputElement>('input[name="new_password"]');
-          const confirmPassword = passwordForm?.querySelector<HTMLInputElement>('input[name="confirm_password"]');
+          const newPassword = passwordForm?.querySelector<HTMLInputElement>(
+            'input[name="new_password"]',
+          );
+          const confirmPassword = passwordForm?.querySelector<HTMLInputElement>(
+            'input[name="confirm_password"]',
+          );
 
           if (newPassword?.value !== confirmPassword?.value) {
             // Показать ошибку под полем confirm_password
@@ -88,18 +136,39 @@ export class ProfilePage extends Block<ProfileProps> {
     };
   }
 
-  // componentDidMount: вешает обработчик клика на аватар для открытия модалки
-  protected componentDidMount(): void {
-    const avatarWrapper = this.element()?.querySelector('[data-role="avatar-wrapper"]');
-    if (avatarWrapper) {
-      avatarWrapper.addEventListener("click", () => {
-        // Создаём модалку при первом клике
-        if (!this.modal) {
-          this.modal = new ProfileModal();
-        }
-        this.modal.show();
-      });
-    }
+  // Вызывается при каждом переходе на страницу — загружает профиль из контроллера
+  protected onEnter(): void {
+    UserController.getProfile().catch(() => {
+      Router.getInstance().go("/500");
+    });
+
+    // Сбрасываем UI-состояние: показываем форму данных, скрываем форму паролей
+    this.resetPasswordForm();
+  }
+
+  // Сбрасывает форму паролей в закрытое состояние
+  private resetPasswordForm(): void {
+    const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
+    const dataForm = this.element()?.querySelector('[data-role="profile-form-data"]');
+    const actionsSavePassword = this.element()?.querySelector(
+      '[data-role="profile-actions-save-password"]',
+    );
+    const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
+
+    if (passwordForm) passwordForm.classList.add(styles.hidden);
+    if (dataForm) dataForm.classList.remove(styles.hidden);
+    if (actionsSavePassword) actionsSavePassword.classList.add(styles.hidden);
+    if (actionsNormal) actionsNormal.classList.remove(styles.hidden);
+  }
+
+  // Уничтожение компонента — закрываем модалку аватара
+  protected componentWillUnmount(): void {
+    this.modal?.close();
+  }
+
+  // Выход из системы
+  private logout(): void {
+    AuthController.logout();
   }
 
   // Разблокирует поля данных и показывает кнопку "Сохранить"
@@ -108,7 +177,7 @@ export class ProfilePage extends Block<ProfileProps> {
     const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
     const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
     const actionsSaveData = this.element()?.querySelector(
-      '[data-role="profile-actions-save-data"]'
+      '[data-role="profile-actions-save-data"]',
     );
 
     // Разблокируем все инпуты в блоке данных
@@ -128,10 +197,10 @@ export class ProfilePage extends Block<ProfileProps> {
     const dataForm = this.element()?.querySelector('[data-role="profile-form-data"]');
     const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
     const actionsSaveData = this.element()?.querySelector(
-      '[data-role="profile-actions-save-data"]'
+      '[data-role="profile-actions-save-data"]',
     );
     const actionsSavePassword = this.element()?.querySelector(
-      '[data-role="profile-actions-save-password"]'
+      '[data-role="profile-actions-save-password"]',
     );
 
     // Скрываем форму данных, показываем форму паролей
@@ -142,12 +211,57 @@ export class ProfilePage extends Block<ProfileProps> {
     if (actionsSavePassword) actionsSavePassword.classList.remove(styles.hidden);
   }
 
+  // Сохраняет данные профиля на сервер
+  private async saveData(): Promise<void> {
+    const form = this.element()?.querySelector('[data-role="profile-form-data"]') as HTMLFormElement;
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const data = {
+      first_name: formData.get("first_name") as string,
+      second_name: formData.get("second_name") as string,
+      display_name: formData.get("display_name") as string,
+      login: formData.get("login") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+    };
+
+    try {
+      await UserController.updateProfile(data);
+      this.disableDataForm();
+    } catch (error) {
+      Router.getInstance().go("/500");
+    }
+  }
+
+  // Сохраняет пароль на сервер
+  private async savePassword(): Promise<void> {
+    const form = this.element()?.querySelector('[data-role="profile-form-password"]') as HTMLFormElement;
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const data = {
+      oldPassword: formData.get("old_password") as string,
+      newPassword: formData.get("new_password") as string,
+    };
+
+    try {
+      await UserController.updatePassword(data);
+      // Очищаем поля формы пароля
+      const inputs = form.querySelectorAll<HTMLInputElement>('input[type="password"]');
+      inputs.forEach((input) => (input.value = ""));
+      this.hidePasswordForm();
+    } catch (error) {
+      Router.getInstance().go("/500");
+    }
+  }
+
   // Блокирует поля данных и возвращает кнопки управления
-  private saveData(): void {
+  private disableDataForm(): void {
     const dataBlock = this.element()?.querySelector('[data-role="profile-data"]');
     const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
     const actionsSaveData = this.element()?.querySelector(
-      '[data-role="profile-actions-save-data"]'
+      '[data-role="profile-actions-save-data"]',
     );
 
     // Блокируем все инпуты в блоке данных
@@ -162,11 +276,11 @@ export class ProfilePage extends Block<ProfileProps> {
   }
 
   // Скрывает форму паролей и возвращает форму данных
-  private savePassword(): void {
+  private hidePasswordForm(): void {
     const passwordForm = this.element()?.querySelector('[data-role="profile-form-password"]');
     const dataForm = this.element()?.querySelector('[data-role="profile-form-data"]');
     const actionsSavePassword = this.element()?.querySelector(
-      '[data-role="profile-actions-save-password"]'
+      '[data-role="profile-actions-save-password"]',
     );
     const actionsNormal = this.element()?.querySelector('[data-role="profile-actions-normal"]');
 
@@ -178,3 +292,6 @@ export class ProfilePage extends Block<ProfileProps> {
     if (actionsNormal) actionsNormal.classList.remove(styles.hidden);
   }
 }
+
+// Подписка на Store — компонент обновляется при изменении данных пользователя
+export default connect(ProfilePage, mapStateToProps);

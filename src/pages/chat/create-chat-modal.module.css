@@ -1,0 +1,47 @@
+.createChatForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.inputWrapper {
+  flex: 1;
+}
+
+.input {
+  font-family: Caveat, cursive;
+  font-weight: 400;
+  font-size: 1.125rem;
+  border: none;
+  border-bottom: 1px solid var(--color-black);
+  outline: none;
+  padding: 0.25rem 0;
+  width: 100%;
+  background: transparent;
+}
+
+.modalActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  padding: 0.75rem 1.5rem;
+  width: 12rem;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+}
+
+.modalActionBtn:hover {
+  opacity: 0.8;
+}
+
+.modalActionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

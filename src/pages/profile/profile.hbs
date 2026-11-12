@@ -1,9 +1,12 @@
 <div class="{{ styles.profilePage }}">
 
+  <!-- Ссылка на чаты -->
+  <a class="{{ styles.backToChat }}" href="/messenger">Чаты</a>
+
   <!-- Блок 1: Аватар -->
   <div class="{{ styles.profileHeader }}">
-    {{{ProfileAvatar ref="avatar" avatarUrl="https://placehold.co/128/grey/grey/png"}}}
-    <h1 class="{{ styles.profileName }}">Иван Иванов</h1>
+    {{{ProfileAvatar ref="avatar" avatarUrl=user.avatar}}}
+    <h1 class="{{ styles.profileName }}">{{ user.first_name }} {{ user.second_name }}</h1>
   </div>
 
   <!-- Форма 1: Данные пользователя -->
@@ -12,37 +15,37 @@
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="email">Почта:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="emailInput" type="email" name="email" id="email" value="user@example.com" disabled=true validationKey="email"}}}
+          {{{Input ref="emailInput" type="email" name="email" id="email" value=user.email disabled=true validationKey="email"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="login">Логин:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="loginInput" type="text" name="login" id="login" value="username123" disabled=true validationKey="login"}}}
+          {{{Input ref="loginInput" type="text" name="login" id="login" value=user.login disabled=true validationKey="login"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="first_name">Имя:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="firstNameInput" type="text" name="first_name" id="first_name" value="Иван" disabled=true validationKey="first_name"}}}
+          {{{Input ref="firstNameInput" type="text" name="first_name" id="first_name" value=user.first_name disabled=true validationKey="first_name"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="second_name">Фамилия:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="secondNameInput" type="text" name="second_name" id="second_name" value="Иванов" disabled=true validationKey="second_name"}}}
+          {{{Input ref="secondNameInput" type="text" name="second_name" id="second_name" value=user.second_name disabled=true validationKey="second_name"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="display_name">Имя в чате:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="displayNameInput" type="text" name="display_name" id="display_name" value="ivan_cool" disabled=true validationKey="display_name"}}}
+          {{{Input ref="displayNameInput" type="text" name="display_name" id="display_name" value=user.display_name disabled=true validationKey="display_name"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data">
         <label class="{{ styles.dataLabel }}" for="phone">Телефон:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="phoneInput" type="tel" name="phone" id="phone" value="+79991234567" disabled=true validationKey="phone"}}}
+          {{{Input ref="phoneInput" type="tel" name="phone" id="phone" value=user.phone disabled=true validationKey="phone"}}}
         </div>
       </div>
     </div>
@@ -69,19 +72,19 @@
       <div class="{{ styles.dataRow }}" data-role="profile-data-password">
         <label class="{{ styles.dataLabel }}" for="old_password">Старый пароль:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="oldPasswordInput" type="password" name="old_password" id="old_password" value="••••••" validationKey="old_password"}}}
+          {{{Input ref="oldPasswordInput" type="password" name="old_password" id="old_password" validationKey="old_password"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data-password">
         <label class="{{ styles.dataLabel }}" for="new_password">Новый пароль:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="newPasswordInput" type="password" name="new_password" id="new_password" value="••••••" validationKey="new_password"}}}
+          {{{Input ref="newPasswordInput" type="password" name="new_password" id="new_password" validationKey="new_password"}}}
         </div>
       </div>
       <div class="{{ styles.dataRow }}" data-role="profile-data-password">
         <label class="{{ styles.dataLabel }}" for="confirm_password">Повторите новый пароль:</label>
         <div class="{{ styles.inputWrapper }}">
-          {{{Input ref="confirmPasswordInput" type="password" name="confirm_password" id="confirm_password" value="••••••" validationKey="confirm_password"}}}
+          {{{Input ref="confirmPasswordInput" type="password" name="confirm_password" id="confirm_password" validationKey="confirm_password"}}}
         </div>
       </div>
     </div>

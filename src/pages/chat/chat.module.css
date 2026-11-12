@@ -5,6 +5,7 @@
 }
 
 .sidebar {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   width: 20rem;
@@ -17,12 +18,89 @@
   font-size: 1.5rem;
   padding: 1rem;
   border-bottom: 1px solid var(--color-black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+.sidebarTitle a {
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1.125rem;
+  text-decoration: none;
+  color: var(--color-black);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarTitle a:hover {
+  opacity: 1;
+}
+
+.sidebarTitle .createBtn {
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1.125rem;
+  background: none;
+  border: 1px solid var(--color-black);
+  color: var(--color-black);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarTitle .createBtn:hover {
+  opacity: 0.8;
 }
 
 .main {
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+.mainHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-black);
+  height: 4rem;
+}
+
+.usersList {
+  font-family: Caveat, cursive;
+  font-weight: 400;
+  font-size: 1.125rem;
+  color: var(--color-black);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+
+}
+
+.addUserBtn {
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1rem;
+  background: none;
+  border: 1px solid var(--color-black);
+  color: var(--color-black);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.addUserBtn:hover {
+  opacity: 0.8;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
 }
 
 .emptyState {

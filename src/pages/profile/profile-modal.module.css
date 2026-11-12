@@ -2,7 +2,9 @@
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .fileInput {
@@ -26,4 +28,44 @@
 
 .fileInputLabel:hover {
   opacity: 0.8;
+}
+
+.fileName {
+  font-family: Caveat, cursive;
+  font-size: 1rem;
+  color: var(--color-black);
+  word-break: break-all;
+  max-width: 100%;
+  text-align: center;
+}
+
+.error {
+  font-family: Caveat, cursive;
+  font-size: 1rem;
+  color: #e53e3e;
+}
+
+.modalActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  padding: 0.75rem 1.5rem;
+  width: 12rem;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+}
+
+.modalActionBtn:hover {
+  opacity: 0.8;
+}
+
+.modalActionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

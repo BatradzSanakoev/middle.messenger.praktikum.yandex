@@ -17,6 +17,7 @@ interface ChatItem {
     text: string;
     time: string;
   };
+  isSelected?: boolean;
 }
 
 // Пропсы компонента ChatList

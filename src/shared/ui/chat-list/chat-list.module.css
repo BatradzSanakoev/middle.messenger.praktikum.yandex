@@ -21,6 +21,10 @@
   background-color: var(--color-hover-bg);
 }
 
+.chatItem.selected {
+  background-color: var(--color-hover-bg);
+}
+
 .avatar {
   width: 3rem;
   height: 3rem;
