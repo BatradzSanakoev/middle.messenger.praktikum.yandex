@@ -1,234 +1,171 @@
-# PLAN.md
-
-# План работ — Спринт 2
+# План Спринта 4 — Мессенджер
 
 ---
 
-## Шаг 1: Подготовка ✅ (выполнен)
+## Сводка по спринту
 
-- [x] Обновить `tsconfig.json` (`noImplicitAny: true`, `strictNullChecks: true`, `sourceMap: true`)
-- [x] Ветка `sprint_2` активна
+### Основные задачи
 
----
+1. **Тестирование (Vitest)** — роутер, компоненты, HTTP-модуль
+2. **Полная функциональность чата** — WebSocket, отправка/получение сообщений, пагинация
+3. **Защита от XSS**
+4. **Инфраструктура** — Husky precommit, аудит зависимостей
+5. **Опционально** — `vite-plugin-checker`, собственный плагин Vite
 
-## Шаг 2: Базовый класс Block ✅ (выполнен)
+### Ключевые API для WebSocket
 
-- [x] Создать `src/shared/ui/block/block.ts` — базовый абстрактный класс `Block<Props>`:
-  - `abstract template` — шаблон Handlebars
-  - `private domElement` — DOM-элемент, доступен только через `element()`
-  - `props`, `children`, `refs`, `events` — свойства
-  - `element()` — ленивый рендер DOM-элемента
-  - `setProps()` — обновление свойств + ре-рендер
-  - `destroy()` — публичный метод полного удаления компонента
-  - `render()` / `compile()` — компиляция и замена в DOM (protected)
-  - `unmountComponent()` — рекурсивное размонтирование (private)
-  - `componentDidMount()` / `componentWillUnmount()` — хуки жизненного цикла
-  - `attachListeners()` / `removeListeners()` — управление событиями
-  - Поддержка вложенных компонентов через `__children` и `__refs`
-  - Named export (`export class Block`)
-- [x] Создать `src/shared/ui/block/registerComponent.ts` — хелпер регистрации компонентов в Handlebars:
-  - `registerComponent(componentName, Component)` — регистрация
-  - Генерация `data-component-hbs-id` для заглушек
-  - Обработка `ref` из hash
-  - Сохранение `__children` с функцией `embed`
-- [x] Создать `src/shared/ui/block/index.ts` — экспорты `Block` и `registerComponent`
-- [x] Named export, строчное имя файла (`block.ts`)
+- `POST /api/v2/chats/token/:id` — получение токена для подключения
+- `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>` — подключение
+- Формат сообщений: `{ content, type }`
+- Типы: `message`, `file`, `sticker`, `user connected`, `get old`, `ping`, `pong`
+- Пагинация: `{ content: "offset", type: "get old" }`
 
 ---
 
-## Инструментарий ✅ (выполнен)
+## План выполнения
 
-- [x] `eslint.config.ts` — отключена сортировка импортов (порядок задаётся вручную: обычные → типы)
-- [x] `eslint.config.ts` — исключены `package-lock.json` и `tsconfig.json` из JSON-линтера
-- [x] `eslint.config.ts` — отключено `css/no-invalid-properties` (CSS-переменные объявлены в global.css)
-- [x] `.prettierignore` — создан, исключены `node_modules/`, `dist/`, `coverage/`
-- [x] `.prettierrc` — добавлены явные настройки: `trailingComma: "es5"`, `tabWidth: 2`, `printWidth: 100`
-- [x] `package.json` — обновлены скрипты: `lint` (eslint + prettier), `lint:fix` (eslint --fix + prettier --write)
+### Фаза 1: Инфраструктура и подготовка ✅
 
----
-
-## Шаг 3: Рефакторинг компонентов
-
-### 3.1. Переписать `Input` → наследник `Block` ✅ (выполнен)
-
-- [x] `static componentName = "Input"`
-- [x] `protected template` — импортируется из `input.hbs`
-- [x] `interface InputProps extends BlockOwnProps` с `styles: typeof inputStyles`
-- [x] `constructor` передаёт `styles: inputStyles` через `super`
-- [x] `this.events` устанавливается в конструкторе после `super()`
-- [x] `registerComponent("Input", Input)` — регистрация в Handlebars
-- [x] **src/shared/ui/input/input.hbs** — шаблон вынесен в отдельный файл
-- [x] **src/shared/ui/input/input.hbs** — добавлен `data-validation-key="{{ validationKey }}"`
-- [x] Удалены `input.template.ts`
-- [x] Обновлены страницы: `login.hbs`, `register.hbs`, `profile.hbs`
-  - `{{#input}}...{{/input}}` → `{{{ Input ... }}}`
-
-### 3.2. Переписать `Button` → наследник `Block` ✅ (выполнен)
-
-- [x] `static componentName = "Button"`
-- [x] `protected template` — импортируется из `button.hbs`
-- [x] `interface ButtonProps extends BlockOwnProps` с `styles: typeof buttonStyles`
-- [x] `constructor` передаёт `styles: buttonStyles` через `super`
-- [x] Добавлен проп `type?: "button" | "submit" | "reset"`
-- [x] **src/shared/ui/button/button.hbs** — добавлен `{{#if type}}type="{{ type }}"{{/if}}`
-- [x] `registerComponent("Button", Button)` — регистрация в Handlebars
-- [x] Удалены `button.template.ts`
-- [x] Обновлены страницы: `login.hbs`, `register.hbs`, `profile.hbs`
-  - `{{#button}}...{{/button}}` → `{{{ Button ... }}}`
-
-### 3.3. Переписать `Link` → наследник `Block` ✅ (выполнен)
-
-- [x] `static componentName = "Link"`
-- [x] `protected template` — импортируется из `link.hbs`
-- [x] `interface LinkProps extends BlockOwnProps` с `styles: typeof linkStyles`
-- [x] `constructor` передаёт `styles: linkStyles` через `super`
-- [x] `registerComponent("Link", Link)` — регистрация в Handlebars
-- [x] Удалены `link.template.ts`
-- [x] Обновлены страницы: `login.hbs`, `register.hbs`
-  - `{{#link}}...{{/link}}` → `{{{ Link ... }}}`
-
-### 3.4. Создание ChatList и удаление ChatItem ✅ (выполнен)
-
-- [x] **src/shared/ui/chat-list/chat-list.ts** — новый компонент `ChatList extends Block`:
-  - `static componentName = "ChatList"`
-  - `protected template` — импортируется из `chat-list.hbs`
-  - `interface ChatListProps extends BlockOwnProps` с `chats` и `styles: typeof chatListStyles`
-  - `constructor` передаёт `styles: chatListStyles` через `super`
-  - Убран `ChatItemData`, данные чатов встроены в `ChatListProps`
-- [x] **src/shared/ui/chat-list/chat-list.hbs** — шаблон вынесен в отдельный файл
-- [x] **src/shared/ui/chat-list/chat-list.module.css** — стили (перенесены из `chat-item.module.css`)
-- [x] `registerComponent("ChatList", ChatList)` — регистрация в Handlebars
-- [x] **src/pages/chat/chat.hbs** — `{{#each chats}}{{#chatItem this}}{{/chatItem}}{{/each}}` → `{{{ ChatList }}}`
-- [x] **src/pages/chat/chat.ts** — создаёт `ChatList({ chats, styles })` и рендерит
-- [x] Удалено: `src/shared/ui/chat-item/` (полный каталог), `chat-item.template.ts`
-
-### 3.5. Переписать `ProfileAvatar` → наследник `Block` ✅ (выполнен)
-
-- [x] `static componentName = "ProfileAvatar"`
-- [x] `protected template` — импортируется из `profile-avatar.hbs`
-- [x] `interface ProfileAvatarData extends BlockOwnProps` с `styles: typeof profileAvatarStyles`
-- [x] `constructor` передаёт `styles: profileAvatarStyles` через `super`
-- [x] `registerComponent("ProfileAvatar", ProfileAvatar)` — регистрация в Handlebars
-- [x] Удалены `profile-avatar.template.ts`
-- [x] Обновлена страница: `profile.hbs`
-  - `{{#profileAvatar}}...{{/profileAvatar}}` → `{{{ ProfileAvatar ... }}}`
-
-### 3.6. Переписать `Modal` → наследник `Block` ✅ (выполнен)
-
-- [x] `static componentName = "Modal"`
-- [x] `protected template` — импортируется из `modal.hbs`
-- [x] `interface ModalOptions extends BlockOwnProps` с `styles: typeof modalStyles`
-- [x] `constructor` передаёт `styles: modalStyles` через `super`
-- [x] Сохранены методы `show()` и `close()`
-- [x] Шаблон использует `{{{ Button text=buttonText }}}` вместо `{{#button}}`
-- [x] `registerComponent("Modal", Modal)` — регистрация в Handlebars
-- [x] Удалены `modal.template.ts`
-- [x] Обновлён `src/pages/profile/profile-modal.ts` — добавлен `styles` в props
-
-### 3.7. Централизация регистрации компонентов ✅ (выполнен)
-
-- [x] **src/init/app.ts** — регистрация компонентов при инициализации приложения:
-  - `registerComponent("Input", Input)`
-  - `registerComponent("Button", Button)`
-  - `registerComponent("Link", Link)`
-  - `registerComponent("ChatList", ChatList)`
-  - `registerComponent("ProfileAvatar", ProfileAvatar)`
-  - `registerComponent("Modal", Modal)`
-- [x] Удалён `src/helpers/handlebars-helpers.ts`
-- [x] Регистрация происходит один раз при запуске приложения
+1. **Создать ветку `sprint_4`** ✅ — ветка уже создана
+2. **Настроить Husky + lint-staged** ✅
+   - `husky init` — выполнено
+   - lint-staged настроен: `prettier --write` для CSS, `eslint --fix` для TS, `tsc --noEmit`, `vitest run`
+   - `.husky/pre-commit` запускает `lint-staged`
+3. **Установить и настроить Vitest** ✅
+   - `npm install --save-dev vitest @vitest/ui jsdom`
+   - `vitest.config.ts`: `globals: true`, `environment: 'jsdom'`
+   - Скрипты: `test`, `test:ui`, `test:run`
+4. **Аудит зависимостей** ✅ — `npm audit fix`, 0 уязвимостей
+5. **Опционально:** `vite-plugin-checker` ✅ — проверка TS/ESLint/Stylelint во время сборки
 
 ---
 
-## Шаг 4: Валидация форм ✅ (выполнен)
+### Фаза 2: WebSocket-клиент (сервис-обёртка)
 
-- [x] **src/features/validation/validators.ts** — правила валидации + функция `validate()`:
-  - `first_name`, `second_name` — кириллица/латиница, первая буква заглавная, без пробелов/цифр, только дефис
-  - `login` — 3–20 символов, латиница + цифры + `_` + `-`, не только цифры
-  - `email` — обязательны `@` и `.` после него
-  - `password` — 8–40 символов, заглавная буква + цифра
-  - `phone` — 10–15 цифр, возможен `+` в начале
-  - `message` — не пустой
-- [x] **src/features/validation/index.ts** — экспорт `validate` и `ValidationKey`
-- [x] **src/features/index.ts** — ре-экспорт из `validation`
-- [x] **src/shared/ui/input/input.ts** — интегрирована валидация:
-  - `validationKey?: ValidationKey` в props
-  - `this.events` устанавливается в конструкторе после `super()`
-  - Обработчик `focusout` (всплывающая версия `blur`) вызывает `validate()` через `e.target`
-  - При ошибке создаётся `<span>` с текстом ошибки, при успехе — удаляется
-  - CSS-класс `inputError` добавляется/удаляется на `<input>`
-  - `inputElement.value = input.value` — обновление value инпута при blur
-- [x] **src/styles/global.css** — добавлена `--color-error: #ff0000`
-- [x] **src/shared/ui/input/input.module.css** — `.inputError` и `.error` используют красный цвет
-- [x] **src/shared/ui/input/input.hbs** — добавлен `data-validation-key="{{ validationKey }}"`
-- [x] **src/pages/login/login.hbs** — добавлены `validationKey` ко всем инпутам (`login`, `password`)
-- [x] **src/pages/register/register.hbs** — добавлены `validationKey` ко всем инпутам (`first_name`, `second_name`, `login`, `email`, `password`, `phone`)
-- [x] **src/pages/login/login.ts** — валидация по `submit`:
-  - `e.preventDefault()` — предотвращаем отправку формы
-  - Проходим по всем `<input>` и вызываем `validate()` по `data-validation-key`
-  - При ошибке — показываем span и добавляем класс `inputError`
-  - При успехе — собираем данные через `FormData` и `console.log`
-- [x] **src/pages/register/register.ts** — аналогично
+Создать новый модуль `src/features/websocket/`:
+
+1. **`WebSocketService`** — сервис-обёртка (Singleton)
+   - `connect(userId, chatId)` — получение токена через `POST /api/v2/chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
+   - `send(message)` — отправка JSON: `{ content, type }`
+   - `sendOldMessages(offset)` — пагинация: `{ content: String(offset), type: "get old" }`
+   - `ping()` — поддержка соединения: `{ type: "ping" }`
+   - `subscribe(type, callback)` — подписка на события
+   - `disconnect()` — закрытие соединения
+   - Внутренний парсер входящих сообщений (JSON.parse)
+   - Автоматический ping каждые N секунд
+   - Обработка reconnect при обрыве
+
+2. **Типизация** — интерфейсы для всех типов сообщений:
+   - `ChatMessage` (id, time, user_id, content, type, file?)
+   - `UserConnected` (content: userId, type: "user connected")
+   - `WebSocketEvent` — discriminated union по полю `type`
+
+3. **Хранение состояния** — сообщения чата в Store (под ключом `messages` или `chatMessages`)
 
 ---
 
-## Шаг 5: Рефакторинг страниц на Block ✅ (выполнен)
+### Фаза 3: Интеграция в ChatPage
 
-- [x] **src/pages/login/login.ts** — переписан на `Block`:
-  - `static componentName = "LoginPage"`
-  - `protected template` — импортируется из `login.hbs`
-  - `render(container)` — обёртка: `this.render()` + `container.appendChild(this.element())`
-- [x] **src/pages/register/register.ts** — аналогично
-- [x] **src/pages/404/404.ts** — аналогично
-- [x] **src/pages/500/500.ts** — аналогично
-- [x] **src/pages/profile/profile.ts** — переписан на `Block`:
-  - `static componentName = "ProfilePage"`
-  - `protected template` — импортируется из `profile.hbs`
-  - `componentDidMount()` — обработчики событий перенесены из `render()`
-  - `render(container)` — обёртка
-- [x] **src/pages/chat/chat.ts** — переписан на `Block`:
-  - `static componentName = "ChatPage"`
-  - `protected template` — импортируется из `chat.hbs`
-  - `render(container)` — обёртка
-- [x] **src/pages/profile/profile.module.css** — добавлен `.hidden` класс
+1. **Компонент `MessageList`** — список сообщений чата
+   - Рендерит массив сообщений из Store
+   - Временные метки (форматирование `time`)
+   - Разделение сообщений по author (свои/чужие) — через CSS-классы
 
----
+2. **Компонент `MessageItem`** — одно сообщение
+   - Отображение контента (текст или файл/стикер)
+   - Временная метка
+   - Имя автора
 
-## Шаг 6: Исправление маршрутизации и инкапсуляция domElement ✅ (выполнен)
+3. **Обновить ChatPage**
+   - При выборе чата: вызов `WebSocketService.connect(userId, chatId)`
+   - Запрос старых сообщений: `sendOldMessages(0)` → пагинация до конца
+   - При получении нового сообщения — добавление в Store → ре-рендер
+   - При отправке — `send({ content: message, type: "message" })`
+   - Автоскролл к последнему сообщению (ref на контейнер, `scrollToBottom`)
+   - При скролле вверх — загрузка предыдущих порций (если нужно)
+   - Сброс WebSocket при уходе со страницы (`componentWillUnmount`)
 
-- [x] **src/init/app.ts** — обновлён `renderPage`:
-  - `type PageComponent = new () => Block<any>`
-  - `this.currentPage` — отслеживание текущей страницы
-  - `this.currentPage.destroy()` — размонтирование предыдущей страницы
-  - `this.pageContainer.replaceChildren(element)` — замена содержимого контейнера
-- [x] **src/shared/ui/block/block.ts** — `domElement` изменён на `private`, доступ только через `element()`
-- [x] **src/shared/ui/block/block.ts** — добавлен публичный метод `destroy()` для полного удаления компонента
-- [x] **src/pages/profile/profile.ts** — все обращения `this.domElement` заменены на `this.element()`
+4. **Пустое состояние** — "Выберите чат" или "Начните переписку"
 
 ---
 
-## Шаг 7: Финализация
+### Фаза 4: Защита от XSS
 
-### 7.1. Проверка типов
-```bash
-npx tsc --noEmit
-```
-
-### 7.2. Линтинг
-```bash
-npm run lint
-```
-Цель: 0 ошибок
-
-### 7.3. Обновить `README.md`
-- Описание функциональности спринта 2
-- Архитектура (Block, валидация)
-- Команды для запуска
+1. **Проверка всех мест** — убедиться, что нигде не используется `innerHTML` (уже должен быть только `createContextualFragment`)
+2. **Санитайзинг сообщений** — если в сообщениях может быть HTML, использовать `textContent` или санитайзер
+3. **Проверка href** — валидация URL перед использованием в `href` (только `http/https`)
+4. **Проверка стилей** — не подставлять пользовательские данные в `style.textContent`
+5. **CSP** — добавить заголовок Content-Security-Policy через Vite plugin или netlify.toml
 
 ---
 
-## Что в процессе
+### Фаза 5: Тесты (Vitest)
 
-- [ ] Валидация по `submit` для страницы чатов (поле message) — отложено, так как `validate()` возвращает `null` для пустого поля (ошибка показывается только после ввода)
-- [ ] `focusout` не показывает ошибку для пустых полей — нужно дополнительное решение
+Файлы тестов рядом с тестируемыми модулями:
 
-<!-- TODO: заполнять по мере выполнения задач -->
+1. **`src/features/api/httpTransport.test.ts`** — тесты HTTPTransport
+   - GET, POST, PUT, DELETE запросы
+   - Mock XHR
+   - Обработка ошибок
+
+2. **`src/shared/utils/router.test.ts`** — тесты Router
+   - Регистрация маршрутов
+   - Переходы
+   - History API
+
+3. **`src/shared/utils/isEqual.test.ts`** — тесты isEqual
+   - Равные/неравные объекты
+   - Вложенные объекты
+   - Массивы
+
+4. **`src/shared/utils/merge.test.ts`** — тесты merge
+
+5. **`src/features/validation/validators.test.ts`** — тесты валидаторов
+   - first_name, second_name, login, email, password, phone, message
+
+6. **`src/shared/ui/input/input.test.ts`** — тесты компонента Input
+   - Рендер
+   - Валидация
+
+7. **`src/features/websocket/webSocketService.test.ts`** — тесты WebSocketService
+   - Подключение
+   - Отправка
+   - Подписка на события
+   - Mock WebSocket
+
+---
+
+### Фаза 6: Финализация
+
+1. **Обновить README.md**
+   - Описание WebSocket-функциональности
+   - Команды для запуска тестов
+   - Обновить список технологий (Vitest, Husky)
+2. **Проверить сборку** — `npm run build` без ошибок
+3. **Проверить линтинг** — `npm run lint` без ошибок
+4. **Проверить тесты** — `npm run test:run` все проходят
+5. **Деплой в Netlify** — обновить сборку
+6. **Мерж в `main`** — через PR
+
+---
+
+## Архитектурные решения
+
+- **WebSocketService** — Singleton, подписка через callback, авто-ping
+- **Сообщения в Store** — ключ `chatMessages` с объектом `{ [chatId]: Message[] }`
+- **Компоненты сообщений** — вынести в `src/shared/ui/message/` (message-list, message-item)
+- **Тесты** — рядом с модулями, `*.test.ts`
+- **XSS** — `textContent` вместо `innerHTML`, валидация URL, санитайзинг
+
+---
+
+## Оценка сложности
+
+| Фаза                     | Сложность       |
+| ------------------------ | --------------- |
+| 1. Инфраструктура        | Низкая          |
+| 2. WebSocket-клиент      | Средняя         |
+| 3. Интеграция в ChatPage | Средняя-высокая |
+| 4. XSS защита            | Низкая-средняя  |
+| 5. Тесты                 | Средняя         |
+| 6. Финализация           | Низкая          |

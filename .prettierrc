@@ -1,22 +1,10 @@
 {
   "semi": true,
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-  "plugins": ["@poliklot/prettier-plugin-handlebars"],
-=======
->>>>>>> Stashed changes
   "trailingComma": "es5",
   "tabWidth": 2,
   "printWidth": 100,
   "singleQuote": false,
-  "plugins": [
-    "@poliklot/prettier-plugin-handlebars"
-  ],
-<<<<<<< Updated upstream
-=======
->>>>>>> 85bb16bb9c8f929c7c21d55d023a376cc5e52e87
->>>>>>> Stashed changes
+  "plugins": ["@poliklot/prettier-plugin-handlebars"],
   "overrides": [
     {
       "files": "*.hbs",

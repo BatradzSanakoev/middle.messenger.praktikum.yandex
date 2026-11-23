@@ -1,2 +1,3 @@
-export { ProfilePage } from "./profile";
+import ConnectedProfilePage from "./profile";
+export { ConnectedProfilePage as ProfilePage };
 export { ProfileModal } from "./profile-modal";

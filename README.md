@@ -92,3 +92,55 @@ registerComponent("Modal", Modal);
 - **PostCSS + CSS Modules** — стилизация с автопрефиксером
 - **Handlebars** — шаблонизатор
 - **ESLint + Stylelint + Prettier** — линтинг и форматирование
+
+## Архитектура
+
+### Роутинг (Router, Route)
+
+- **Router** — Singleton, управляет маршрутами и переходами между страницами
+- **Route** — представляет один маршрут: URL-путь + компонент
+- History API — кнопки «Назад»/«Вперёд» работают корректно
+- Маршруты: `/` (Авторизация), `/sign-up` (Регистрация), `/messenger` (Чаты), `/settings` (Профиль), `/404`, `/500`
+- При переходе на несуществующий URL — автоматический редирект на `/404`
+- Компоненты создаются лениво — при первом посещении маршрута
+- В DOM одновременно активна только одна страница (остальные скрыты через `display: none`)
+
+### HTTP-класс (HTTPTransport)
+
+- Обёртка над XHR с Promise
+- Поддержка методов: `GET`, `POST`, `PUT`, `DELETE`
+- `withCredentials: true` — cookies передаются автоматически
+- Обработка ошибок: `onload`, `onabort`, `onerror`, `ontimeout`
+- Обработка данных: `FormData`, `JSON`, пустые данные
+- Дженерики для типизации ответов `<T>`
+
+### API-классы
+
+- **AuthAPI** — авторизация: `signup`, `signin`, `getUser`, `logout`
+- **UserAPI** — пользователи: `profile`, `avatar`, `password`, `get`, `search`
+- **ChatAPI** — чаты: `get`, `create`, `delete`, `getUsers`, `getUnreadCount`, `addUser`, `removeUser`, `avatar`
+
+### Хранилище (Store)
+
+- **Singleton Store** — централизованное хранение состояния приложения
+- `getState()` — получение состояния
+- `setState(path, value)` — установка значения по пути (иммутабельно)
+- `subscribe(listener)` — подписка на изменения, возвращает функцию отписки
+- `emit()` — уведомление всех подписчиков
+
+### HOC connect
+
+- Обёртка компонента для автоматической подписки на Store
+- Принимает компонент и функцию `mapStateToProps`
+- При изменении Store — обновляет props только если данные изменились
+- Компонент перерендеривается автоматически
+
+### Контроллеры (MVC)
+
+- **AuthController** — `signin`, `signup`, `logout`, `checkAuth`
+- **UserController** — `getProfile`, `updateProfile`, `updatePassword`, `updateAvatar`, `searchUsers`
+- **ChatController** — `getChats`, `createChat`, `deleteChat`, `getChatUsers`, `getUnreadCount`, `addUserToChat`, `removeUserFromChat`
+- Контроллеры вызывают API-классы и управляют Store
+- Обработка ошибок — на уровне страниц (переход на `/500` при ошибках API)
+
+### Компонентная архитектура (Block)

@@ -16,7 +16,7 @@ type EventListType = Partial<Record<keyof HTMLElementEventMap, (e: Event) => voi
 // Реализует компонентную архитектуру: рендер, обновление пропсов, жизненный цикл
 export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   // Шаблон компонента в формате Handlebars (переопределяется в наследниках)
-  protected abstract template: string;
+  protected template: string = "";
   // Свойства компонента (пропсы)
   protected props = {} as Props;
   // DOM-элемент, созданный на основе шаблона
@@ -27,6 +27,8 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   protected refs: Record<string, Element> = {};
   // Обработчики событий, вешаемые на domElement
   protected events: EventListType = {};
+  // Флаг первого монтирования (true только при первом mountComponent)
+  private _isFirstMount = true;
 
   // Конструктор: сохраняет пропсы в this.props
   constructor(props: Props = {} as Props) {
@@ -50,10 +52,17 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   // Хук: вызывается после монтирования компонента в DOM (переопределяется в наследниках)
   protected componentDidMount(): void {}
 
+  // Хук: вызывается при каждом переходе на страницу (переопределяется в наследниках)
+  protected onEnter(): void {}
+
   // Привязка обработчиков событий и вызов componentDidMount
   private mountComponent(): void {
     this.attachListeners();
-    this.componentDidMount();
+    // Вызываем componentDidMount только при первом монтировании
+    if (this._isFirstMount) {
+      this.componentDidMount();
+      this._isFirstMount = false;
+    }
   }
 
   // Хук: вызывается перед удалением компонента из DOM (переопределяется в наследниках)
@@ -71,6 +80,16 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   // Полное уничтожение компонента
   public destroy(): void {
     this.unmountComponent();
+  }
+
+  // Скрыть компонент (display: none)
+  public hide(): void {
+    (this.domElement as HTMLElement)?.style.setProperty("display", "none");
+  }
+
+  // Показать компонент (убираем display: none)
+  public show(): void {
+    (this.domElement as HTMLElement)?.style.removeProperty("display");
   }
 
   // Вешает обработчики событий из this.events на domElement

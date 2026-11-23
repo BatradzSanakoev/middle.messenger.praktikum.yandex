@@ -13,12 +13,14 @@
 ## Функциональные требования
 
 ### 1. TypeScript
+
 - Миграция всего клиентского кода на TypeScript
 - Строгая типизация: `noImplicitAny`, `strictNullChecks`, `noUnusedLocals`, `noUnusedParameters`
 - `tsc --noEmit` в процессе сборки
 - Типизация всех компонентов, интерфейсов, API
 
 ### 2. Компонентная архитектура
+
 - Базовый класс `Block<Props extends object>` — «React на минималках»
 - Жизненный цикл: `componentDidMount`, `componentWillUnmount`
 - Реактивность: `setProps(props)` → автоматический `render()`
@@ -30,11 +32,13 @@
 - Рекурсивный unmount дочерних компонентов
 
 ### 3. Страница чатов
+
 - Список чатов + лента переписки
 - Поле ввода сообщения: `name="message"`
 - Клиентская генерация страниц
 
 ### 4. Валидация форм
+
 - Проверка по `blur` и `submit`
 - Правила:
   - `first_name`, `second_name` — кириллица/латиница, первая буква заглавная, без пробелов/цифр, только дефис
@@ -47,10 +51,12 @@
 - Формы: авторизация, регистрация, профиль, отправка сообщения
 
 ### 5. Сбор данных
+
 - `console.log` объекта с полями при отправке
 - Корректная обработка типов `input`
 
 ### 6. MVC-архитектура
+
 - **View** — `Block` + наследники, генерация через Handlebars
 - **Model** — сервисы и модули для бизнес-логики и данных
 - **Controller** — взаимодействие View и Model
@@ -60,6 +66,7 @@
 ## Нефункциональные требования
 
 ### TypeScript (tsconfig.json)
+
 ```json
 {
   "noImplicitAny": true,
@@ -71,33 +78,39 @@
 ```
 
 ### Качество кода
+
 - ESLint с проверкой TypeScript
 - Stylelint для CSS
 - EditorConfig
 - Команда `npm run lint`
 
 ### Архитектура
+
 - Единообразная структура папок
 - Правильные экспорты/импорты
 - Декомпозиция, минимальная связность
 
 ### Ограничения библиотек
+
 - Только: TypeScript, PostCSS, Handlebars
 - Никаких фреймворков
 
 ### Типизация
+
 - Избегать `any`
 - Использовать `unknown` / `never` где возможно
 - Без `@ts-ignore`, `@ts-expect-error`
 - Типизация props компонентов
 
 ### Техническая конфигурация
+
 - Порт 3000
 - `npm run start` — сборка + запуск
 - Сборка Vite без ошибок
 - Ветка `sprint_2`
 
 ### Развёртывание
+
 - Обновить README.md
 - Сборка в Netlify
 - Ветка `main` — только исходники
@@ -107,6 +120,7 @@
 ## Детали реализации Block
 
 ### Базовый класс
+
 ```typescript
 abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   protected abstract template: string;
@@ -128,6 +142,7 @@ abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
 ```
 
 ### Вложенные компоненты
+
 - `registerComponent(Component)` — регистрация в Handlebars
 - Декларативный синтаксис: `{{{ ComponentName prop="value" ref="key" }}}`
 - Заглушки с `data-component-hbs-id` → замена на реальный DOM
@@ -135,6 +150,7 @@ abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
 - `__refs` — ссылки на DOM-элементы вложенных компонентов
 
 ### Обработка событий
+
 - `events: Partial<Record<keyof HTMLElementEventMap, (e: Event) => void>>`
 - `attachListeners()` / `removeListeners()` в жизненном цикле
 
@@ -573,4 +589,3 @@ src/
 - [ ] `focusout` не показывает ошибку для пустых полей — нужно дополнительное решение
 
 <!-- TODO: заполнять по мере выполнения задач -->
-
