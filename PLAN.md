@@ -29,14 +29,19 @@
 1. **Создать ветку `sprint_4`** ✅ — ветка уже создана
 2. **Настроить Husky + lint-staged** ✅
    - `husky init` — выполнено
-   - lint-staged настроен: `prettier --write` для CSS, `eslint --fix` для TS, `tsc --noEmit`, `vitest run`
+   - lint-staged настроен: `prettier --write --ignore-unknown` для всех файлов
    - `.husky/pre-commit` запускает `lint-staged`
+   - ⚠️ `tsc`, `stylelint` и `eslint` убраны из pre-commit (не работают корректно через lint-staged на Windows)
+   - Проверка запускается отдельно: `npm run lint` и `npm run typecheck`
 3. **Установить и настроить Vitest** ✅
    - `npm install --save-dev vitest @vitest/ui jsdom`
    - `vitest.config.ts`: `globals: true`, `environment: 'jsdom'`
    - Скрипты: `test`, `test:ui`, `test:run`
 4. **Аудит зависимостей** ✅ — `npm audit fix`, 0 уязвимостей
 5. **Опционально:** `vite-plugin-checker` ✅ — проверка TS/ESLint/Stylelint во время сборки
+6. **Дополнительно:**
+   - `.prettierrc` починен (были merge-конфликты)
+   - `.gitignore` обновлён (добавлен `.gigacode_vsc`)
 
 ---
 
