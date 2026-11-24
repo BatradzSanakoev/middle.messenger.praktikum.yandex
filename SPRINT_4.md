@@ -33,11 +33,27 @@
    - Исправлены TypeScript ошибки (index signature в интерфейсах, типизация `connect`)
    - Исправлены ESLint ошибки (`any`, unused vars, console.error)
 
+### Фаза 2: WebSocket-клиент (сервис-обёртка) ✅
+
+Создан модуль `src/features/websocket/`:
+
+1. **`WebSocketService`** — сервис-обёртка (Singleton)
+   - `connect(userId, chatId)` — получение токена через `POST /api/v2/chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
+   - `send(message)` — отправка JSON: `{ content, type }`
+   - `sendOldMessages(offset)` — пагинация: `{ content: String(offset), type: "get old" }`
+   - Авто-ping каждые 30 секунд
+   - `disconnect()` — закрытие соединения
+   - Обработчики событий: `open`, `message`, `error`, `close`
+   - Парсер входящих сообщений (JSON.parse)
+   - Обработка ошибок связи
+   - Reconnect при обрыве соединения (код != 1000)
+   - Запрос старых сообщений при подключении к чату
+
 ---
 
 ## TODO
 
-- [ ] Фаза 2: WebSocket-клиент (сервис-обёртка)
+- [x] Фаза 2: WebSocket-клиент (сервис-обёртка)
 - [ ] Фаза 3: Интеграция в ChatPage (MessageList, MessageItem)
 - [ ] Фаза 4: Защита от XSS
 - [ ] Фаза 5: Тесты (Vitest)

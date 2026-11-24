@@ -45,27 +45,21 @@
 
 ---
 
-### Фаза 2: WebSocket-клиент (сервис-обёртка)
+### Фаза 2: WebSocket-клиент (сервис-обёртка) ✅
 
-Создать новый модуль `src/features/websocket/`:
+Создан модуль `src/features/websocket/`:
 
 1. **`WebSocketService`** — сервис-обёртка (Singleton)
    - `connect(userId, chatId)` — получение токена через `POST /api/v2/chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
    - `send(message)` — отправка JSON: `{ content, type }`
    - `sendOldMessages(offset)` — пагинация: `{ content: String(offset), type: "get old" }`
-   - `ping()` — поддержка соединения: `{ type: "ping" }`
-   - `subscribe(type, callback)` — подписка на события
+   - Авто-ping каждые 30 секунд
    - `disconnect()` — закрытие соединения
-   - Внутренний парсер входящих сообщений (JSON.parse)
-   - Автоматический ping каждые N секунд
-   - Обработка reconnect при обрыве
-
-2. **Типизация** — интерфейсы для всех типов сообщений:
-   - `ChatMessage` (id, time, user_id, content, type, file?)
-   - `UserConnected` (content: userId, type: "user connected")
-   - `WebSocketEvent` — discriminated union по полю `type`
-
-3. **Хранение состояния** — сообщения чата в Store (под ключом `messages` или `chatMessages`)
+   - Обработчики событий: `open`, `message`, `error`, `close`
+   - Парсер входящих сообщений (JSON.parse)
+   - Обработка ошибок связи
+   - Reconnect при обрыве (код != 1000) с задержкой 3 сек
+   - Запрос старых сообщений при подключении к чату (`sendOldMessages(0)` в `onopen`)
 
 ---
 
