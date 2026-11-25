@@ -11,7 +11,7 @@ import template from "./chat.hbs?raw";
 import type { BlockOwnProps } from "@shared/ui/block";
 import { connect, store } from "@/shared/utils";
 import { formatTime } from "@/shared/utils/formatTime";
-import type { ChatMessage, SystemMessage } from "@/features/websocket/types";
+import type { ChatMessage } from "@/features/websocket/types";
 import { CreateChatModal } from "./create-chat-modal";
 import { AddUserModal } from "./add-user-modal";
 import { RemoveUserModal } from "./remove-user-modal";
@@ -133,15 +133,11 @@ export class ChatPage extends Block<ChatPageProps> {
         // Валидируем форму
         const isValid = validateForm(form as HTMLFormElement);
         if (!isValid) {
-          // eslint-disable-next-line no-console
-          console.warn("Валидация не пройдена");
           return;
         }
 
         // Проверяем, что чат выбран
         if (!this.selectedChatId) {
-          // eslint-disable-next-line no-console
-          console.warn("Чат не выбран, selectedChatId:", this.selectedChatId);
           return;
         }
 
@@ -149,17 +145,21 @@ export class ChatPage extends Block<ChatPageProps> {
         const formData = new FormData(form as HTMLFormElement);
         const message = formData.get("message") as string;
         if (!message) {
-          // eslint-disable-next-line no-console
-          console.warn("Сообщение пустое");
           return;
         }
 
         // Отправляем через WebSocket
         const wsService = WebSocketService.getInstance();
-        wsService.send({
-          content: message,
-          type: "message",
-        });
+        if (
+          !wsService.send({
+            content: message,
+            type: "message",
+          })
+        ) {
+          // eslint-disable-next-line no-console
+          console.warn("Нет соединения, сообщение не отправлено");
+          return;
+        }
 
         // Очищаем поле ввода
         (form.querySelector('input[name="message"]') as HTMLInputElement).value = "";
@@ -237,30 +237,35 @@ export class ChatPage extends Block<ChatPageProps> {
 
   // Регистрирует обработчик входящих WebSocket-сообщений
   private setupMessageHandler(): void {
-    WebSocketService.getInstance().onMessage((msg) => {
-      // Не обрабатываем сообщения, если чат не выбран
-      if (!this.selectedChatId) return;
+    WebSocketService.getInstance().onMessage((msg, fromChatId) => {
+      // Фильтр по источнику, а не по текущему выбранному чату
+      if (fromChatId !== String(this.selectedChatId)) return;
 
       const messagesState = (store.getState().messages as Record<string, ChatMessage[]>) || {};
-      const chatId = this.selectedChatId;
+      const chatId = fromChatId;
 
       const newMessages: ChatMessage[] = Array.isArray(msg)
-        ? (msg as ChatMessage[])
+        ? msg
         : msg.type === "message"
-          ? [msg as ChatMessage]
+          ? [msg]
           : msg.type === "system" && "messages" in msg
-            ? (msg as SystemMessage).messages
+            ? msg.messages
             : [];
 
       if (newMessages.length === 0) return;
 
-      // Сортируем и обновляем Store
-      const merged = [...(messagesState[String(chatId)] || []), ...newMessages].sort((a, b) => {
+      // Дедуп по id — на случай reconnect или повторного get old
+      const existing = messagesState[chatId] || [];
+      const ids = new Set(existing.map((m) => m.id));
+      const unique = newMessages.filter((m) => !ids.has(m.id));
+      if (unique.length === 0) return;
+
+      const merged = [...existing, ...unique].sort((a, b) => {
         return new Date(a.time).getTime() - new Date(b.time).getTime();
       });
       store.setState("messages", {
         ...messagesState,
-        [String(chatId)]: merged,
+        [chatId]: merged,
       });
       // Автоскролл к последнему сообщению
       setTimeout(() => this.scrollToBottom(), 0);
@@ -268,6 +273,13 @@ export class ChatPage extends Block<ChatPageProps> {
   }
 
   // Вызывается при уходе со страницы — отключаем WebSocket
+  protected onLeave(): void {
+    WebSocketService.getInstance().disconnect();
+    this.selectedChatId = null;
+    store.setState("selectedChatId", null);
+  }
+
+  // Вызывается при реальном уничтожении компонента (fallback)
   protected componentWillUnmount(): void {
     WebSocketService.getInstance().disconnect();
   }
@@ -312,11 +324,18 @@ export class ChatPage extends Block<ChatPageProps> {
       return;
     }
 
-    // Подключаемся к WebSocket и ждём готовности
-    await WebSocketService.getInstance().connect(currentUserId, String(chatId));
-
-    // Запрашиваем старые сообщения ПОСЛЕ подключения
-    WebSocketService.getInstance().sendOldMessages();
+    try {
+      await WebSocketService.getInstance().connect(currentUserId, String(chatId));
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Не удалось подключиться к чату:", err);
+      return; // не падаем, пользователь может попробовать снова
+    }
+    // Историю запрашиваем только если в store её нет
+    const existing = (store.getState().messages as Record<string, ChatMessage[]>)?.[String(chatId)];
+    if (!existing || existing.length === 0) {
+      WebSocketService.getInstance().sendOldMessages();
+    }
   }
 
   // Обновляет панель пользователей
@@ -337,7 +356,9 @@ export class ChatPage extends Block<ChatPageProps> {
       return;
     }
 
-    usersList.textContent = filteredUsers.map((u) => u.display_name).join(", ");
+    usersList.textContent = filteredUsers
+      .map((u) => u.display_name || u.login || u.first_name || String(u.id))
+      .join(", ");
   }
 
   // Автоскролл к последнему сообщению
@@ -350,7 +371,24 @@ export class ChatPage extends Block<ChatPageProps> {
 
   // Обновление пропсов с ре-рендером
   public setProps(props: Partial<ChatPageProps>) {
+    // Сохраняем состояние input до пересоздания DOM
+    const input = this.element()?.querySelector<HTMLInputElement>('input[name="message"]');
+    const savedValue = input?.value ?? "";
+    const hadFocus = input === document.activeElement;
+
     super.setProps(props);
+
+    // Восстанавливаем — input пересоздан, но текст и фокус сохранены
+    const fresh = this.element()?.querySelector<HTMLInputElement>('input[name="message"]');
+    if (fresh) {
+      if (savedValue) fresh.value = savedValue;
+      if (hadFocus) fresh.focus();
+    }
+
+    // Список участников тоже пересоздаётся — обновляем из props
+    if (this.selectedChatId) {
+      this.updateUsersList(this.props.chatUsers?.[this.selectedChatId] ?? []);
+    }
   }
 
   // Загружает пользователей чата

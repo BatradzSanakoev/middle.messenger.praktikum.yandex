@@ -47,6 +47,22 @@ describe("merge", () => {
     expect(merge({}, {})).toEqual({});
   });
 
+  it("вложенный пустой объект заменяет lhs, а не сливается с ним", () => {
+    expect(merge({ messages: { a: 1, b: 2 } }, { messages: {} })).toEqual({ messages: {} });
+  });
+
+  it("вложенный пустой объект не стирает соседей", () => {
+    expect(merge({ messages: { a: 1 }, user: { id: 1 } }, { messages: {} })).toEqual({
+      messages: {},
+      user: { id: 1 },
+    });
+  });
+
+  it("top-level пустой rhs — no-op", () => {
+    // Это ожидаемое поведение, не баг
+    expect(merge({ a: 1 }, {})).toEqual({ a: 1 });
+  });
+
   it("должна обрабатывать глубокие вложенности", () => {
     const result = merge({ a: { b: { c: 1, d: 2 } } }, { a: { b: { d: 3, e: 4 } } });
     expect(result).toEqual({ a: { b: { c: 1, d: 3, e: 4 } } });

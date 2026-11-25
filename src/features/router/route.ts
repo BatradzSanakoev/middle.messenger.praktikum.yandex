@@ -10,16 +10,24 @@ export class Route {
   private blockClass: typeof Block; // Класс компонента (например, ChatPage)
   public block: Block | null; // Экземпляр компонента
   private rootElement: Element; // DOM-контейнер
+  private isProtectedRoute = false; // Флаг защищённого маршрута
 
   /**
    * Создаёт маршрут.
    * Компонент создаётся лениво — при первом вызове render().
+   * @param isProtected — если true, роутер проверит авторизацию перед показом
    */
-  constructor(pathname: string, blockClass: typeof Block, rootElement: Element) {
+  constructor(
+    pathname: string,
+    blockClass: typeof Block,
+    rootElement: Element,
+    isProtected = false
+  ) {
     this.pathname = pathname;
     this.blockClass = blockClass;
     this.block = null;
     this.rootElement = rootElement;
+    this.isProtectedRoute = isProtected;
   }
 
   /**
@@ -30,12 +38,18 @@ export class Route {
   }
 
   /**
-   * Скрывает компонент (вызывается при уходе со страницы).
+   * Возвращает, является ли маршрут защищённым.
+   */
+  public isProtected(): boolean {
+    return this.isProtectedRoute;
+  }
+
+  /**
+   * Вызывает onLeave у компонента при уходе со страницы.
+   * Блок не уничтожается — остаётся живым для быстрого возврата.
    */
   leave(): void {
-    if (this.block) {
-      this.block.hide();
-    }
+    (this.block as unknown as { onLeave?: () => void })?.onLeave?.();
   }
 
   /**
@@ -48,7 +62,7 @@ export class Route {
   /**
    * Показывает компонент:
    * - Если не создан → создаёт и вставляет в DOM
-   * - Если уже создан → просто показывает
+   * - Если уже создан → вызывает onEnter и перемещает DOM в контейнер
    */
   render(): void {
     if (!this.block) {
@@ -61,16 +75,7 @@ export class Route {
     }
 
     // При повторном переходе на страницу — вызываем onEnter и перемещаем DOM в контейнер
-    (this.block as unknown as { onEnter: () => void }).onEnter();
+    (this.block as unknown as { onEnter?: () => void })?.onEnter?.();
     render(this.rootElement, this.block);
-  }
-
-  /**
-   * Скрывает текущий компонент (вызывается при уходе со страницы).
-   */
-  hide(): void {
-    if (this.block) {
-      this.block.hide();
-    }
   }
 }

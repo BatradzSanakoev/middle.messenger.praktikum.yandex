@@ -51,6 +51,20 @@ export class ProfilePage extends Block<ProfileProps> {
   // Handlebars-шаблон страницы
   protected template = template;
 
+  // Показывает ошибку под указанной формой
+  private showFormError(formRole: string, message: string): void {
+    const form = this.element()?.querySelector<HTMLFormElement>(`[data-role="${formRole}"]`);
+    if (!form) return;
+    let slot = form.querySelector<HTMLElement>("[data-role='form-error']");
+    if (!slot) {
+      slot = document.createElement("div");
+      slot.setAttribute("data-role", "form-error");
+      slot.className = styles.formError;
+      form.appendChild(slot);
+    }
+    slot.textContent = message;
+  }
+
   // Модальное окно для загрузки аватара
   private modal: ProfileModal | null = null;
 
@@ -105,6 +119,7 @@ export class ProfilePage extends Block<ProfileProps> {
           );
 
           if (newPassword?.value !== confirmPassword?.value) {
+            e.preventDefault();
             // Показать ошибку под полем confirm_password
             const wrapper = confirmPassword?.closest("[class*='inputWrapper']");
             if (wrapper) {
@@ -161,7 +176,13 @@ export class ProfilePage extends Block<ProfileProps> {
     if (actionsNormal) actionsNormal.classList.remove(styles.hidden);
   }
 
-  // Уничтожение компонента — закрываем модалку аватара
+  // Вызывается при уходе со страницы — закрываем модалку аватара
+  protected onLeave(): void {
+    this.modal?.close();
+    this.modal = null;
+  }
+
+  // Уничтожение компонента — закрываем модалку аватара (fallback)
   protected componentWillUnmount(): void {
     this.modal?.close();
   }
@@ -231,8 +252,10 @@ export class ProfilePage extends Block<ProfileProps> {
     try {
       await UserController.updateProfile(data);
       this.disableDataForm();
-    } catch {
-      Router.getInstance().go("/500");
+    } catch (err) {
+      const reason = (err as { response?: { reason?: string } })?.response?.reason;
+      if (reason) this.showFormError("profile-form-data", reason);
+      else Router.getInstance().go("/500");
     }
   }
 
@@ -255,8 +278,10 @@ export class ProfilePage extends Block<ProfileProps> {
       const inputs = form.querySelectorAll<HTMLInputElement>('input[type="password"]');
       inputs.forEach((input) => (input.value = ""));
       this.hidePasswordForm();
-    } catch {
-      Router.getInstance().go("/500");
+    } catch (err) {
+      const reason = (err as { response?: { reason?: string } })?.response?.reason;
+      if (reason) this.showFormError("profile-form-password", reason);
+      else Router.getInstance().go("/500");
     }
   }
 

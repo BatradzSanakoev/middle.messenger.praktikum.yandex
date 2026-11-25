@@ -45,3 +45,11 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.error {
+  font-family: Caveat, cursive;
+  font-weight: 400;
+  font-size: 1rem;
+  color: #e53e3e;
+  min-height: 1.25rem;
+}

@@ -4,14 +4,19 @@ import type { Block } from "@shared/ui/block";
 
 // Mock Block для тестов — @ts-expect-error пропускает проверку интерфейса
 class MockBlock {
+  private _element: Element | null = null;
   element() {
-    return document.createElement("div");
+    if (!this._element) {
+      this._element = document.createElement("div");
+    }
+    return this._element;
   }
   setProps() {}
   render() {}
   componentDidMount() {}
   componentWillUnmount() {}
   onEnter() {}
+  onLeave() {}
   destroy() {}
   hide() {}
   show() {}
@@ -56,11 +61,19 @@ describe("Route.match", () => {
 });
 
 describe("Route.setRootElement", () => {
-  it("должен устанавливать новый rootElement", () => {
-    const route = new Route("/test", MockBlock as unknown as typeof Block, document.body);
+  it("render после setRootElement помещает блок в новый root, удаляя из старого", () => {
+    document.body.innerHTML = "";
+    const oldRoot = document.createElement("div");
     const newRoot = document.createElement("div");
+    document.body.append(oldRoot, newRoot);
+
+    const route = new Route("/test", MockBlock as unknown as typeof Block, oldRoot);
+    route.render();
+    expect(oldRoot.children.length).toBe(1);
+
     route.setRootElement(newRoot);
-    // setRootElement меняет private поле, проверяем что не бросает ошибку
-    expect(() => route.setRootElement(newRoot)).not.toThrow();
+    route.render();
+    expect(newRoot.children.length).toBe(1);
+    expect(oldRoot.children.length).toBe(0);
   });
 });

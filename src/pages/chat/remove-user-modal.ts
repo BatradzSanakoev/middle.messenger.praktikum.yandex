@@ -43,6 +43,9 @@ export class RemoveUserModal {
       title: "Удалить участника",
       body: bodyHtml,
       styles,
+      onClose: () => {
+        this.modal = null;
+      },
     });
 
     this.modal.show();

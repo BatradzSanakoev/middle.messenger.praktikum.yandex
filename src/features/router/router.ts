@@ -1,5 +1,6 @@
 import type { Block } from "../../shared/ui/block";
 import { Route } from "./route";
+import { store } from "../../shared/utils";
 
 /**
  * Роутер приложения — Singleton.
@@ -35,9 +36,14 @@ export class Router {
   /**
    * Зарегистрировать маршрут.
    * Позволяет chaining: router.use(...).use(...).
+   * @param isProtected — если true, роутер проверит авторизацию перед показом
    */
-  use<Props extends object>(pathname: string, blockClass: new (props?: Props) => Block): Router {
-    const route = new Route(pathname, blockClass as typeof Block, this.rootElement);
+  use<Props extends object>(
+    pathname: string,
+    blockClass: new (props?: Props) => Block,
+    isProtected = false
+  ): Router {
+    const route = new Route(pathname, blockClass as typeof Block, this.rootElement, isProtected);
     this.routes.push(route);
     return this;
   }
@@ -68,20 +74,29 @@ export class Router {
 
   /**
    * Обработать переход на маршрут:
-   * - Удалить DOM-элемент предыдущей страницы
+   * - Проверить guard для защищённых маршрутов
+   * - Вызвать onLeave у уходящей страницы
    * - Показать новую
-   * - Если маршрут не найден — перейти на страницу 404
+   * - Если маршрут не найден — заменить URL на 404 (replaceState)
    */
   private _onRoute(pathname: string): void {
     const route = this.getRoute(pathname);
     if (!route) {
-      // Маршрут не найден — перейти на страницу 404
-      this.go("/404");
+      // Маршрут не найден — заменить URL на 404 (не pushState, чтобы не ломать «Назад»)
+      this.history.replaceState({}, "", "/404");
+      this._onRoute("/404");
       return;
     }
 
-    // Удаляем DOM-элемент предыдущей страницы из контейнера
+    // Guard для защищённых маршрутов
+    if (route.isProtected() && !store.getState().user) {
+      this.go("/");
+      return;
+    }
+
+    // onLeave на уходящей странице + убираем DOM
     if (this.currentRoute && this.currentRoute !== route) {
+      this.currentRoute.leave();
       this.currentRoute.block?.element()?.remove();
     }
 

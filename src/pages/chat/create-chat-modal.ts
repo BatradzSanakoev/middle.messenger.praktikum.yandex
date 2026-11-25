@@ -30,6 +30,9 @@ export class CreateChatModal {
       title: "Создайте чат",
       body: bodyHtml,
       styles,
+      onClose: () => {
+        this.modal = null;
+      },
     });
 
     this.modal.show();
@@ -55,8 +58,14 @@ export class CreateChatModal {
       const title = input.value.trim();
       if (!title) return;
 
-      await ChatController.createChat({ title });
-      this.close();
+      const errorSpan = element?.querySelector<HTMLSpanElement>('[data-role="error"]');
+      try {
+        await ChatController.createChat({ title });
+        this.close();
+      } catch (err) {
+        const reason = (err as { response?: { reason?: string } })?.response?.reason;
+        if (errorSpan) errorSpan.textContent = reason ?? "Не удалось создать чат";
+      }
     });
   }
 

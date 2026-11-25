@@ -29,8 +29,6 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   protected events: EventListType = {};
   // Флаг первого монтирования (true только при первом mountComponent)
   private _isFirstMount = true;
-  // Флаг первого размонтирования (true только при первом unmountComponent)
-  private _isFirstUnmount = true;
 
   // Конструктор: сохраняет пропсы в this.props
   constructor(props: Props = {} as Props) {
@@ -67,25 +65,29 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     }
   }
 
-  // Хук: вызывается перед удалением компонента из DOM (переопределяется в наследниках)
+  // Хук: вызывается при уходе со страницы (но блок остаётся живым для возврата)
+  protected onLeave(): void {}
+
+  // Хук: вызывается только при реальном destroy
   protected componentWillUnmount(): void {}
 
-  // Очистка: удаляет вложенные компоненты, убирает слушатели
+  // Используется при ре-рендере: снимаем слушатели, но БЕЗ lifecycle-хуков
   private unmountComponent(): void {
     if (this.domElement) {
       this.children.reverse().forEach((child) => child.unmountComponent());
-      // Вызываем componentWillUnmount только при первом размонтировании
-      if (this._isFirstUnmount) {
-        this.componentWillUnmount();
-        this._isFirstUnmount = false;
-      }
       this.removeListeners();
     }
   }
 
-  // Полное уничтожение компонента
+  // Полное уничтожение — единственное место, где срабатывает componentWillUnmount
   public destroy(): void {
-    this.unmountComponent();
+    if (!this.domElement) return;
+    this.children.forEach((child) => child.destroy());
+    this.componentWillUnmount();
+    this.onLeave();
+    this.removeListeners();
+    this.domElement.remove();
+    this.domElement = null;
   }
 
   // Скрыть компонент (display: none)

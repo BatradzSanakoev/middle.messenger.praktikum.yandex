@@ -19,8 +19,17 @@ export function merge(lhs: Indexed, rhs: Indexed): Indexed {
     const lhsValue = result[p];
     const rhsValue = rhs[p];
 
-    // Если оба значения — объекты (не null, не массив) — рекурсивно объединяем
+    // Если rhsValue — пустой объект, заменяем lhsValue целиком (очистка store)
     if (
+      rhsValue !== null &&
+      typeof rhsValue === "object" &&
+      !Array.isArray(rhsValue) &&
+      Object.keys(rhsValue as object).length === 0
+    ) {
+      result[p] = rhsValue;
+    }
+    // Если оба значения — непустые объекты (не null, не массив) — рекурсивно объединяем
+    else if (
       rhsValue !== null &&
       rhsValue !== undefined &&
       typeof rhsValue === "object" &&

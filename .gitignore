@@ -27,3 +27,6 @@ dist-ssr
 
 # Vite CSS modules
 *.module.css.json
+
+# TypeScript build
+tsconfig.tsbuildinfo

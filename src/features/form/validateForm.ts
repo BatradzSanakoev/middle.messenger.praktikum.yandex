@@ -65,11 +65,9 @@ export function validateForm(form: HTMLFormElement): boolean {
   // Если есть ошибки — возвращаем false (форма не отправлена)
   if (hasError) return false;
 
-  // Собираем данные формы в объект и выводим в консоль
+  // Собираем данные формы в объект
   const formData = new FormData(form);
   const data: Record<string, string> = {};
   formData.forEach((value, key) => (data[key] = value as string));
-  // eslint-disable-next-line no-console
-  console.log("Form data:", data);
   return true;
 }

@@ -20,6 +20,19 @@ export class RegisterPage extends Block<RegisterProps> {
   // Handlebars-шаблон страницы
   protected template = template;
 
+  // Показывает ошибку в форме
+  private showFormError(message: string): void {
+    const form = this.element();
+    let slot = form?.querySelector<HTMLElement>("[data-role='form-error']");
+    if (!slot && form) {
+      slot = document.createElement("div");
+      slot.setAttribute("data-role", "form-error");
+      slot.className = styles.formError;
+      form.appendChild(slot);
+    }
+    if (slot) slot.textContent = message;
+  }
+
   // Конструктор: инициализирует обработчики событий
   constructor() {
     super({ styles });
@@ -40,8 +53,13 @@ export class RegisterPage extends Block<RegisterProps> {
           phone: formData.get("phone") as string,
           password: formData.get("password") as string,
         }).catch((err) => {
-          if (err?.response?.reason === "User already in system") {
+          const reason = (err as { response?: { reason?: string } })?.response?.reason;
+          if (reason === "User already in system") {
             Router.getInstance().go("/messenger");
+            return;
+          }
+          if (reason) {
+            this.showFormError(reason);
           } else {
             Router.getInstance().go("/500");
           }

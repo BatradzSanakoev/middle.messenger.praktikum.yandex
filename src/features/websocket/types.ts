@@ -78,7 +78,8 @@ export type ServerMessage =
   | UserConnected
   | PingMessage
   | PongMessage
-  | SystemMessage;
+  | SystemMessage
+  | ChatMessage[];
 
 // Общий интерфейс сообщения чата для UI-компонентов
 export interface ChatMessage {

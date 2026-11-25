@@ -10,7 +10,13 @@
       data-ref="chatItem"
       data-chat-id="{{ id }}"
     >
-      <img class="{{ ../styles.avatar }}" src="{{ avatarUrl }}" alt="{{ alt }}" />
+      {{#if avatarUrl}}
+        <img class="{{ ../styles.avatar }}" src="{{ avatarUrl }}" alt="{{ alt }}" />
+      {{else}}
+        <div class="{{ ../styles.avatarPlaceholder }}">
+          {{ title.[0] }}
+        </div>
+      {{/if}}
       <div class="{{ ../styles.content }}">
         <div class="{{ ../styles.header }}">
           <span class="{{ ../styles.title }}">{{ title }}</span>

@@ -23,7 +23,7 @@ registerComponent("Modal", Modal);
 
 // Приложение: создаёт DOM и подключает роутер
 export class App {
-  init() {
+  async init() {
     // Создаём корневой div
     const app = document.createElement("div");
     app.className = styles.app;
@@ -53,15 +53,15 @@ export class App {
     router
       .use("/", LoginPage)
       .use("/sign-up", RegisterPage)
-      .use("/messenger", ChatPage)
-      .use("/settings", ProfilePage)
+      .use("/messenger", ChatPage, true) // ← protected
+      .use("/settings", ProfilePage, true) // ← protected
       .use("/404", Error404Page)
       .use("/500", Error500Page);
 
+    // Сначала авторизация — чтобы guard видел данные
+    await AuthController.checkAuth();
+
     // Запускаем роутер с контейнером main
     router.start(main);
-
-    // Проверяем авторизацию — загружаем данные пользователя при старте
-    AuthController.checkAuth();
   }
 }

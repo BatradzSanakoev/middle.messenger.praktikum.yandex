@@ -48,10 +48,9 @@ export class HTTPTransport {
       const isGet = method === METHODS.GET;
 
       // Для GET с data — добавляем query string в URL
-      let finalUrl =
-        isGet && isPlainObject(data)
-          ? `${BASE_URL}${url}${queryString(data)}`
-          : `${BASE_URL}${url}`;
+      const query = isGet && isPlainObject(data) ? queryString(data) : "";
+      const separator = url.includes("?") ? "&" : "?";
+      let finalUrl = `${BASE_URL}${url}${query ? separator + query : ""}`;
 
       // Отключаем кэширование для GET-запросов — добавляем timestamp
       if (isGet) {

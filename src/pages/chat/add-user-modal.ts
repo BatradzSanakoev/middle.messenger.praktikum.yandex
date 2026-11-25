@@ -42,6 +42,9 @@ export class AddUserModal {
       title: "Добавить участника",
       body: bodyHtml,
       styles,
+      onClose: () => {
+        this.modal = null;
+      },
     });
 
     this.modal.show();
