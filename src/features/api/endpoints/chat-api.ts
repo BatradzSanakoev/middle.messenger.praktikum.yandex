@@ -34,9 +34,7 @@ export class ChatAPI {
     return this.transport.delete("/chats/users", { data });
   }
 
-  avatar(avatar: File): Promise<unknown> {
-    const formData = new FormData();
-    formData.append("avatar", avatar);
-    return this.transport.put("/chats/avatar", { data: formData });
-  }
+  // Метод avatar() удалён: не использовался в UI и был сломан (нет chatId).
+  // Если понадобится — вернуть с сигнатурой avatar(chatId: number, file: File)
+  // и вызовом в ChatController.updateChatAvatar.
 }
