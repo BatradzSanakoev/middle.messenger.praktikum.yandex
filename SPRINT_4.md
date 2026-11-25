@@ -40,14 +40,14 @@
 1. **`WebSocketService`** — сервис-обёртка (Singleton)
    - `connect(userId, chatId)` — получение токена через `POST /chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
    - `send(message)` — отправка JSON: `{ content, type }`
-   - `sendOldMessages(offset)` — пагинация: `{ content: String(offset), type: "get old" }`
+   - `sendOldMessages()` — запрос старых сообщений
    - `isConnecting` + `connectPromise` — `send()` ждёт подключения, если оно ещё идёт
    - Авто-ping каждые 30 секунд
    - `disconnect()` — закрытие соединения
    - Обработчики событий: `open`, `message`, `error`, `close`
    - Парсер входящих сообщений (JSON.parse)
    - Обработка ошибок связи
-   - Reconnect при обрыве соединения (код != 1000)
+   - Reconnect при обрыве соединения (код != 1000) с лимитом 5 попыток и экспоненциальной задержкой
    - Запрос старых сообщений при подключении к чату
 
 ### Фаза 3: Интеграция в ChatPage ✅
@@ -60,7 +60,7 @@
 
 2. **Интеграция в ChatPage**
    - При выборе чата: `WebSocketService.connect(userId, chatId)`
-   - Регистрация обработчика через `onMessage`
+   - Регистрация обработчика через `onMessage` (один раз при монтировании страницы)
    - Сортировка сообщений по времени при добавлении
    - Отправка сообщений через форму (`submit` → `WebSocketService.send`)
    - `componentWillUnmount` — вызов `disconnect()`
@@ -79,16 +79,84 @@
    - `connectPromise` завершается только когда `WebSocket.open`
    - `send()` ждёт `connectPromise.then()`, если `isConnecting === true`
    - Исправлен URL токена: `/chats/token/${chatId}` (без `/api/v2` — `HTTPTransport` уже добавляет `BASE_URL`)
+   - Лимит reconnect: 5 попыток с экспоненциальной задержкой
 
 3. **`chat.hbs`** — поле ввода и кнопка
    - `disabled=messageDisabled` — заблокированы когда чат не выбран
    - `messageDisabled = !selectedChatId` вычисляется в `mapStateToProps`
    - Стили `.myMessage` / `.otherMessage` в `chat.module.css`
 
+### Фаза 5: Исправление багов и оптимизация ✅
+
+1. **Баг: старые сообщения не отображались**
+   - `onMessage` вешался при каждом выборе чата → callback терялся при `disconnect()`
+   - **Решение:** `setupMessageHandler()` вызывается один раз в `componentDidMount`
+   - `sendOldMessages()` вызывается после `await connect()` — дождёмся подключения
+
+2. **Баг: `messageCallback` сбрасывался при каждом ре-рендере**
+   - `disconnect()` сбрасывал `messageCallback = null`
+   - `componentWillUnmount` вызывался при каждом `setProps` от HOC `connect`
+   - **Решение:** закомментировал `this.messageCallback = null` в `disconnect()`
+
+3. **Баг: сервер возвращал массив, а не объект**
+   - `msg.type` был `undefined` — сервер возвращал `[msg1, msg2, ...]`
+   - **Решение:** добавил проверку `Array.isArray(msg)` в `setupMessageHandler()`
+
+4. **Баг: `currentUserId` пустой → все сообщения чужие**
+   - `msg.user_id` — число (62), `currentUserId` — строка ("62")
+   - `===` не работает для разных типов
+   - **Решение:** `String(msg.user_id) === currentUserId`
+
+5. **Баг: дублирование `getChats()`**
+   - `componentDidMount` и `onEnter` оба вызывали `ChatController.getChats()`
+   - **Решение:** убрал из `componentDidMount`
+
+6. **Баг: `setTimeout` без лимита**
+   - `connectToChat` рекурсивно вызывал себя бесконечно
+   - **Решение:** лимит 10 попыток
+
+7. **Баг: бесконечный reconnect**
+   - `reconnect()` вызывал `connect()` без лимита
+   - **Решение:** лимит 5 попыток, экспоненциальная задержка
+
+8. **Оптимизация: удалён бесполезный override `setProps`**
+
+9. **Оптимизация: убраны `console.log` из production-кода**
+
+### Фаза 6: Визуальные улучшения ✅
+
+1. **Сообщения: свои справа, чужие слева**
+   - `.myMessage` — `align-self: flex-end`, синий фон `var(--color-light-gray)`
+   - `.otherMessage` — `align-self: flex-start`, серый фон `#f0f0f0`
+   - `width: fit-content` — сообщения не растягиваются на всю ширину
+
+2. **Скролл внутри чата**
+   - `.messagesContainer` — `flex: 1`, `min-height: 0` — скролл только внутри списка сообщений
+   - `.inputWrapper` — `flex-shrink: 0` — поле ввода не сжимается
+   - `.main` — `min-height: 0` — flex-контейнер корректно ограничивает высоту
+
+3. **Стили сообщений**
+   - Паддинги: `0.75rem 1rem`
+   - Скругление: `0.75rem`
+   - Тень: `0 1px 2px rgb(0 0 0 / 5%)`
+
+4. **Кнопка "Удалить участника"**
+   - Добавлен стиль `.removeUserBtn` (дублирует `.addUserBtn`)
+
+5. **XSS защита**
+   - `{{{ message.content }}}` → `{{ message.content }}` — экранирование HTML
+
+### Фаза 7: Тесты (Vitest) ✅
+
+Написаны тесты для чистых функций:
+
+- **`isEqual.test.ts`** — 10 тестов (примитивы, объекты, массивы, вложенные структуры)
+- **`merge.test.ts`** — 9 тестов (плоские объекты, вложенные, null/undefined, immutability)
+- **`validators.test.ts`** — 35 тестов (все поля валидации)
+- Итого: **54 теста, 3 файла, все проходят**
+
 ---
 
 ## TODO
 
-- [ ] Фаза 4: Защита от XSS
-- [ ] Фаза 5: Тесты (Vitest)
 - [ ] Фаза 6: Финализация (README, деплой)

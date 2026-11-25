@@ -23,8 +23,8 @@
       <div class="{{ styles.messagesContainer }}" data-role="message-list">
         {{#each messages as |message|}}
           <div class="{{ styles.messageItem }} {{ message.messageClass }}">
-            <div class="{{ ../styles.messageContent }}">{{{ message.content }}}</div>
-            <div class="{{ ../styles.messageTime }}">{{{ message.time }}}</div>
+            <div class="{{ ../styles.messageContent }}">{{ message.content }}</div>
+            <div class="{{ ../styles.messageTime }}">{{ message.time }}</div>
           </div>
         {{/each}}
       </div>

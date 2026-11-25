@@ -52,100 +52,134 @@
 1. **`WebSocketService`** — сервис-обёртка (Singleton)
    - `connect(userId, chatId)` — получение токена через `POST /api/v2/chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
    - `send(message)` — отправка JSON: `{ content, type }`
-   - `sendOldMessages(offset)` — пагинация: `{ content: String(offset), type: "get old" }`
+   - `sendOldMessages()` — запрос старых сообщений
    - Авто-ping каждые 30 секунд
    - `disconnect()` — закрытие соединения
    - Обработчики событий: `open`, `message`, `error`, `close`
    - Парсер входящих сообщений (JSON.parse)
    - Обработка ошибок связи
-   - Reconnect при обрыве (код != 1000) с задержкой 3 сек
-   - Запрос старых сообщений при подключении к чату (`sendOldMessages(0)` в `onopen`)
+   - Reconnect при обрыве (код != 1000) с лимитом 5 попыток и экспоненциальной задержкой
+   - Запрос старых сообщений при подключении к чату
 
 ---
 
 ### Фаза 3: Интеграция в ChatPage ✅
 
-1. **Компонент `MessageList`** — список сообщений чата
-   - Рендерит массив сообщений из Store
-   - Временные метки (форматирование `time`)
-   - Разделение сообщений по author (свои/чужие) — через CSS-классы
+1. **Рендеринг сообщений встроен в `chat.hbs`**
+   - `{{#each messages}}` — рендеринг через Handlebars
+   - `isMine` вычисляется в `mapStateToProps` и добавляется к каждому сообщению
+   - Стили перенесены в `chat.module.css`
+   - Убраны отдельные компоненты `MessageList` и `MessageItem`
 
-2. **Компонент `MessageItem`** — одно сообщение
-   - Отображение контента (текст или файл/стикер)
-   - Временная метка
-   - Имя автора
-
-3. **Обновить ChatPage**
-   - При выборе чата: вызов `WebSocketService.connect(userId, chatId)`
-   - Запрос старых сообщений: `sendOldMessages(0)` → пагинация до конца
-   - При получении нового сообщения — добавление в Store → ре-рендер
-   - При отправке — `send({ content: message, type: "message" })`
-   - Автоскролл к последнему сообщению (ref на контейнер, `scrollToBottom`)
-   - При скролле вверх — загрузка предыдущих порций (если нужно)
+2. **Интеграция в ChatPage**
+   - При выборе чата: `WebSocketService.connect(userId, chatId)`
+   - Регистрация обработчика через `onMessage` (один раз при монтировании страницы)
+   - Сортировка сообщений по времени при добавлении
+   - Отправка сообщений через форму (`submit` → `WebSocketService.send`)
+   - Автоскролл к последнему сообщению
    - Сброс WebSocket при уходе со страницы (`componentWillUnmount`)
 
-4. **Пустое состояние** — "Выберите чат" или "Начните переписку"
+3. **Пустое состояние** — "Выберите чат"
 
-5. **Сортировка сообщений по времени** — массив сообщений сортируется перед добавлением в Store
-
----
-
-### Фаза 4: Защита от XSS
-
-1. **Проверка всех мест** — убедиться, что нигде не используется `innerHTML` (уже должен быть только `createContextualFragment`)
-2. **Санитайзинг сообщений** — если в сообщениях может быть HTML, использовать `textContent` или санитайзер
-3. **Проверка href** — валидация URL перед использованием в `href` (только `http/https`)
-4. **Проверка стилей** — не подставлять пользовательские данные в `style.textContent`
-5. **CSP** — добавить заголовок Content-Security-Policy через Vite plugin или netlify.toml
+4. **Сортировка сообщений по времени** — массив сообщений сортируется перед добавлением в Store
 
 ---
 
-### Фаза 5: Тесты (Vitest)
+### Фаза 4: Защита от XSS ✅
 
-Файлы тестов рядом с тестируемыми модулями:
+1. **Экранирование контента**
+   - `{{{ message.content }}}` → `{{ message.content }}` — Handlebars автоматически экранирует HTML
+   - `{{{ message.time }}}` → `{{ message.time }}`
 
-1. **`src/features/api/httpTransport.test.ts`** — тесты HTTPTransport
-   - GET, POST, PUT, DELETE запросы
-   - Mock XHR
-   - Обработка ошибок
+2. **Безопасная работа с DOM**
+   - `Block.ts` использует `createContextualFragment` вместо `innerHTML`
+   - Хrefs валидированы (только `/settings`)
 
-2. **`src/shared/utils/router.test.ts`** — тесты Router
-   - Регистрация маршрутов
-   - Переходы
-   - History API
-
-3. **`src/shared/utils/isEqual.test.ts`** — тесты isEqual
-   - Равные/неравные объекты
-   - Вложенные объекты
-   - Массивы
-
-4. **`src/shared/utils/merge.test.ts`** — тесты merge
-
-5. **`src/features/validation/validators.test.ts`** — тесты валидаторов
-   - first_name, second_name, login, email, password, phone, message
-
-6. **`src/shared/ui/input/input.test.ts`** — тесты компонента Input
-   - Рендер
-   - Валидация
-
-7. **`src/features/websocket/webSocketService.test.ts`** — тесты WebSocketService
-   - Подключение
-   - Отправка
-   - Подписка на события
-   - Mock WebSocket
+3. **CSS** — `stylelint` проверяет синтаксис (modern `rgb()` вместо `rgba()`)
 
 ---
 
-### Фаза 6: Финализация
+### Фаза 5: Исправление багов и оптимизация ✅
+
+1. **Баг: старые сообщения не отображались**
+   - `onMessage` вешался при каждом выборе чата → callback терялся при `disconnect()`
+   - **Решение:** `setupMessageHandler()` вызывается один раз в `componentDidMount`
+   - `sendOldMessages()` вызывается после `await connect()`
+
+2. **Баг: `messageCallback` сбрасывался при каждом ре-рендере**
+   - `disconnect()` сбрасывал `messageCallback = null`
+   - **Решение:** закомментировал `this.messageCallback = null` в `disconnect()`
+
+3. **Баг: сервер возвращал массив, а не объект**
+   - `msg.type` был `undefined` — сервер возвращал `[msg1, msg2, ...]`
+   - **Решение:** добавил проверку `Array.isArray(msg)`
+
+4. **Баг: `currentUserId` пустой → все сообщения чужие**
+   - `msg.user_id` — число (62), `currentUserId` — строка ("62")
+   - **Решение:** `String(msg.user_id) === currentUserId`
+
+5. **Баг: дублирование `getChats()`**
+   - **Решение:** убрал из `componentDidMount`
+
+6. **Баг: бесконечный `setTimeout` и `reconnect`**
+   - **Решение:** лимиты 10 и 5 попыток соответственно
+
+7. **Оптимизация:**
+   - Удалён бесполезный override `setProps`
+   - Убраны `console.log` из production-кода
+   - Экспоненциальная задержка reconnect
+
+---
+
+### Фаза 6: Визуальные улучшения ✅
+
+1. **Сообщения: свои справа, чужие слева**
+   - `.myMessage` — `align-self: flex-end`, `var(--color-light-gray)`
+   - `.otherMessage` — `align-self: flex-start`, `#f0f0f0`
+   - `width: fit-content` — сообщения не растягиваются
+
+2. **Скролл внутри чата**
+   - `.messagesContainer` — `flex: 1`, `min-height: 0`
+   - `.inputWrapper` — `flex-shrink: 0`
+
+3. **Стили сообщений:** паддинги `0.75rem 1rem`, скругление `0.75rem`, тень
+
+4. **Кнопка "Удалить участника"** — добавлен стиль `.removeUserBtn`
+
+---
+
+### Фаза 7: Тесты (Vitest) ✅
+
+Написаны тесты для чистых функций (54 теста, 3 файла):
+
+1. **`isEqual.test.ts`** — 10 тестов
+   - Примитивы, объекты, массивы, вложенные структуры
+
+2. **`merge.test.ts`** — 9 тестов
+   - Плоские объекты, вложенные, null/undefined, immutability
+
+3. **`validators.test.ts`** — 35 тестов
+   - first_name, second_name, login, email, password, phone, message, display_name
+
+Примечание: тесты для `HTTPTransport`, `Router`, `Input`, `WebSocketService` требуют сложного мокирования DOM/XHR/WebSocket в jsdom. Для их написания необходим рефакторинг кода (вынесение зависимостей, интерфейсы).
+
+---
+
+### Фаза 8: Финализация ⬜
 
 1. **Обновить README.md**
    - Описание WebSocket-функциональности
    - Команды для запуска тестов
    - Обновить список технологий (Vitest, Husky)
+
 2. **Проверить сборку** — `npm run build` без ошибок
+
 3. **Проверить линтинг** — `npm run lint` без ошибок
+
 4. **Проверить тесты** — `npm run test:run` все проходят
+
 5. **Деплой в Netlify** — обновить сборку
+
 6. **Мерж в `main`** — через PR
 
 ---
@@ -153,10 +187,10 @@
 ## Архитектурные решения
 
 - **WebSocketService** — Singleton, подписка через callback, авто-ping
-- **Сообщения в Store** — ключ `chatMessages` с объектом `{ [chatId]: Message[] }`
-- **Компоненты сообщений** — вынести в `src/shared/ui/message/` (message-list, message-item)
+- **Сообщения в Store** — ключ `messages` с объектом `{ [chatId]: ChatMessage[] }`
+- **onMessage** — регистрируется один раз в `componentDidMount`, не при каждом выборе чата
 - **Тесты** — рядом с модулями, `*.test.ts`
-- **XSS** — `textContent` вместо `innerHTML`, валидация URL, санитайзинг
+- **XSS** — `{{ }}` вместо `{{{ }}}`, `createContextualFragment` вместо `innerHTML`
 
 ---
 
@@ -167,6 +201,8 @@
 | 1. Инфраструктура        | Низкая          |
 | 2. WebSocket-клиент      | Средняя         |
 | 3. Интеграция в ChatPage | Средняя-высокая |
-| 4. XSS защита            | Низкая-средняя  |
-| 5. Тесты                 | Средняя         |
-| 6. Финализация           | Низкая          |
+| 4. XSS защита            | Низкая          |
+| 5. Багфикс и оптимизация | Средняя         |
+| 6. Визуальные улучшения  | Низкая          |
+| 7. Тесты                 | Средняя         |
+| 8. Финализация           | Низкая          |
