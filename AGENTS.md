@@ -742,6 +742,125 @@ https://www.figma.com/design/jF5fFFzgGOxQeB4CmKWTiE/Chat_external_link?node-id=1
 
 ---
 
+# Спринт 4
+
+## Задачи на 4 спринт
+
+- Тестирование приложения (Vitest)
+- Полная функциональность чата (WebSocket, отправка/получение сообщений)
+- Защита от XSS-атак
+- Инфраструктура (Husky, аудит зависимостей, vite-plugin-checker)
+- Обновление README.md
+
+---
+
+## Что сделано
+
+### Фаза 1: Инфраструктура и подготовка ✅
+
+1. **Ветка `sprint_4`** — создана
+2. **Husky + lint-staged**
+   - `husky init` — выполнено
+   - lint-staged настроен: `prettier --write --ignore-unknown` для всех файлов
+   - `.husky/pre-commit` запускает `lint-staged`
+   - ⚠️ `tsc`, `stylelint` и `eslint` убраны из pre-commit (не работают через lint-staged на Windows)
+3. **Vitest**
+   - `npm install --save-dev vitest @vitest/ui jsdom jest`
+   - `vitest.config.ts`: `globals: true`, `environment: 'jsdom'`
+   - Скрипты: `test`, `test:ui`, `test:run`
+4. **Аудит зависимостей** — `npm audit fix`, 0 уязвимостей
+5. **vite-plugin-checker** — проверка TS/ESLint/Stylelint во время сборки
+6. **Дополнительно:**
+   - `.prettierrc` починен
+   - `.gitignore` обновлён
+   - Исправлены TypeScript ошибки
+   - Исправлены ESLint ошибки
+
+### Фаза 2: WebSocket-клиент ✅
+
+Создан модуль `src/features/websocket/`:
+
+- **`WebSocketService`** — Singleton
+  - `connect(userId, chatId)` — токен → `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
+  - `send(message)` — отправка JSON: `{ content, type }`
+  - `sendOldMessages()` — запрос старых сообщений
+  - Авто-ping каждые 30 секунд
+  - Reconnect при обрыве (код != 1000) с лимитом 5 попыток и экспоненциальной задержкой
+
+### Фаза 3: Интеграция в ChatPage ✅
+
+- Рендеринг сообщений встроен в `chat.hbs` — `{{#each messages}}`
+- `isMine` вычисляется в `mapStateToProps`
+- Стили перенесены в `chat.module.css`
+- Убраны отдельные компоненты `MessageList` и `MessageItem`
+- `onMessage` регистрируется один раз в `componentDidMount`
+- Отправка сообщений через форму (`submit` → `WebSocketService.send`)
+
+### Фаза 4: Защита от XSS ✅
+
+- `{{{ message.content }}}` → `{{ message.content }}` — экранирование HTML
+- `{{{ message.time }}}` → `{{ message.time }}`
+- `Block.ts` использует `createContextualFragment` вместо `innerHTML`
+- `stylelint` проверяет синтаксис (`rgb()` вместо `rgba()`)
+
+### Фаза 5: Исправление багов и оптимизация ✅
+
+1. **Баг: старые сообщения не отображались**
+   - `onMessage` вешался при каждом выборе чата → callback терялся
+   - **Решение:** `setupMessageHandler()` в `componentDidMount` (один раз)
+   - `sendOldMessages()` после `await connect()`
+
+2. **Баг: `messageCallback` сбрасывался при каждом ре-рендере**
+   - `disconnect()` сбрасывал `messageCallback = null`
+   - **Решение:** закомментировал `this.messageCallback = null` в `disconnect()`
+
+3. **Баг: сервер возвращал массив, а не объект**
+   - `msg.type` был `undefined` — сервер возвращал `[msg1, msg2, ...]`
+   - **Решение:** проверка `Array.isArray(msg)`
+
+4. **Баг: `currentUserId` пустой → все сообщения чужие**
+   - `msg.user_id` — число (62), `currentUserId` — строка ("62")
+   - **Решение:** `String(msg.user_id) === currentUserId`
+
+5. **Баг: дублирование `getChats()`**
+   - **Решение:** убрал из `componentDidMount`
+
+6. **Баг: бесконечный `setTimeout` и `reconnect`**
+   - **Решение:** лимиты 10 и 5 попыток
+
+7. **Оптимизация:** удалён override `setProps`, убраны `console.log`, экспоненциальная задержка
+
+### Фаза 6: Визуальные улучшения ✅
+
+- Свои сообщения справа (`align-self: flex-end`), чужие слева (`align-self: flex-start`)
+- `width: fit-content` — сообщения не растягиваются
+- Скролл внутри чата: `.messagesContainer` — `flex: 1`, `min-height: 0`
+- Стили: паддинги `0.75rem 1rem`, скругление `0.75rem`, тень
+- Кнопка "Удалить участника" — стиль `.removeUserBtn`
+
+### Фаза 7: Тесты (Vitest) ✅
+
+77 тестов, 5 файлов, все проходят:
+
+- **`isEqual.test.ts`** — 10 тестов (примитивы, объекты, массивы, вложенные структуры)
+- **`merge.test.ts`** — 9 тестов (плоские объекты, вложенные, null/undefined, immutability)
+- **`validators.test.ts`** — 35 тестов (все поля валидации)
+- **`common.test.ts`** — 13 тестов (`isPlainObject`, `isArray`, `queryString`)
+- **`route.test.ts`** — 10 тестов (`Route.match`, `Route.setRootElement`)
+
+Все тесты — чистые функции без моков DOM/XHR/WebSocket.
+
+### Фаза 8: Финализация ✅
+
+- **README.md** — обновлён (WebSocket, тесты, команды)
+- **Сборка** — `npm run build` без ошибок
+- **Линтинг** — `npm run lint` без ошибок
+- **Тесты** — 77/77 проходят
+- **Деплой** — Netlify обновлён
+- **Jest** — добавлен в devDependencies для CI/CD
+
+---
+
 ## Ограничения
 
 - Не вносить изменений в файловую структуру проекта и в содержимое самих файлов без разрешения!

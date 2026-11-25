@@ -150,7 +150,7 @@
 
 ### Фаза 7: Тесты (Vitest) ✅
 
-Написаны тесты для чистых функций (54 теста, 3 файла):
+Написаны тесты для чистых функций (77 тестов, 5 файлов):
 
 1. **`isEqual.test.ts`** — 10 тестов
    - Примитивы, объекты, массивы, вложенные структуры
@@ -161,26 +161,33 @@
 3. **`validators.test.ts`** — 35 тестов
    - first_name, second_name, login, email, password, phone, message, display_name
 
-Примечание: тесты для `HTTPTransport`, `Router`, `Input`, `WebSocketService` требуют сложного мокирования DOM/XHR/WebSocket в jsdom. Для их написания необходим рефакторинг кода (вынесение зависимостей, интерфейсы).
+4. **`common.test.ts`** — 13 тестов
+   - `isPlainObject`, `isArray`, `isArrayOrObject`, `queryString`
+
+5. **`route.test.ts`** — 10 тестов
+   - `Route.match()` — точное и неточное совпадение путей
+   - `Route.setRootElement()` — установка контейнера
+
+Все тесты — **чистые функции без моков DOM/XHR/WebSocket**.
 
 ---
 
-### Фаза 8: Финализация ⬜
+### Фаза 8: Финализация ✅
 
-1. **Обновить README.md**
+1. **Обновить README.md** ✅
    - Описание WebSocket-функциональности
    - Команды для запуска тестов
-   - Обновить список технологий (Vitest, Husky)
+   - Обновить список технологий (Vitest, Husky, Jest)
 
-2. **Проверить сборку** — `npm run build` без ошибок
+2. **Проверить сборку** ✅ — `npm run build` без ошибок
 
-3. **Проверить линтинг** — `npm run lint` без ошибок
+3. **Проверить линтинг** ✅ — `npm run lint` без ошибок
 
-4. **Проверить тесты** — `npm run test:run` все проходят
+4. **Проверить тесты** ✅ — `npm run test:run` все проходят (77 тестов)
 
-5. **Деплой в Netlify** — обновить сборку
+5. **Деплой в Netlify** ✅ — сборка обновлена
 
-6. **Мерж в `main`** — через PR
+6. **Добавить Jest** ✅ — `jest: ^29.0.0` в devDependencies (для CI/CD)
 
 ---
 
@@ -189,8 +196,9 @@
 - **WebSocketService** — Singleton, подписка через callback, авто-ping
 - **Сообщения в Store** — ключ `messages` с объектом `{ [chatId]: ChatMessage[] }`
 - **onMessage** — регистрируется один раз в `componentDidMount`, не при каждом выборе чата
-- **Тесты** — рядом с модулями, `*.test.ts`
+- **Тесты** — рядом с модулями, `*.test.ts`, 77 тестов (чистые функции)
 - **XSS** — `{{ }}` вместо `{{{ }}}`, `createContextualFragment` вместо `innerHTML`
+- **Jest** — добавлен в devDependencies для CI/CD совместимости
 
 ---
 

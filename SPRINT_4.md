@@ -153,10 +153,13 @@
 - **`isEqual.test.ts`** — 10 тестов (примитивы, объекты, массивы, вложенные структуры)
 - **`merge.test.ts`** — 9 тестов (плоские объекты, вложенные, null/undefined, immutability)
 - **`validators.test.ts`** — 35 тестов (все поля валидации)
-- Итого: **54 теста, 3 файла, все проходят**
+- **`common.test.ts`** — 13 тестов (`isPlainObject`, `isArray`, `queryString`)
+- **`route.test.ts`** — 10 тестов (`Route.match`, `Route.setRootElement`)
+- Итого: **77 тестов, 5 файлов, все проходят**
+- Все тесты — чистые функции без моков DOM/XHR/WebSocket
 
 ---
 
 ## TODO
 
-- [ ] Фаза 6: Финализация (README, деплой)
+- [x] Фаза 8: Финализация (README, деплой, Jest)
