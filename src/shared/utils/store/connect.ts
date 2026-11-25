@@ -1,32 +1,30 @@
 import store from "./store";
 import { isEqual } from "..";
-
 import type { Block, BlockOwnProps } from "../../ui/block";
 
-// HOC: обёртка компонента для автоматической подписки на Store
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function connect<Props extends object, T extends new (...args: any[]) => Block>(
-  Component: T,
-  // Функция, выбирающая нужные данные из Store
-  mapStateToProps: (state: Record<string, unknown>) => Props
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ConnectedComponent = class extends (Component as any) {
-    private prevState: Props; // Кэшируем предыдущие props для проверки изменений
-    private unsubscribe: () => void; // Функция отписки от Store
+type MapStateFn<P> = (state: Record<string, unknown>) => Partial<P>;
 
-    constructor(...args: unknown[]) {
-      // Передаём аргументы в родительский конструктор
-      super(...(args as [BlockOwnProps]));
-      // Получаем начальные данные и передаём в props
+/**
+ * HOC: подписывает компонент на Store.
+ * Компонент получает props из mapStateToProps и ре-рендерится при их изменении.
+ */
+function connect<P extends BlockOwnProps>(
+  Component: new (props: P) => Block<P>,
+  mapStateToProps: MapStateFn<P>
+): new (props?: Partial<P>) => Block<P> {
+  class ConnectedComponent extends Component {
+    private prevState: Partial<P>;
+    private unsubscribe: (() => void) | null = null;
+
+    constructor(props: Partial<P> = {}) {
+      // props — Partial<P>, но super ждёт полный P.
+      // Обязательные поля придут через setProps(prevState) из mapStateToProps.
+      super({ ...props } as P);
       this.prevState = mapStateToProps(store.getState());
       this.setProps(this.prevState);
 
-      // Подписываемся на обновления Store, сохраняем unsubscribe
       this.unsubscribe = store.subscribe(() => {
         const nextState = mapStateToProps(store.getState());
-        // Обновляем props только если данные изменились
         if (!isEqual(this.prevState, nextState)) {
           this.setProps(nextState);
           this.prevState = nextState;
@@ -34,12 +32,11 @@ function connect<Props extends object, T extends new (...args: any[]) => Block>(
       });
     }
 
-    // Отписываемся от Store при уничтожении компонента
     protected componentWillUnmount(): void {
       this.unsubscribe?.();
       super.componentWillUnmount?.();
     }
-  };
+  }
 
   return ConnectedComponent;
 }
