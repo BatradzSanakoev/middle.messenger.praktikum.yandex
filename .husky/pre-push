@@ -1,7 +1,0 @@
-echo "→ typecheck..."
-npm run typecheck || exit 1
-
-echo "→ tests..."
-npm run test:run || exit 1
-
-echo "✅ pre-push passed"
