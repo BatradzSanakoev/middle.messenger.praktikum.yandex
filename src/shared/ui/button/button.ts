@@ -10,6 +10,7 @@ interface ButtonProps extends BlockOwnProps {
   text: string;
   type?: "button" | "submit" | "reset";
   dataRole?: string;
+  disabled?: boolean;
   styles: typeof buttonStyles;
 }
 

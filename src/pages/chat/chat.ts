@@ -3,12 +3,15 @@ import { validateForm } from "@features";
 import { ChatController } from "@features/controllers";
 import { Router } from "@features/router";
 import type { ChatResponse, ChatUser } from "@features/api";
+import { WebSocketService } from "@features/websocket";
 
 import styles from "./chat.module.css";
 import template from "./chat.hbs?raw";
 
 import type { BlockOwnProps } from "@shared/ui/block";
 import { connect, store } from "@/shared/utils";
+import { formatTime } from "@/shared/utils/formatTime";
+import type { ChatMessage, SystemMessage } from "@/features/websocket/types";
 import { CreateChatModal } from "./create-chat-modal";
 import { AddUserModal } from "./add-user-modal";
 import { RemoveUserModal } from "./remove-user-modal";
@@ -19,6 +22,9 @@ interface ChatPageProps extends BlockOwnProps {
   styles: typeof styles;
   selectedChatId?: number | null;
   chatUsers?: Record<number, ChatUser[]>;
+  messages?: Array<ChatMessage & { isMine?: boolean }>;
+  currentUserId?: string;
+  messageDisabled?: boolean;
 }
 
 // Структура элемента списка чатов
@@ -45,6 +51,12 @@ const mapStateToProps = (state: Record<string, unknown>) => {
   const selectedChatId = state.selectedChatId as number | null | undefined;
   // Получаем загруженных пользователей чатов из store
   const chatUsers = (state.chatUsers as Record<number, ChatUser[]>) || {};
+  // Получаем сообщения текущего чата из store
+  const messagesState = (state.messages as Record<string, ChatMessage[]>) || {};
+  const messages = selectedChatId ? messagesState[String(selectedChatId)] || [] : [];
+  // Получаем ID текущего пользователя из store
+  const user = state.user as Record<string, unknown> | null | undefined;
+  const currentUserId = user?.id ? String(user.id) : "";
 
   // Создаём массив чатов с правильным isSelected
   const chats: ChatItem[] = rawChats.map((chat) => ({
@@ -67,11 +79,28 @@ const mapStateToProps = (state: Record<string, unknown>) => {
     isSelected: chat.id === selectedChatId,
   }));
 
+  // Вычисляем, заблокировано ли поле ввода (когда чат не выбран)
+  const messageDisabled = !selectedChatId;
+
+  // Добавляем isMine, messageClass и форматируем время для каждого сообщения
+  const enrichedMessages = messages.map((msg) => {
+    const isMine = String(msg.user_id) === currentUserId;
+    return {
+      ...msg,
+      isMine,
+      messageClass: isMine ? styles.myMessage : styles.otherMessage,
+      time: formatTime(msg.time),
+    };
+  });
+
   return {
     chats,
     styles,
     selectedChatId,
     chatUsers,
+    messages: enrichedMessages,
+    currentUserId,
+    messageDisabled,
   };
 };
 
@@ -99,9 +128,41 @@ export class ChatPage extends Block<ChatPageProps> {
         e.preventDefault();
         // Находим форму внутри компонента
         const form = this.element()?.querySelector("form");
-        if (form) {
-          validateForm(form as HTMLFormElement);
+        if (!form) return;
+
+        // Валидируем форму
+        const isValid = validateForm(form as HTMLFormElement);
+        if (!isValid) {
+          // eslint-disable-next-line no-console
+          console.warn("Валидация не пройдена");
+          return;
         }
+
+        // Проверяем, что чат выбран
+        if (!this.selectedChatId) {
+          // eslint-disable-next-line no-console
+          console.warn("Чат не выбран, selectedChatId:", this.selectedChatId);
+          return;
+        }
+
+        // Собираем данные из формы
+        const formData = new FormData(form as HTMLFormElement);
+        const message = formData.get("message") as string;
+        if (!message) {
+          // eslint-disable-next-line no-console
+          console.warn("Сообщение пустое");
+          return;
+        }
+
+        // Отправляем через WebSocket
+        const wsService = WebSocketService.getInstance();
+        wsService.send({
+          content: message,
+          type: "message",
+        });
+
+        // Очищаем поле ввода
+        (form.querySelector('input[name="message"]') as HTMLInputElement).value = "";
       },
       // Обработчик кликов — определяет какая кнопка нажата
       click: (e: Event) => {
@@ -155,6 +216,8 @@ export class ChatPage extends Block<ChatPageProps> {
     store.setState("selectedChatId", null);
     // Очищаем кэш пользователей в Store
     store.setState("chatUsers", {});
+    // Очищаем сообщения
+    store.setState("messages", {});
     // Обновляем панель пользователей
     this.updateUsersList([]);
     // Загружаем чаты из контроллера
@@ -163,11 +226,50 @@ export class ChatPage extends Block<ChatPageProps> {
     });
   }
 
-  // Вызывается при первом рендере (перезагрузка страницы) — загружает чаты из контроллера
+  // Вызывается при первом рендере (перезагрузка страницы) — загружает чаты и подписывается на WebSocket
   protected componentDidMount(): void {
+    this.setupMessageHandler();
+    // Загружаем чаты из контроллера
     ChatController.getChats().catch(() => {
       Router.getInstance().go("/500");
     });
+  }
+
+  // Регистрирует обработчик входящих WebSocket-сообщений
+  private setupMessageHandler(): void {
+    WebSocketService.getInstance().onMessage((msg) => {
+      // Не обрабатываем сообщения, если чат не выбран
+      if (!this.selectedChatId) return;
+
+      const messagesState = (store.getState().messages as Record<string, ChatMessage[]>) || {};
+      const chatId = this.selectedChatId;
+
+      const newMessages: ChatMessage[] = Array.isArray(msg)
+        ? (msg as ChatMessage[])
+        : msg.type === "message"
+          ? [msg as ChatMessage]
+          : msg.type === "system" && "messages" in msg
+            ? (msg as SystemMessage).messages
+            : [];
+
+      if (newMessages.length === 0) return;
+
+      // Сортируем и обновляем Store
+      const merged = [...(messagesState[String(chatId)] || []), ...newMessages].sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      store.setState("messages", {
+        ...messagesState,
+        [String(chatId)]: merged,
+      });
+      // Автоскролл к последнему сообщению
+      setTimeout(() => this.scrollToBottom(), 0);
+    });
+  }
+
+  // Вызывается при уходе со страницы — отключаем WebSocket
+  protected componentWillUnmount(): void {
+    WebSocketService.getInstance().disconnect();
   }
 
   // Выбирает чат: обновляет UI, Store и загружает пользователей
@@ -191,8 +293,30 @@ export class ChatPage extends Block<ChatPageProps> {
     // Обновляем локальное состояние
     this.selectedChatId = chatId;
 
+    // Подключаемся к WebSocket для получения сообщений
+    this.connectToChat(chatId);
+
     // Загружаем пользователей чата — всегда, при каждом выборе
     this.loadChatUsers(chatId);
+  }
+
+  // Подключается к WebSocket для выбранного чата
+  private async connectToChat(chatId: number, retries = 0): Promise<void> {
+    const maxRetries = 10;
+    const currentUserId = this.props.currentUserId || "";
+
+    // Если пользователь ещё не загрузился — пробуем снова через 500мс с лимитом попыток
+    if (!currentUserId) {
+      if (retries >= maxRetries) return;
+      setTimeout(() => this.connectToChat(chatId, retries + 1), 500);
+      return;
+    }
+
+    // Подключаемся к WebSocket и ждём готовности
+    await WebSocketService.getInstance().connect(currentUserId, String(chatId));
+
+    // Запрашиваем старые сообщения ПОСЛЕ подключения
+    WebSocketService.getInstance().sendOldMessages();
   }
 
   // Обновляет панель пользователей
@@ -216,14 +340,17 @@ export class ChatPage extends Block<ChatPageProps> {
     usersList.textContent = filteredUsers.map((u) => u.display_name).join(", ");
   }
 
-  // Обновление пропсов с ре-рендером и обновлением списка пользователей
+  // Автоскролл к последнему сообщению
+  private scrollToBottom(): void {
+    const container = this.element()?.querySelector('[data-role="message-list"]') as HTMLElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }
+
+  // Обновление пропсов с ре-рендером
   public setProps(props: Partial<ChatPageProps>) {
     super.setProps(props);
-    // Обновляем список пользователей из Store, если есть данные
-    const chatUsers = (props.chatUsers as Record<number, ChatUser[]>) || this.props.chatUsers;
-    if (chatUsers && this.selectedChatId && chatUsers[this.selectedChatId]) {
-      this.updateUsersList(chatUsers[this.selectedChatId]);
-    }
   }
 
   // Загружает пользователей чата

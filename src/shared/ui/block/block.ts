@@ -29,6 +29,8 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   protected events: EventListType = {};
   // Флаг первого монтирования (true только при первом mountComponent)
   private _isFirstMount = true;
+  // Флаг первого размонтирования (true только при первом unmountComponent)
+  private _isFirstUnmount = true;
 
   // Конструктор: сохраняет пропсы в this.props
   constructor(props: Props = {} as Props) {
@@ -72,7 +74,11 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   private unmountComponent(): void {
     if (this.domElement) {
       this.children.reverse().forEach((child) => child.unmountComponent());
-      this.componentWillUnmount();
+      // Вызываем componentWillUnmount только при первом размонтировании
+      if (this._isFirstUnmount) {
+        this.componentWillUnmount();
+        this._isFirstUnmount = false;
+      }
       this.removeListeners();
     }
   }

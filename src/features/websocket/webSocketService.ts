@@ -2,6 +2,9 @@ import { HTTPTransport } from "../api/httpTransport";
 
 import type { ServerMessage, WSMessage } from "./types";
 
+// Callback для обработчиков сообщений
+type MessageCallback = (data: ServerMessage) => void;
+
 // HTTP-транспорт для получения токена
 const transport = new HTTPTransport();
 
@@ -13,6 +16,11 @@ class WebSocketService {
   private pingInterval: ReturnType<typeof setInterval> | null = null; // Интервал авто-ping
   private userId: string | null = null; // ID текущего пользователя для reconnect
   private chatId: string | null = null; // ID текущего чата для reconnect
+  private messageCallback: MessageCallback | null = null; // Обработчик входящих сообщений
+  private isConnecting: boolean = false; // Флаг процесса подключения
+  private connectPromise: Promise<void> | null = null; // Promise подключения для ожидания
+  private reconnectAttempts = 0; // Счётчик попыток reconnect
+  private maxReconnectAttempts = 5; // Максимальное количество попыток reconnect
 
   // Получение единственного экземпляра сервиса
   static getInstance(): WebSocketService {
@@ -35,65 +43,128 @@ class WebSocketService {
       return;
     }
 
+    // Сохраняем обработчик сообщений перед disconnect — иначе он потеряется
+    const savedCallback = this.messageCallback;
+
     // Если есть старое соединение — закрываем
     this.disconnect();
 
     this.userId = userId;
     this.chatId = chatId;
+    this.isConnecting = true;
 
-    // Получаем токен для подключения к чату
-    const response = await transport.post(`/api/v2/chats/token/${chatId}`, {});
-    const data = response as { token: string };
-    const token = data.token;
+    // Восстанавливаем обработчик сообщений — он был сброшен disconnect()
+    this.messageCallback = savedCallback;
 
-    // Формируем URL для подключения
-    const wsUrl = `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`;
+    // Сохраняем Promise подключения для ожидания в send()
+    // Promise завершается только когда сокет открыт
+    this.connectPromise = new Promise<void>((resolve, reject) => {
+      const connect = async () => {
+        try {
+          // Получаем токен для подключения к чату
+          const response = await transport.post(`/chats/token/${chatId}`, {});
+          const data = response as { token: string };
+          const token = data.token;
 
-    this.socket = new WebSocket(wsUrl);
+          // Формируем URL для подключения
+          const wsUrl = `wss://ya-praktikum.tech/ws/chats/${userId}/${chatId}/${token}`;
 
-    // Обработчик открытия соединения
-    this.socket.addEventListener("open", () => {
-      this.startPing();
-      // Запрашиваем старые сообщения при подключении к чату
-      this.sendOldMessages(0);
+          this.socket = new WebSocket(wsUrl);
+
+          // Обработчик открытия соединения — resolve'им Promise
+          this.socket.addEventListener("open", () => {
+            this.startPing();
+            this.isConnecting = false;
+            this.reconnectAttempts = 0; // Сбрасываем счётчик при успешном подключении
+            this.connectPromise = null;
+            resolve();
+          });
+
+          // Обработчик входящих сообщений
+          this.socket.addEventListener("message", (event: MessageEvent) => {
+            this.handleMessage(event.data);
+          });
+
+          // Обработчик ошибок
+          this.socket.addEventListener("error", (event) => {
+            this.isConnecting = false;
+            this.connectPromise = null;
+            reject(event);
+          });
+
+          // Обработчик закрытия соединения
+          this.socket.addEventListener("close", (event) => {
+            this.stopPing();
+            // Reconnect при нечистом закрытии (код != 1000) с лимитом попыток
+            if (
+              event.code !== 1000 &&
+              this.userId &&
+              this.chatId &&
+              this.reconnectAttempts < this.maxReconnectAttempts
+            ) {
+              this.reconnectAttempts++;
+              this.reconnect();
+            }
+          });
+        } catch (error) {
+          this.isConnecting = false;
+          this.connectPromise = null;
+          reject(error);
+        }
+      };
+      connect();
     });
 
-    // Обработчик входящих сообщений
-    this.socket.addEventListener("message", (event: MessageEvent) => {
-      this.handleMessage(event.data);
-    });
-
-    // Обработчик ошибок
-    this.socket.addEventListener("error", (event) => {
-      // eslint-disable-next-line no-console
-      console.error("WebSocket error:", event);
-    });
-
-    // Обработчик закрытия соединения
-    this.socket.addEventListener("close", (event) => {
-      // eslint-disable-next-line no-console
-      console.log(`WebSocket closed: code=${event.code}, reason=${event.reason}`);
-      this.stopPing();
-      // Reconnect при нечистом закрытии (код != 1000)
-      if (event.code !== 1000 && this.userId && this.chatId) {
-        // eslint-disable-next-line no-console
-        console.log("Attempting to reconnect...");
-        this.reconnect();
-      }
-    });
+    return this.connectPromise;
   }
 
   // Отправка сообщения на сервер
+  // Если подключение ещё идёт — ждёт его завершения перед отправкой
   send(data: WSMessage): void {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify(data));
+    // Если подключение ещё идёт — ждём его завершения
+    if (this.isConnecting && this.connectPromise) {
+      this.connectPromise
+        .then(() => {
+          if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(JSON.stringify(data));
+            // eslint-disable-next-line no-console
+            console.log("Сообщение отправлено через WebSocket:", data);
+          } else {
+            // eslint-disable-next-line no-console
+            console.warn("WebSocket не подключён, readyState:", this.socket?.readyState);
+          }
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error("Ошибка при отправке сообщения:", err);
+        });
+      return;
     }
+    // Если сокет не инициализирован — ничего не делаем
+    if (!this.socket) {
+      // eslint-disable-next-line no-console
+      console.warn("WebSocket не инициализирован");
+      return;
+    }
+    // Если сокет не подключён — ничего не делаем
+    if (this.socket.readyState !== WebSocket.OPEN) {
+      // eslint-disable-next-line no-console
+      console.warn("WebSocket не подключён, readyState:", this.socket.readyState);
+      return;
+    }
+    this.socket.send(JSON.stringify(data));
+    // eslint-disable-next-line no-console
+    console.log("Сообщение отправлено через WebSocket:", data);
   }
 
-  // Запрос старых сообщений с пагинацией
-  // offset — ID сообщения, с которого начинать загрузку (0 = с самого начала)
-  sendOldMessages(offset: number): void {
-    this.send({ content: String(offset), type: "get old" });
+  // Запрос старых сообщений
+  sendOldMessages(): void {
+    this.send({ content: "0", type: "get old" });
+  }
+
+  // Регистрация обработчика входящих сообщений
+  onMessage(callback: MessageCallback): void {
+    this.messageCallback = callback;
   }
 
   // Закрытие соединения и очистка
@@ -107,18 +178,19 @@ class WebSocketService {
     this.socket = null;
     this.userId = null;
     this.chatId = null;
+    // НЕ сбрасываем messageCallback — он нужен для нового подключения
+    // this.messageCallback = null;
   }
 
   // Переподключение при обрыве соединения
   private reconnect(): void {
-    // Небольшая задержка перед переподключением
+    // Задержка увеличивается с каждой попыткой (экспоненциальная)
+    const delay = Math.min(3000 * Math.pow(1.5, this.reconnectAttempts), 30000);
     setTimeout(() => {
       if (this.userId && this.chatId) {
-        // eslint-disable-next-line no-console
-        console.log(`Reconnecting to chat ${this.chatId}...`);
         this.connect(this.userId, this.chatId);
       }
-    }, 3000); // 3 секунды задержка
+    }, delay);
   }
 
   // Отправка ping для поддержания соединения
@@ -146,6 +218,11 @@ class WebSocketService {
 
       // eslint-disable-next-line no-console
       console.log("WebSocket message:", parsed);
+
+      // Вызываем зарегистрированный обработчик
+      if (this.messageCallback) {
+        this.messageCallback(parsed);
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error("Error parsing WebSocket message:", error, "Data:", data);

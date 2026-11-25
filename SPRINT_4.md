@@ -38,9 +38,10 @@
 Создан модуль `src/features/websocket/`:
 
 1. **`WebSocketService`** — сервис-обёртка (Singleton)
-   - `connect(userId, chatId)` — получение токена через `POST /api/v2/chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
+   - `connect(userId, chatId)` — получение токена через `POST /chats/token/:id` → подключение к `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
    - `send(message)` — отправка JSON: `{ content, type }`
    - `sendOldMessages(offset)` — пагинация: `{ content: String(offset), type: "get old" }`
+   - `isConnecting` + `connectPromise` — `send()` ждёт подключения, если оно ещё идёт
    - Авто-ping каждые 30 секунд
    - `disconnect()` — закрытие соединения
    - Обработчики событий: `open`, `message`, `error`, `close`
@@ -49,12 +50,45 @@
    - Reconnect при обрыве соединения (код != 1000)
    - Запрос старых сообщений при подключении к чату
 
+### Фаза 3: Интеграция в ChatPage ✅
+
+1. **Рендеринг сообщений встроен в `chat.hbs`**
+   - `{{#each messages}}` — рендеринг через Handlebars
+   - `isMine` вычисляется в `mapStateToProps` и добавляется к каждому сообщению
+   - Стили перенесены в `chat.module.css`
+   - Убраны отдельные компоненты `MessageList` и `MessageItem`
+
+2. **Интеграция в ChatPage**
+   - При выборе чата: `WebSocketService.connect(userId, chatId)`
+   - Регистрация обработчика через `onMessage`
+   - Сортировка сообщений по времени при добавлении
+   - Отправка сообщений через форму (`submit` → `WebSocketService.send`)
+   - `componentWillUnmount` — вызов `disconnect()`
+   - Пустое состояние при отсутствии выбранного чата
+   - Поле ввода и кнопка заблокированы, когда чат не выбран (`messageDisabled`)
+
+3. **Store** — добавлено состояние `messages` с ключом `chatId`
+
+### Фаза 4: Исправления и доработки ✅
+
+1. **`Block.ts`** — добавлен флаг `_isFirstUnmount`
+   - `componentWillUnmount()` вызывается только при первом размонтировании
+   - Предотвращает `disconnect()` при каждом ре-рендере через `connect`
+
+2. **`WebSocketService`** — ожидание подключения
+   - `connectPromise` завершается только когда `WebSocket.open`
+   - `send()` ждёт `connectPromise.then()`, если `isConnecting === true`
+   - Исправлен URL токена: `/chats/token/${chatId}` (без `/api/v2` — `HTTPTransport` уже добавляет `BASE_URL`)
+
+3. **`chat.hbs`** — поле ввода и кнопка
+   - `disabled=messageDisabled` — заблокированы когда чат не выбран
+   - `messageDisabled = !selectedChatId` вычисляется в `mapStateToProps`
+   - Стили `.myMessage` / `.otherMessage` в `chat.module.css`
+
 ---
 
 ## TODO
 
-- [x] Фаза 2: WebSocket-клиент (сервис-обёртка)
-- [ ] Фаза 3: Интеграция в ChatPage (MessageList, MessageItem)
 - [ ] Фаза 4: Защита от XSS
 - [ ] Фаза 5: Тесты (Vitest)
 - [ ] Фаза 6: Финализация (README, деплой)

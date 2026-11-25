@@ -13,19 +13,30 @@
       {{#if selectedChatId}}
         <div class="{{ styles.actionButtons }}">
           <button class="{{ styles.addUserBtn }}" data-ref="addUserBtn">Добавить участника</button>
-          <button class="{{ styles.addUserBtn }}" data-ref="removeUserBtn">
+          <button class="{{ styles.removeUserBtn }}" data-ref="removeUserBtn">
             Удалить участника
           </button>
         </div>
       {{/if}}
     </div>
-    <div class="{{ styles.emptyState }}">
-      <p class="{{ styles.emptyText }}">Выберите чат, чтобы отправить сообщение</p>
-    </div>
+    {{#if selectedChatId}}
+      <div class="{{ styles.messagesContainer }}" data-role="message-list">
+        {{#each messages as |message|}}
+          <div class="{{ styles.messageItem }} {{ message.messageClass }}">
+            <div class="{{ ../styles.messageContent }}">{{{ message.content }}}</div>
+            <div class="{{ ../styles.messageTime }}">{{{ message.time }}}</div>
+          </div>
+        {{/each}}
+      </div>
+    {{else}}
+      <div class="{{ styles.emptyState }}">
+        <p class="{{ styles.emptyText }}">Выберите чат, чтобы отправить сообщение</p>
+      </div>
+    {{/if}}
     <div class="{{ styles.inputWrapper }}">
       <form class="{{ styles.inputContainer }}">
-        {{{Input ref="messageInput" name="message" placeholder="Сообщение" validationKey="message"}}}
-        {{{Button ref="sendBtn" text="Отправить" type="submit"}}}
+        {{{Input ref="messageInput" name="message" placeholder="Сообщение" validationKey="message" disabled=messageDisabled}}}
+        {{{Button ref="sendBtn" text="Отправить" type="submit" disabled=messageDisabled}}}
       </form>
     </div>
   </div>

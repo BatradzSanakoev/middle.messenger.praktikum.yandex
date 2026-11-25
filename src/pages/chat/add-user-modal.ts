@@ -87,6 +87,9 @@ export class AddUserModal {
         // Добавляем в чат
         await ChatController.addUserToChat(userId, this.chatId);
 
+        // Перезагружаем список чатов — чтобы чат появился в списке в реальном времени
+        await ChatController.getChats();
+
         // Обновляем список участников — запрашиваем свежие данные
         const updatedUsers = await ChatController.getChatUsers(this.chatId);
         store.setState("chatUsers", { [this.chatId]: updatedUsers });

@@ -64,6 +64,36 @@ export interface PongMessage {
   type: "pong";
 }
 
+// System-сообщения — сервер возвращает старые сообщения в таком формате
+export interface SystemMessage {
+  type: "system";
+  messages: ChatMessage[];
+}
+
 // Union всех типов сообщений от сервера
 export type ServerMessage =
-  TextMessage | FileMessage | StickerMessage | UserConnected | PingMessage | PongMessage;
+  | TextMessage
+  | FileMessage
+  | StickerMessage
+  | UserConnected
+  | PingMessage
+  | PongMessage
+  | SystemMessage;
+
+// Общий интерфейс сообщения чата для UI-компонентов
+export interface ChatMessage {
+  id: string;
+  time: string;
+  user_id: string;
+  content: string;
+  type: "message" | "file" | "sticker";
+  file?: {
+    id: number;
+    user_id: number;
+    path: string;
+    filename: string;
+    content_type: string;
+    content_size: number;
+    upload_date: string;
+  };
+}
