@@ -840,24 +840,30 @@ https://www.figma.com/design/jF5fFFzgGOxQeB4CmKWTiE/Chat_external_link?node-id=1
 
 ### Фаза 7: Тесты (Vitest) ✅
 
-77 тестов, 5 файлов, все проходят:
+102 теста, 10 файлов, все проходят:
 
 - **`isEqual.test.ts`** — 10 тестов (примитивы, объекты, массивы, вложенные структуры)
-- **`merge.test.ts`** — 9 тестов (плоские объекты, вложенные, null/undefined, immutability)
+- **`merge.test.ts`** — 12 тестов (плоские объекты, вложенные, null/undefined, immutability, пустые объекты)
 - **`validators.test.ts`** — 35 тестов (все поля валидации)
 - **`common.test.ts`** — 13 тестов (`isPlainObject`, `isArray`, `queryString`)
-- **`route.test.ts`** — 10 тестов (`Route.match`, `Route.setRootElement`)
+- **`route.test.ts`** — 6 тестов (`Route.match`, `Route.setRootElement`)
+- **`router.test.ts`** — 4 теста (chaining, go, 404, protected)
+- **`block.test.ts`** — 5 тестов (lifecycle, componentDidMount, destroy)
+- **`httpTransport.test.ts`** — 6 тестов (GET, POST, JSON, FormData, errors, timeout)
+- **`modal.test.ts`** — 4 теста (show, close, onClose, click overlay)
+- **`button.test.ts`** — 3 теста (render, disabled, dataRole)
 
-Все тесты — чистые функции без моков DOM/XHR/WebSocket.
+Все тесты — чистые функции без моков DOM/XHR/WebSocket (кроме HTTPTransport и UI-компонентов).
 
 ### Фаза 8: Финализация ✅
 
 - **README.md** — обновлён (WebSocket, тесты, команды)
 - **Сборка** — `npm run build` без ошибок
 - **Линтинг** — `npm run lint` без ошибок
-- **Тесты** — 77/77 проходят
+- **Тесты** — 102/102 проходят
 - **Деплой** — Netlify обновлён
 - **Jest** — добавлен в devDependencies для CI/CD
+- **Husky** — pre-push хук (typecheck + tests), совместим с v10
 
 ---
 

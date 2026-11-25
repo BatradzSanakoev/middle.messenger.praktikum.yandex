@@ -370,6 +370,10 @@ export class ChatPage extends Block<ChatPageProps> {
   }
 
   // Обновление пропсов с ре-рендером
+  // Известное ограничение: Block пересоздаёт детей при setProps, из-за чего
+  // Input теряет value/focus. Здесь — точечное восстановление для поля сообщения.
+  // Архитектурное решение (переиспользование детей по ref в registerComponent)
+  // требует переработки ядра Block и не входит в scope этого PR.
   public setProps(props: Partial<ChatPageProps>) {
     // Сохраняем состояние input до пересоздания DOM
     const input = this.element()?.querySelector<HTMLInputElement>('input[name="message"]');

@@ -148,18 +148,24 @@
 
 ### Фаза 7: Тесты (Vitest) ✅
 
-Написаны тесты для чистых функций:
+Написаны тесты для чистых функций и UI-компонентов:
 
 - **`isEqual.test.ts`** — 10 тестов (примитивы, объекты, массивы, вложенные структуры)
-- **`merge.test.ts`** — 9 тестов (плоские объекты, вложенные, null/undefined, immutability)
+- **`merge.test.ts`** — 12 тестов (плоские объекты, вложенные, null/undefined, immutability, пустые объекты)
 - **`validators.test.ts`** — 35 тестов (все поля валидации)
 - **`common.test.ts`** — 13 тестов (`isPlainObject`, `isArray`, `queryString`)
-- **`route.test.ts`** — 10 тестов (`Route.match`, `Route.setRootElement`)
-- Итого: **77 тестов, 5 файлов, все проходят**
-- Все тесты — чистые функции без моков DOM/XHR/WebSocket
+- **`route.test.ts`** — 6 тестов (`Route.match`, `Route.setRootElement`)
+- **`router.test.ts`** — 4 теста (chaining, go, 404, protected)
+- **`block.test.ts`** — 5 тестов (lifecycle, componentDidMount, destroy)
+- **`httpTransport.test.ts`** — 6 тестов (GET, POST, JSON, FormData, errors, timeout)
+- **`modal.test.ts`** — 4 теста (show, close, onClose, click overlay)
+- **`button.test.ts`** — 3 теста (render, disabled, dataRole)
+- Итого: **102 теста, 10 файлов, все проходят**
+- Все тесты — чистые функции без моков DOM/XHR/WebSocket (кроме HTTPTransport и UI-компонентов)
 
 ---
 
 ## TODO
 
 - [x] Фаза 8: Финализация (README, деплой, Jest)
+- [x] Husky pre-push: typecheck + tests, совместимость с v10
