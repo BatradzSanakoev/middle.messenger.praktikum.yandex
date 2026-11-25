@@ -206,6 +206,48 @@ export class ChatPage extends Block<ChatPageProps> {
           }
         }
       },
+      // Обработчик кликов — определяет какая кнопка нажата
+      click: (e: Event) => {
+        const target = e.target as HTMLElement;
+        const createBtn = target.closest('[data-ref="createChatBtn"]');
+        if (createBtn) {
+          // Создаём модалку при первом клике
+          if (!this.createChatModal) {
+            this.createChatModal = new CreateChatModal();
+          }
+          this.createChatModal.show();
+        }
+        // Обработчик клика на чат — выделяет выбранный чат и загружает пользователей
+        const chatItem = target.closest("[data-chat-id]");
+        if (chatItem) {
+          const chatId = Number(chatItem.getAttribute("data-chat-id"));
+          this.selectChat(chatId);
+        }
+        // Обработчик клика на кнопку "Добавить участника"
+        const addUserBtn = target.closest('[data-ref="addUserBtn"]');
+        if (addUserBtn) {
+          if (this.selectedChatId) {
+            if (!this.addUserModal) {
+              this.addUserModal = new AddUserModal(this.selectedChatId);
+            } else {
+              this.addUserModal.setChatId(this.selectedChatId);
+            }
+            this.addUserModal.show();
+          }
+        }
+        // Обработчик клика на кнопку "Удалить участника"
+        const removeUserBtn = target.closest('[data-ref="removeUserBtn"]');
+        if (removeUserBtn) {
+          if (this.selectedChatId) {
+            if (!this.removeUserModal) {
+              this.removeUserModal = new RemoveUserModal(this.selectedChatId);
+            } else {
+              this.removeUserModal.setChatId(this.selectedChatId);
+            }
+            this.removeUserModal.show();
+          }
+        }
+      },
     };
   }
 

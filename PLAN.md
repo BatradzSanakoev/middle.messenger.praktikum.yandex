@@ -1,6 +1,12 @@
 # План Спринта 4 — Мессенджер
 
----
+- ✅ Создать `src/features/api/httpTransport.ts` — обёртка над XHR с Promise
+- ✅ Поддержка методов: `GET`, `POST`, `PUT`, `DELETE`
+- ✅ Функция `queryStringify` для GET-запросов
+- ✅ Обработка ошибок: `onload`, `onabort`, `onerror`, `ontimeout`
+- ✅ Обработка данных: FormData, JSON, пустые данные
+- ✅ `credentials: 'include'` (через `xhr.withCredentials = true`)
+- ✅ Типизация для ответов (дженерики `<T>`)
 
 ## Сводка по спринту
 
@@ -20,7 +26,7 @@
 - Типы: `message`, `file`, `sticker`, `user connected`, `get old`, `ping`, `pong`
 - Пагинация: `{ content: "offset", type: "get old" }`
 
----
+## Шаг 3: Хранилище состояния (Store) и HOC connect ✅ ВЫПОЛНЕНО
 
 ## План выполнения
 
@@ -43,7 +49,16 @@
    - `.prettierrc` починен (были merge-конфликты)
    - `.gitignore` обновлён (добавлен `.gigacode_vsc`)
 
----
+- ✅ Создать `src/shared/utils/renderDOM.ts` — утилита для вставки компонента в DOM
+- ✅ Создать `src/features/router/route.ts` — класс `Route` (маршрут: URL + компонент)
+- ✅ Создать `src/features/router/router.ts` — класс `Router` (Singleton, управление маршрутами)
+- ✅ Создать `src/features/router/index.ts` — экспорт `Router`, `Route`
+- ✅ Обновить `src/features/index.ts` — экспорт роутера
+- ✅ Обновить `src/init/app.ts` — подключение роутера, замена hash-роутинга на real paths
+- ✅ Маршруты: `/` → `LoginPage`, `/sign-up` → `RegisterPage`, `/settings` → `ProfilePage`, `/messenger` → `ChatPage`, `/404` → `Error404Page`, `/500` → `Error500Page`
+- ✅ Исправление бага: замена `replaceChild` на `appendChild` в `renderDOM.ts` (страницы остаются в DOM, переключение через `display: none`)
+- ✅ Исправление TypeScript-ошибок в `route.ts` и `router.ts`
+- ✅ Исправление наложения страниц: скрытие всех маршрутов при переходе вместо `currentRoute.leave()`
 
 ### Фаза 2: WebSocket-клиент (сервис-обёртка) ✅
 
@@ -61,7 +76,7 @@
    - Reconnect при обрыве (код != 1000) с лимитом 5 попыток и экспоненциальной задержкой
    - Запрос старых сообщений при подключении к чату
 
----
+## Шаг 6: Интеграция с API на страницах ✅
 
 ### Фаза 3: Интеграция в ChatPage ✅
 
