@@ -42,13 +42,16 @@ export class AddUserModal {
       title: "Добавить участника",
       body: bodyHtml,
       styles,
+      onClose: () => {
+        this.modal = null;
+      },
     });
 
     this.modal.show();
 
     const element = this.modal.element();
     const input = element?.querySelector<HTMLInputElement>('input[name="login"]');
-    const form = element?.querySelector<HTMLFormElement>('form');
+    const form = element?.querySelector<HTMLFormElement>("form");
     const button = form?.querySelector<HTMLButtonElement>('[data-role="modal-action-btn"]');
 
     if (!input || !form || !button) return;
@@ -57,12 +60,12 @@ export class AddUserModal {
     button.disabled = !input.value.trim();
 
     // Разблокируем при вводе
-    input.addEventListener('input', () => {
+    input.addEventListener("input", () => {
       button.disabled = !input.value.trim();
     });
 
     // Обработчик сабмита формы
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const login = input.value.trim();
       if (!login) return;
@@ -87,6 +90,9 @@ export class AddUserModal {
         // Добавляем в чат
         await ChatController.addUserToChat(userId, this.chatId);
 
+        // Перезагружаем список чатов — чтобы чат появился в списке в реальном времени
+        await ChatController.getChats();
+
         // Обновляем список участников — запрашиваем свежие данные
         const updatedUsers = await ChatController.getChatUsers(this.chatId);
         store.setState("chatUsers", { [this.chatId]: updatedUsers });
@@ -97,6 +103,7 @@ export class AddUserModal {
         }
         this.close();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Ошибка при добавлении участника:", error);
         if (errorSpan) {
           errorSpan.textContent = "Не удалось добавить участника";

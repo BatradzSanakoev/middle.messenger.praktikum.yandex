@@ -16,7 +16,7 @@ type EventListType = Partial<Record<keyof HTMLElementEventMap, (e: Event) => voi
 // Реализует компонентную архитектуру: рендер, обновление пропсов, жизненный цикл
 export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
   // Шаблон компонента в формате Handlebars (переопределяется в наследниках)
-  protected abstract template: string;
+  protected template: string = "";
   // Свойства компонента (пропсы)
   protected props = {} as Props;
   // DOM-элемент, созданный на основе шаблона
@@ -65,21 +65,29 @@ export abstract class Block<Props extends BlockOwnProps = BlockOwnProps> {
     }
   }
 
-  // Хук: вызывается перед удалением компонента из DOM (переопределяется в наследниках)
+  // Хук: вызывается при уходе со страницы (но блок остаётся живым для возврата)
+  protected onLeave(): void {}
+
+  // Хук: вызывается только при реальном destroy
   protected componentWillUnmount(): void {}
 
-  // Очистка: удаляет вложенные компоненты, убирает слушатели
+  // Используется при ре-рендере: снимаем слушатели, но БЕЗ lifecycle-хуков
   private unmountComponent(): void {
     if (this.domElement) {
       this.children.reverse().forEach((child) => child.unmountComponent());
-      this.componentWillUnmount();
       this.removeListeners();
     }
   }
 
-  // Полное уничтожение компонента
+  // Полное уничтожение — единственное место, где срабатывает componentWillUnmount
   public destroy(): void {
-    this.unmountComponent();
+    if (!this.domElement) return;
+    this.children.forEach((child) => child.destroy());
+    this.componentWillUnmount();
+    this.onLeave();
+    this.removeListeners();
+    this.domElement.remove();
+    this.domElement = null;
   }
 
   // Скрыть компонент (display: none)

@@ -37,10 +37,10 @@ export class ChatController {
    */
   static async deleteChat(chatId: number): Promise<void> {
     await chatAPI.delete({ id: chatId });
-    const chats = store.getState().chats as ChatResponse[] || [];
+    const chats = (store.getState().chats as ChatResponse[]) || [];
     store.setState(
       "chats",
-      chats.filter((c) => c.id !== chatId),
+      chats.filter((c) => c.id !== chatId)
     );
   }
 

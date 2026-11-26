@@ -5,10 +5,10 @@ import type { Block } from "../ui/block";
  * Заменяет активный дочерний элемент, сохраняя скрытые компоненты в DOM.
  */
 export function render(rootElement: Element | null, component: Block): void {
-	if (!rootElement) return;
+  if (!rootElement) return;
 
-	const element = component.element();
-	if (!element) return;
+  const element = component.element();
+  if (!element) return;
 
-	rootElement.appendChild(element);
+  rootElement.appendChild(element);
 }

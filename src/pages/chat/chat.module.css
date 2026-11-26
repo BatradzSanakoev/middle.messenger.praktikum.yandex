@@ -1,7 +1,8 @@
 .page {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -58,6 +59,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-height: 0;
 }
 
 .mainHeader {
@@ -67,6 +69,7 @@
   padding: 1rem;
   border-bottom: 1px solid var(--color-black);
   height: 4rem;
+  flex-shrink: 0;
 }
 
 .usersList {
@@ -78,7 +81,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
-
 }
 
 .addUserBtn {
@@ -95,6 +97,23 @@
 }
 
 .addUserBtn:hover {
+  opacity: 0.8;
+}
+
+.removeUserBtn {
+  font-family: Caveat, cursive;
+  font-weight: 500;
+  font-size: 1rem;
+  background: none;
+  border: 1px solid var(--color-black);
+  color: var(--color-black);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.removeUserBtn:hover {
   opacity: 0.8;
 }
 
@@ -117,9 +136,54 @@
   color: #808080;
 }
 
+.messagesContainer {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.messageItem {
+  width: fit-content;
+  max-width: 70%;
+}
+
+.myMessage {
+  align-self: flex-end;
+  background-color: var(--color-light-gray);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+
+.otherMessage {
+  align-self: flex-start;
+  background-color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+
+.messageContent {
+  font-family: Caveat, cursive;
+  font-size: 1.125rem;
+  overflow-wrap: break-word;
+}
+
+.messageTime {
+  font-size: 0.75rem;
+  color: #888;
+  text-align: right;
+  margin-top: 0.25rem;
+}
+
 .inputWrapper {
   padding: 1rem;
   border-top: 1px solid #000;
+  flex-shrink: 0;
 }
 
 .inputContainer {

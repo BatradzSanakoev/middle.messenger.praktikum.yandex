@@ -3,6 +3,7 @@
 ## Критические проблемы 🔴
 
 ### 1. Router singleton — сломан `getInstance()`
+
 **Файл:** `src/features/router/router.ts:28-30`
 
 ```ts
@@ -16,6 +17,7 @@ static getInstance(): Router {
 **Влияние:** Работает пока случайно — роутер создаётся один раз при `app.init()`, но при повторных вызовах `getInstance()` создаётся новый пустой экземпляр.
 
 **Решение:**
+
 ```ts
 static getInstance(): Router {
     if (!Router.__instance) {
@@ -28,6 +30,7 @@ static getInstance(): Router {
 ---
 
 ### 2. `setProps()` уничтожает вложенные компоненты
+
 **Файл:** `src/shared/ui/block/block.ts:46`
 
 ```ts
@@ -43,6 +46,7 @@ this.props = { ...this.props, ...props, __children: [], __refs: {} } as Props;
 ---
 
 ### 3. `innerHTML` в `compile()` — нарушение безопасности
+
 **Файл:** `src/shared/ui/block/block.ts:125`
 
 ```ts
@@ -54,6 +58,7 @@ AGENTS.md прямо запрещает `innerHTML`, требуя `createContext
 **Влияние:** Если в шаблоне окажется пользовательский ввод, он будет выполнен как код.
 
 **Решение:**
+
 ```ts
 const fragment = document.createRange().createContextualFragment(html);
 // querySelectorAll и firstElementChild работают на DocumentFragment так же
@@ -62,6 +67,7 @@ const fragment = document.createRange().createContextualFragment(html);
 ---
 
 ### 4. Modal listener leak — утечка слушателей
+
 **Файл:** `src/shared/ui/modal/modal.ts:40-44`
 
 ```ts
@@ -79,6 +85,7 @@ this.overlay.addEventListener("click", (e) => { ... });
 ## Проблемы TypeScript 🟡
 
 ### 5. `connect` использует `any` трижды
+
 **Файл:** `src/shared/utils/store/connect.ts:7-12`
 
 ```ts
@@ -95,6 +102,7 @@ function connect<Props extends object, T extends new (props?: any) => Block>(
 ---
 
 ### 6. `Route.render()` — два `as any`
+
 **Файл:** `src/features/router/route.ts:57, 65`
 
 ```ts
@@ -109,6 +117,7 @@ this.block = new (this.blockClass as any)();
 ---
 
 ### 7. `ProfilePage.componentDidMount` — async, но базовый класс не async
+
 **Файл:** `src/pages/profile/profile.ts:97`
 
 ```ts
@@ -124,6 +133,7 @@ protected async componentDidMount(): Promise<void> // Базовый: componentD
 ## Проблемы архитектуры 🟡
 
 ### 8. `HTTPTransport` создаётся заново для каждого API-класса
+
 **Файлы:** `chat-api.ts:9`, `auth-api.ts:8`, `user-api.ts:9`
 
 ```ts
@@ -139,6 +149,7 @@ const userTransport = new HTTPTransport();
 ---
 
 ### 9. `Block.render()` пересоздаёт ВСЕХ детей при каждом `setProps`
+
 **Файл:** `src/shared/ui/block/block.ts:110-118`
 
 ```ts
@@ -153,6 +164,7 @@ const fragment = this.compile(); // Пересоздаёт DOM
 ---
 
 ### 10. `window.onpopstate` перезаписывает обработчик
+
 **Файл:** `src/features/router/router.ts:61`
 
 ```ts
@@ -166,6 +178,7 @@ window.onpopstate = () => { ... };
 ---
 
 ### 11. Нет DI — каждый контроллер создаёт свой API, каждый API создаёт свой HTTPTransport
+
 **Файлы:** `chat-controller.ts:5`, `chat-api.ts:9`
 
 Цепочка: `Controller → new API → new HTTPTransport`. Нет общего экземпляра.
@@ -177,9 +190,11 @@ window.onpopstate = () => { ... };
 ## Дублирование кода 🟡
 
 ### 12. Одинаковая логика показа ошибок в `validateForm` и `Input`
+
 **Файлы:** `validateForm.ts:42-61`, `input.ts:42-65`
 
 Оба файла делают одно и то же:
+
 - Ищут wrapper через `[class*='inputWrapper']`
 - Ищут error span через `[class*='error']`
 - Создают/обновляют span с текстом ошибки
@@ -189,20 +204,24 @@ window.onpopstate = () => { ... };
 ---
 
 ### 13. `ProfilePage` — DOM-запросы повторяются 4+ раза
+
 **Файл:** `src/pages/profile/profile.ts:118-191`
 
 Каждый метод (`enableEditData`, `saveData`, `showPasswordForm`, `savePassword`) делает одни и те же `querySelector('[data-role="..."]')`.
 
 **Решение:** Вынести в приватный `$` хелпер:
+
 ```ts
-private $ = (selector: string): HTMLElement | null => 
+private $ = (selector: string): HTMLElement | null =>
     this.element()?.querySelector(selector) ?? null;
 ```
 
 ---
 
 ### 14. `LoginPage` и `RegisterPage` — идентичные обработчики событий
+
 Оба имеют:
+
 - `submit` с `e.preventDefault()` + `validateForm` + `FormData`
 - `click` с `data-ref` → `Router.go()`
 
@@ -213,6 +232,7 @@ private $ = (selector: string): HTMLElement | null =>
 ## Проблемы безопасности 🟡
 
 ### 15. `ProfileModal` body — raw HTML
+
 **Файл:** `src/pages/profile/profile-modal.ts:23`
 
 ```ts
@@ -225,6 +245,7 @@ this.modal = new Modal({ body: bodyHtml, ... });
 ---
 
 ### 16. Нет CSRF-защиты
+
 `HTTPTransport` отправляет cookies (`withCredentials: true`), но нет CSRF-токенов.
 
 ---
@@ -232,6 +253,7 @@ this.modal = new Modal({ body: bodyHtml, ... });
 ## Производительность 🟢
 
 ### 17. `setProps()` всегда перерендеривает
+
 **Файл:** `src/shared/ui/block/block.ts:45-48`
 
 Даже если props не изменились, `setProps()` вызывает `render()`. `connect` пытается mitigate через `isEqual`, но damage уже сделан внутри `setProps`.
@@ -239,10 +261,11 @@ this.modal = new Modal({ body: bodyHtml, ... });
 ---
 
 ### 18. `compile()` querySelectorAll на весь фрагмент
+
 **Файл:** `src/shared/ui/block/block.ts:138`
 
 ```ts
-Array.from(fragment.querySelectorAll("[ref]"))
+Array.from(fragment.querySelectorAll("[ref]"));
 ```
 
 Для больших шаблонов — O(n).
@@ -250,6 +273,7 @@ Array.from(fragment.querySelectorAll("[ref]"))
 ---
 
 ### 19. `Store.emit()` вызывает всех слушателей синхронно
+
 **Файл:** `src/shared/utils/store/store.ts:29`
 
 ```ts
@@ -265,6 +289,7 @@ private emit(): void {
 ## Не реализовано 🟡
 
 ### 20. Отправка сообщений не вызывает API
+
 **Файл:** `src/pages/chat/chat.ts:48-58`
 
 `validateForm` логирует в консоль, но к `ChatAPI.sendMessage` обращение не идёт.
@@ -272,6 +297,7 @@ private emit(): void {
 ---
 
 ### 21. `lastMessage` и `unreadCount` всегда пустые
+
 **Файл:** `src/pages/chat/chat.ts:27-32`
 
 ```ts
@@ -284,11 +310,13 @@ lastMessage: { author: "", text: "", time: "" },
 ---
 
 ### 22. Нет обработки ошибок в контроллерах
+
 `AuthController.signin()`, `ChatController.getChats()` и т.д. — ошибки API пролетают без `try/catch`.
 
 ---
 
 ### 23. Avatar не отображается
+
 Сервер возвращает 404 для аватара. Фронтенд формирует URL правильно, но сервер не отдаёт файл.
 
 **Решение:** Fallback на placeholder-картинку при 404.
@@ -298,11 +326,13 @@ lastMessage: { author: "", text: "", time: "" },
 ## Мелочи 🟢
 
 ### 24. `validateForm` + `Input` blur — двойная валидация
+
 Поле валидируется при blur (Input) И при submit (validateForm).
 
 ---
 
 ### 25. `uniqueId` в `registerComponent` — модульный глобал
+
 **Файл:** `src/shared/ui/block/registerComponent.ts:8`
 
 ```ts
@@ -314,11 +344,12 @@ let uniqueId = 0;
 ---
 
 ### 26. Cache-busting на ВСЕХ GET-запросах
+
 **Файл:** `src/features/api/httpTransport.ts:55-57`
 
 ```ts
 if (isGet) {
-    finalUrl += `${finalUrl.includes("?") ? "&" : "?"}_t=${Date.now()}`;
+  finalUrl += `${finalUrl.includes("?") ? "&" : "?"}_t=${Date.now()}`;
 }
 ```
 
@@ -328,48 +359,54 @@ if (isGet) {
 
 ## Сводная таблица
 
-| Категория | Кол-во | Приоритет |
-|---|---|---|
-| Критические | 4 | 🔴 Fix first |
-| TypeScript | 3 | 🟡 Fix |
-| Архитектура | 4 | 🟡 Fix |
-| Дублирование | 3 | 🟡 Nice to fix |
-| Безопасность | 2 | 🟡 Fix |
-| Производительность | 3 | 🟢 Low priority |
-| Не реализовано | 4 | 🟡 Fix |
-| Мелочи | 3 | 🟢 Low priority |
+| Категория          | Кол-во | Приоритет       |
+| ------------------ | ------ | --------------- |
+| Критические        | 4      | 🔴 Fix first    |
+| TypeScript         | 3      | 🟡 Fix          |
+| Архитектура        | 4      | 🟡 Fix          |
+| Дублирование       | 3      | 🟡 Nice to fix  |
+| Безопасность       | 2      | 🟡 Fix          |
+| Производительность | 3      | 🟢 Low priority |
+| Не реализовано     | 4      | 🟡 Fix          |
+| Мелочи             | 3      | 🟢 Low priority |
 
 ---
 
 ## Приоритетный план исправлений
 
 ### Блок 1: Критическое (блокирует работу)
+
 1. Router singleton — `getInstance()`
 2. `setProps` ломает вложенные компоненты
 3. `innerHTML` → `createContextualFragment`
 
 ### Блок 2: Важное (ломает UX)
+
 4. Modal listener leak
 5. `connect` — добавить явный тип
 6. `onEnter` — сделать public или осознанный `as any`
 7. `ProfilePage.componentDidMount` — async fix
 
 ### Блок 3: Архитектура (чистота кода)
+
 8. Singleton для `HTTPTransport`
 9. Diffing/reconciliation для `Block.render()`
 10. `addEventListener` вместо `onpopstate`
 11. DI для контроллеров
 
 ### Блок 4: Качество кода
+
 12. Утилита `showInputError`
 13. `$` хелпер в `ProfilePage`
 14. Базовый `AuthPage`
 
 ### Блок 5: Безопасность
+
 15. XSS в `ProfileModal` body
 16. CSRF-токены
 
 ### Блок 6: Не реализовано
+
 17. Отправка сообщений → API
 18. `lastMessage` / `unreadCount`
 19. `try/catch` в контроллерах

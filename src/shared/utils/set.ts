@@ -24,7 +24,7 @@ export function set(object: Indexed, path: string, value: unknown): Indexed {
     (acc, key) => ({
       [key]: acc,
     }),
-    value,
+    value
   );
 
   // Объединяем с исходным объектом (merge иммутабелен)

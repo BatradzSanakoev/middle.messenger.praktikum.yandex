@@ -16,16 +16,13 @@ type HTTPMethod = <R = unknown>(url: string, options?: RequestOptions) => Promis
  */
 export class HTTPTransport {
   /** GET-запрос */
-  get: HTTPMethod = (url, options = {}) =>
-    this.request(url, { ...options, method: METHODS.GET });
+  get: HTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.GET });
 
   /** POST-запрос */
-  post: HTTPMethod = (url, options = {}) =>
-    this.request(url, { ...options, method: METHODS.POST });
+  post: HTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.POST });
 
   /** PUT-запрос */
-  put: HTTPMethod = (url, options = {}) =>
-    this.request(url, { ...options, method: METHODS.PUT });
+  put: HTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.PUT });
 
   /** DELETE-запрос */
   delete: HTTPMethod = (url, options = {}) =>
@@ -51,10 +48,9 @@ export class HTTPTransport {
       const isGet = method === METHODS.GET;
 
       // Для GET с data — добавляем query string в URL
-      let finalUrl =
-        isGet && isPlainObject(data)
-          ? `${BASE_URL}${url}${queryString(data)}`
-          : `${BASE_URL}${url}`;
+      const query = isGet && isPlainObject(data) ? queryString(data) : "";
+      const separator = url.includes("?") ? "&" : "?";
+      let finalUrl = `${BASE_URL}${url}${query ? separator + query : ""}`;
 
       // Отключаем кэширование для GET-запросов — добавляем timestamp
       if (isGet) {

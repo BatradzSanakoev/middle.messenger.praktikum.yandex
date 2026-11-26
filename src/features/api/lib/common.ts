@@ -3,10 +3,12 @@ export type PlainObject<T = unknown> = {
 };
 
 export function isPlainObject(value: unknown): value is PlainObject {
-  return typeof value === 'object'
-    && value !== null
-    && value.constructor === Object
-    && Object.prototype.toString.call(value) === '[object Object]';
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    value.constructor === Object &&
+    Object.prototype.toString.call(value) === "[object Object]"
+  );
 }
 
 export function isArray(value: unknown): value is unknown[] {
@@ -41,8 +43,10 @@ function getParams(data: PlainObject | unknown[], parentKey?: string): [string, 
 
 export function queryString(data: PlainObject): string {
   if (!isPlainObject(data)) {
-    throw new Error('input must be an object');
+    throw new Error("input must be an object");
   }
 
-  return getParams(data).map(([key, value]) => `${key}=${value}`).join('&');
+  return getParams(data)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
 }

@@ -1,10 +1,25 @@
 import dotenv from "dotenv";
 import path from "path";
 import { defineConfig } from "vite";
+import checker from "vite-plugin-checker";
 
 dotenv.config();
 
 export default defineConfig({
+  plugins: [
+    checker({
+      typescript: {
+        tsconfigPath: "./tsconfig.json",
+        buildMode: true, // только проверка типов, не компиляция
+      },
+      eslint: {
+        lintCommand: "eslint .", // команда для ESLint
+      },
+      stylelint: {
+        lintCommand: 'stylelint "src/**/*.css"', // команда для Stylelint
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),

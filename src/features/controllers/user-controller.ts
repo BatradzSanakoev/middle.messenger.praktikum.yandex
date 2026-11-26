@@ -48,7 +48,10 @@ export class UserController {
    * - Отправляет старый и новый пароль
    * - Возвращает результат (без изменения Store)
    */
-  static async updatePassword(data: { oldPassword: string; newPassword: string }): Promise<unknown> {
+  static async updatePassword(data: {
+    oldPassword: string;
+    newPassword: string;
+  }): Promise<unknown> {
     return userAPI.password(data as PasswordData);
   }
 

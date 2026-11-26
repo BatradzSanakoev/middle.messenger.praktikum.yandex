@@ -109,3 +109,12 @@
 .inputWrapper {
   flex: 1;
 }
+
+.formError {
+  font-family: Caveat, cursive;
+  font-weight: 400;
+  font-size: 1rem;
+  color: #e53e3e;
+  text-align: center;
+  min-height: 1.25rem;
+}

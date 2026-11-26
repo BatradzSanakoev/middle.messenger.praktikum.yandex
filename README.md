@@ -92,6 +92,46 @@ registerComponent("Modal", Modal);
 - **PostCSS + CSS Modules** — стилизация с автопрефиксером
 - **Handlebars** — шаблонизатор
 - **ESLint + Stylelint + Prettier** — линтинг и форматирование
+- **Vitest** — тестирование (54 теста)
+- **Husky + lint-staged** — pre-commit хуки
+- **vite-plugin-checker** — проверка TS/ESLint/Stylelint во время сборки
+
+---
+
+## Команды
+
+```bash
+npm run dev        # Запуск dev-сервера
+npm run build      # Сборка для продакшена
+npm run preview    # Предпросмотр сборки
+npm run lint       # Линтинг (ESLint + Stylelint + Prettier + TypeScript)
+npm run typecheck  # Проверка типов TypeScript
+npm run test       # Запуск тестов Vitest
+npm run test:ui    # Тесты с UI
+npm run test:run   # Тесты без UI
+```
+
+---
+
+## WebSocket
+
+Реал-тайм сообщения через WebSocket:
+
+- Подключение: `POST /chats/token/:id` → `wss://ya-praktikum.tech/ws/chats/<USER_ID>/<CHAT_ID>/<TOKEN>`
+- Отправка: `{ content, type }` — типы `message`, `file`, `sticker`, `get old`, `ping`
+- Авто-ping каждые 30 секунд
+- Reconnect при обрыве соединения (лимит 5 попыток)
+- Запрос старых сообщений при подключении к чату
+- Сортировка сообщений по времени
+
+---
+
+## Тесты
+
+- **`isEqual.test.ts`** — 10 тестов (примитивы, объекты, массивы, вложенные структуры)
+- **`merge.test.ts`** — 9 тестов (плоские объекты, вложенные, null/undefined, immutability)
+- **`validators.test.ts`** — 35 тестов (все поля валидации)
+- Итого: **54 теста, 3 файла, все проходят**
 
 ## Архитектура
 

@@ -2,7 +2,7 @@ export type PlainObject<T = unknown> = {
   [key: string]: T;
 };
 
-export type RequestData = Record<string, unknown> | Record<string, any> | FormData | string | number | boolean | null;
+export type RequestData = Record<string, unknown> | FormData | string | number | boolean | null;
 
 export interface RequestOptions {
   headers?: Record<string, string>;
@@ -23,21 +23,22 @@ export interface ApiError extends BaseError {
 }
 
 export interface AbortError extends BaseError {
-  reason: 'Request aborted';
+  reason: "Request aborted";
 }
 
 export interface NetworkError extends BaseError {
-  reason: 'Network error';
+  reason: "Network error";
 }
 
 export interface TimeoutError extends BaseError {
-  reason: 'Request timeout';
+  reason: "Request timeout";
   timeout: number;
 }
 
 // --- API Types ---
 
 export interface SignupRequest {
+  [key: string]: unknown;
   first_name: string;
   second_name: string;
   login: string;
@@ -47,11 +48,13 @@ export interface SignupRequest {
 }
 
 export interface SigninRequest {
+  [key: string]: unknown;
   login: string;
   password: string;
 }
 
 export interface ProfileData {
+  [key: string]: unknown;
   first_name?: string;
   second_name?: string;
   display_name?: string;
@@ -61,6 +64,7 @@ export interface ProfileData {
 }
 
 export interface PasswordData {
+  [key: string]: unknown;
   oldPassword: string;
   newPassword: string;
 }
@@ -88,6 +92,7 @@ export interface SearchUser {
 }
 
 export interface CreateChatData {
+  [key: string]: unknown;
   title: string;
 }
 

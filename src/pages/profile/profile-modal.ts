@@ -48,7 +48,9 @@ export class ProfileModal {
    */
   private attachFileHandler(): void {
     const element = this.modal?.element();
-    const fileInput = element?.querySelector<HTMLInputElement>('[data-role="avatar-form"] input[type="file"]');
+    const fileInput = element?.querySelector<HTMLInputElement>(
+      '[data-role="avatar-form"] input[type="file"]'
+    );
     const fileNameSpan = element?.querySelector<HTMLSpanElement>('[data-role="file-name"]');
     const errorSpan = element?.querySelector<HTMLSpanElement>('[data-role="error"]');
     const button = element?.querySelector<HTMLButtonElement>('[data-role="modal-action-btn"]');
@@ -86,7 +88,9 @@ export class ProfileModal {
     button.disabled = true;
 
     button.addEventListener("click", async () => {
-      const fileInput = element?.querySelector<HTMLInputElement>('[data-role="avatar-form"] input[type="file"]');
+      const fileInput = element?.querySelector<HTMLInputElement>(
+        '[data-role="avatar-form"] input[type="file"]'
+      );
       const file = fileInput?.files?.[0];
 
       // Проверка: файл выбран
@@ -123,6 +127,7 @@ export class ProfileModal {
         }
         this.close();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Ошибка при загрузке аватара:", error);
         if (errorSpan) {
           errorSpan.textContent = "Не удалось загрузить аватар";

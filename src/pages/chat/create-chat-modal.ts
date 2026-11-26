@@ -30,13 +30,16 @@ export class CreateChatModal {
       title: "Создайте чат",
       body: bodyHtml,
       styles,
+      onClose: () => {
+        this.modal = null;
+      },
     });
 
     this.modal.show();
 
     const element = this.modal.element();
     const input = element?.querySelector<HTMLInputElement>('input[name="title"]');
-    const form = element?.querySelector<HTMLFormElement>('form');
+    const form = element?.querySelector<HTMLFormElement>("form");
     const button = form?.querySelector<HTMLButtonElement>('[data-role="modal-action-btn"]');
 
     if (!input || !form || !button) return;
@@ -45,18 +48,24 @@ export class CreateChatModal {
     button.disabled = !input.value.trim();
 
     // Разблокируем при вводе
-    input.addEventListener('input', () => {
+    input.addEventListener("input", () => {
       button.disabled = !input.value.trim();
     });
 
     // Обработчик сабмита формы
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = input.value.trim();
       if (!title) return;
 
-      await ChatController.createChat({ title });
-      this.close();
+      const errorSpan = element?.querySelector<HTMLSpanElement>('[data-role="error"]');
+      try {
+        await ChatController.createChat({ title });
+        this.close();
+      } catch (err) {
+        const reason = (err as { response?: { reason?: string } })?.response?.reason;
+        if (errorSpan) errorSpan.textContent = reason ?? "Не удалось создать чат";
+      }
     });
   }
 

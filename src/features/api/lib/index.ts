@@ -1,5 +1,5 @@
-export { METHODS } from './constants';
-export { queryString, isPlainObject } from './common';
+export { METHODS } from "./constants";
+export { queryString, isPlainObject } from "./common";
 export type {
   PlainObject,
   RequestData,
@@ -19,4 +19,4 @@ export type {
   ChatUser,
   ChatResponse,
   UnreadCountResponse,
-} from './types';
+} from "./types";

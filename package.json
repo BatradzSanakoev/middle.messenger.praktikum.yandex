@@ -6,7 +6,6 @@
   },
   "version": "0.0.0",
   "type": "module",
-  "lint": "eslint",
   "scripts": {
     "start": "npm run build && vite",
     "dev": "vite",
@@ -16,7 +15,24 @@
     "format:fix": "prettier --write .",
     "lint": "stylelint \"src/**/*.css\" && eslint . && prettier --check . && npm run typecheck",
     "lint:fix": "eslint --fix . && prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "**/*": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "devDependencies": {
     "@eslint/css": "^2.0.1",
@@ -25,12 +41,16 @@
     "@poliklot/prettier-plugin-handlebars": "^0.4.1",
     "@types/handlebars": "^4.0.40",
     "@types/node": "^26.6.2",
+    "@vitest/ui": "^5.1.1",
     "autoprefixer": "^10.6.1",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "globals": "^17.13.0",
+    "husky": "^9.1.7",
     "jiti": "^2.7.0",
+    "jsdom": "^31.0.1",
+    "lint-staged": "^17.6.2",
     "postcss": "^8.5.28",
     "postcss-import": "^17.0.0",
     "postcss-modules": "^9.0.1",
@@ -43,7 +63,10 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.71.2",
     "vite": "^8.3.0",
-    "vite-plugin-handlebars": "^2.0.3"
+    "vite-plugin-checker": "^1.0.0",
+    "vite-plugin-handlebars": "^2.0.3",
+    "vitest": "^5.1.1",
+    "jest": "^29.0.0"
   },
   "dependencies": {
     "dotenv": "^18.0.3",

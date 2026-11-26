@@ -1,17 +1,32 @@
 <ul class="{{ styles.chatList }}">
   {{#each chats}}
-    <li class="{{../styles.chatItem}} {{#if isSelected}}{{../styles.selected}}{{/if}}" data-ref="chatItem" data-chat-id="{{id}}">
-      <img class="{{../styles.avatar}}" src="{{ avatarUrl }}" alt="{{ alt }}" />
-      <div class="{{../styles.content}}">
-        <div class="{{../styles.header}}">
-          <span class="{{../styles.title}}">{{ title }}</span>
-          <span class="{{../styles.time}}">{{ lastMessage.time }}</span>
+    <li
+      class="
+        {{ ../styles.chatItem }}
+        {{#if isSelected}}
+          {{ ../styles.selected }}
+        {{/if}}
+      "
+      data-ref="chatItem"
+      data-chat-id="{{ id }}"
+    >
+      {{#if avatarUrl}}
+        <img class="{{ ../styles.avatar }}" src="{{ avatarUrl }}" alt="{{ alt }}" />
+      {{else}}
+        <div class="{{ ../styles.avatarPlaceholder }}">
+          {{ title.[0] }}
         </div>
-        <div class="{{../styles.footer}}">
-          <span class="{{../styles.author}}">{{ lastMessage.author }}:</span>
-          <span class="{{../styles.lastText}}">{{ lastMessage.text }}</span>
+      {{/if}}
+      <div class="{{ ../styles.content }}">
+        <div class="{{ ../styles.header }}">
+          <span class="{{ ../styles.title }}">{{ title }}</span>
+          <span class="{{ ../styles.time }}">{{ lastMessage.time }}</span>
+        </div>
+        <div class="{{ ../styles.footer }}">
+          <span class="{{ ../styles.author }}">{{ lastMessage.author }}:</span>
+          <span class="{{ ../styles.lastText }}">{{ lastMessage.text }}</span>
           {{#if unreadCount}}
-            <span class="{{../styles.badge}}">
+            <span class="{{ ../styles.badge }}">
               {{ unreadCount }}
             </span>
           {{/if}}

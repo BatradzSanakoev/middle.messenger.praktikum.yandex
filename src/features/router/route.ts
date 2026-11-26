@@ -6,72 +6,76 @@ import { render } from "../../shared/utils/renderDOM";
  * Управляет созданием, показом и скрытием компонента.
  */
 export class Route {
-	private pathname: string;           // URL-путь (например, '/messenger')
-	private blockClass: typeof Block;   // Класс компонента (например, ChatPage)
-	public block: Block | null;         // Экземпляр компонента
-	private rootElement: Element;       // DOM-контейнер
+  private pathname: string; // URL-путь (например, '/messenger')
+  private blockClass: typeof Block; // Класс компонента (например, ChatPage)
+  public block: Block | null; // Экземпляр компонента
+  private rootElement: Element; // DOM-контейнер
+  private isProtectedRoute = false; // Флаг защищённого маршрута
 
-	/**
-	 * Создаёт маршрут.
-	 * Компонент создаётся лениво — при первом вызове render().
-	 */
-	constructor(pathname: string, blockClass: typeof Block, rootElement: Element) {
-		this.pathname = pathname;
-		this.blockClass = blockClass;
-		this.block = null;
-		this.rootElement = rootElement;
-	}
+  /**
+   * Создаёт маршрут.
+   * Компонент создаётся лениво — при первом вызове render().
+   * @param isProtected — если true, роутер проверит авторизацию перед показом
+   */
+  constructor(
+    pathname: string,
+    blockClass: typeof Block,
+    rootElement: Element,
+    isProtected = false
+  ) {
+    this.pathname = pathname;
+    this.blockClass = blockClass;
+    this.block = null;
+    this.rootElement = rootElement;
+    this.isProtectedRoute = isProtected;
+  }
 
-	/**
-	 * Проверяет, совпадает ли переданный путь с маршрутом.
-	 */
-	match(pathname: string): boolean {
-		return pathname === this.pathname;
-	}
+  /**
+   * Проверяет, совпадает ли переданный путь с маршрутом.
+   */
+  match(pathname: string): boolean {
+    return pathname === this.pathname;
+  }
 
-	/**
-	 * Скрывает компонент (вызывается при уходе со страницы).
-	 */
-	leave(): void {
-		if (this.block) {
-			this.block.hide();
-		}
-	}
+  /**
+   * Возвращает, является ли маршрут защищённым.
+   */
+  public isProtected(): boolean {
+    return this.isProtectedRoute;
+  }
 
-	/**
-	 * Устанавливает DOM-контейнер для рендера.
-	 */
-	setRootElement(rootElement: Element): void {
-		this.rootElement = rootElement;
-	}
+  /**
+   * Вызывает onLeave у компонента при уходе со страницы.
+   * Блок не уничтожается — остаётся живым для быстрого возврата.
+   */
+  leave(): void {
+    (this.block as unknown as { onLeave?: () => void })?.onLeave?.();
+  }
 
-	/**
-	 * Показывает компонент:
-	 * - Если не создан → создаёт и вставляет в DOM
-	 * - Если уже создан → просто показывает
-	 */
-		render(): void {
-		if (!this.block) {
-			// Block — абстрактный класс, но blockClass — это конкретный наследник (LoginPage, ChatPage и т.д.)
-			// Поэтому используем as any для обхода проверки абстрактности
-			this.block = new (this.blockClass as any)();
-			if (this.block) {
-				render(this.rootElement, this.block);
-			}
-			return;
-		}
+  /**
+   * Устанавливает DOM-контейнер для рендера.
+   */
+  setRootElement(rootElement: Element): void {
+    this.rootElement = rootElement;
+  }
 
-		// При повторном переходе на страницу — вызываем onEnter и перемещаем DOM в контейнер
-		(this.block as any).onEnter();
-		render(this.rootElement, this.block);
-	}
+  /**
+   * Показывает компонент:
+   * - Если не создан → создаёт и вставляет в DOM
+   * - Если уже создан → вызывает onEnter и перемещает DOM в контейнер
+   */
+  render(): void {
+    if (!this.block) {
+      // Block — абстрактный класс, но blockClass — это конкретный наследник (LoginPage, ChatPage и т.д.)
+      this.block = new (this.blockClass as unknown as new () => Block)();
+      if (this.block) {
+        render(this.rootElement, this.block);
+      }
+      return;
+    }
 
-	/**
-	 * Скрывает текущий компонент (вызывается при уходе со страницы).
-	 */
-	hide(): void {
-		if (this.block) {
-			this.block.hide();
-		}
-	}
+    // При повторном переходе на страницу — вызываем onEnter и перемещаем DOM в контейнер
+    (this.block as unknown as { onEnter?: () => void })?.onEnter?.();
+    render(this.rootElement, this.block);
+  }
 }
